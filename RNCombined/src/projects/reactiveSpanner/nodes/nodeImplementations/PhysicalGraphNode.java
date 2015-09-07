@@ -3,27 +3,23 @@ package projects.reactiveSpanner.nodes.nodeImplementations;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
 import projects.defaultProject.nodes.timers.MessageTimer;
-import projects.reactiveSpanner.Algorithms;
 import projects.reactiveSpanner.CustomGlobal;
 import projects.reactiveSpanner.TopologyControlObserver;
-import projects.reactiveSpanner.Utilities;
 import projects.reactiveSpanner.exceptions.InvalidSubgraphStrategyException;
 import projects.reactiveSpanner.nodes.messageHandlers.AbstractMessageHandler;
-import projects.reactiveSpanner.nodes.messageHandlers.SubgraphStrategy.EState;
-import projects.reactiveSpanner.nodes.messageHandlers.SubgraphStrategyFactory;
 import projects.reactiveSpanner.nodes.messageHandlers.SubgraphStrategy;
+import projects.reactiveSpanner.nodes.messageHandlers.SubgraphStrategy.EState;
+import projects.reactiveSpanner.nodes.messageHandlers.SubgraphStrategy.EStrategy;
+import projects.reactiveSpanner.nodes.messageHandlers.SubgraphStrategyFactory;
 import projects.reactiveSpanner.nodes.messageHandlers.BCA.BCAMessageHandler;
 import projects.reactiveSpanner.nodes.messageHandlers.BFP.BFPMessageHandler;
 import projects.reactiveSpanner.nodes.messageHandlers.BarriereExt.BarriereExtMessageHandler;
-import projects.reactiveSpanner.nodes.messageHandlers.SubgraphStrategy.EStrategy;
-import projects.reactiveSpanner.nodes.messageHandlers.buildBackbone.CreateVirtuals;
 import projects.reactiveSpanner.nodes.messageHandlers.buildBackbone.CreateVirtualsMessageHandler;
 import projects.reactiveSpanner.nodes.messageHandlers.reactivePDT.ReactivePDTMessageHandler;
 import projects.reactiveSpanner.nodes.messages.AbstractMessage;
@@ -39,7 +35,6 @@ import sinalgo.gui.helper.NodeSelectionHandler;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.nodes.Node;
 import sinalgo.nodes.Position;
-import sinalgo.nodes.Node.NodePopupMethod;
 import sinalgo.nodes.edges.Edge;
 import sinalgo.nodes.messages.Inbox;
 import sinalgo.nodes.messages.Message;
@@ -47,6 +42,7 @@ import sinalgo.nodes.messages.NackBox;
 import sinalgo.tools.Tools;
 import sinalgo.tools.logging.LogL;
 
+//For easier understanding and testing of RMYS several ReactiveSpanner annotations of the nodes contextmenu has been commented out
 public class PhysicalGraphNode extends SimpleNode implements TopologyControlObserver, Serializable, RoutingObserver {
 	/**
 	 * 
@@ -82,7 +78,7 @@ public class PhysicalGraphNode extends SimpleNode implements TopologyControlObse
 	/*
 	 * Setting a destination for BFP routing algorithm
 	 */
-	@NodePopupMethod(menuText = "BFP")
+	// @NodePopupMethod(menuText = "BFP")
 	public SubgraphStrategy startBFP() {
 		SubgraphStrategy lastSubgraphStrategy = null;
 		try {
@@ -95,7 +91,7 @@ public class PhysicalGraphNode extends SimpleNode implements TopologyControlObse
 		return lastSubgraphStrategy;
 	}
 
-	@NodePopupMethod(menuText = "Reactive PDT")
+	// @NodePopupMethod(menuText = "Reactive PDT")
 	public SubgraphStrategy startReactivePDT() {
 		SubgraphStrategy lastSubgraphStrategy = null;
 		try {
@@ -108,7 +104,7 @@ public class PhysicalGraphNode extends SimpleNode implements TopologyControlObse
 		return lastSubgraphStrategy;
 	}
 
-	@NodePopupMethod(menuText = "BuildBackbone")
+	// @NodePopupMethod(menuText = "BuildBackbone")
 	public SubgraphStrategy startBuildBackbone() {
 		/*
 		 * this.lastSubgraphStrategy = new BuildBackbone(this); return lastSubgraphStrategy;
@@ -119,7 +115,7 @@ public class PhysicalGraphNode extends SimpleNode implements TopologyControlObse
 		return lastSubgraphStrategy;
 	}
 
-	@NodePopupMethod(menuText = "BCA")
+	// @NodePopupMethod(menuText = "BCA")
 	public SubgraphStrategy startBCA() {
 		SubgraphStrategy lastSubgraphStrategy = null;
 		try {
@@ -133,7 +129,7 @@ public class PhysicalGraphNode extends SimpleNode implements TopologyControlObse
 
 
 	
-	@NodePopupMethod(menuText = "Greedy proceedings")
+	// @NodePopupMethod(menuText = "Greedy proceedings")
 	public void startGreedyRouting() {
 		Tools.getNodeSelectedByUser(new NodeSelectionHandler() {
 			@Override
@@ -147,7 +143,7 @@ public class PhysicalGraphNode extends SimpleNode implements TopologyControlObse
 		}, "Select the destination node to route the message");
 	}
 	
-	@NodePopupMethod(menuText = "Face-Routing_GG")
+	// @NodePopupMethod(menuText = "Face-Routing_GG")
 	public void startFaceRoutingGG() {
 		Tools.getNodeSelectedByUser(new NodeSelectionHandler() {
 			@Override
@@ -164,7 +160,7 @@ public class PhysicalGraphNode extends SimpleNode implements TopologyControlObse
 	/**
 	 * Partial Delaunay Triangulation within the one-hop neighborhood of the current node
 	 */
-	@NodePopupMethod(menuText="Local PDT")
+	// @NodePopupMethod(menuText="Local PDT")
 	public SubgraphStrategy localPDT() 
 	{
 		SubgraphStrategy lastSubgraphStrategy = null;
@@ -181,7 +177,7 @@ public class PhysicalGraphNode extends SimpleNode implements TopologyControlObse
 		return lastSubgraphStrategy;
 	}
 	
-	@NodePopupMethod(menuText = "Face-Routing_PDT")
+	// @NodePopupMethod(menuText = "Face-Routing_PDT")
 	public void startFaceRoutingPDT() {
 		Tools.getNodeSelectedByUser(new NodeSelectionHandler() {
 			@Override
@@ -195,7 +191,7 @@ public class PhysicalGraphNode extends SimpleNode implements TopologyControlObse
 		}, "Select the destination node to route the message");
 	}
 	
-	@NodePopupMethod(menuText = "Greedy-Face-Routing_GG")
+	// @NodePopupMethod(menuText = "Greedy-Face-Routing_GG")
 	public void startGreedyFaceRoutingGG() {
 		Tools.getNodeSelectedByUser(new NodeSelectionHandler() {
 			@Override
@@ -209,7 +205,7 @@ public class PhysicalGraphNode extends SimpleNode implements TopologyControlObse
 		}, "Select the destination node to route the message");
 	}
 	
-	@NodePopupMethod(menuText = "Greedy-Face-Routing_PDT")
+	// @NodePopupMethod(menuText = "Greedy-Face-Routing_PDT")
 	public void startGreedyFaceRoutingPDT() {
 		Tools.getNodeSelectedByUser(new NodeSelectionHandler() {
 			@Override
@@ -226,7 +222,7 @@ public class PhysicalGraphNode extends SimpleNode implements TopologyControlObse
 	/**
 	 * just used for debugging and TODO: can be removed later (tim)
 	 */
-	@NodePopupMethod(menuText = "drawConnections")
+	// @NodePopupMethod(menuText = "drawConnections")
 	public void drawConnections() {
 		/*
 		 * this.lastSubgraphStrategy = new BuildBackbone(this); return lastSubgraphStrategy;
@@ -261,7 +257,7 @@ public class PhysicalGraphNode extends SimpleNode implements TopologyControlObse
 
 
 	
-	@NodePopupMethod(menuText = "Barriere")
+	// @NodePopupMethod(menuText = "Barriere")
 	public SubgraphStrategy startBarriere() {
 		SubgraphStrategy lastSubgraphStrategy = null;
 		try {
@@ -274,7 +270,7 @@ public class PhysicalGraphNode extends SimpleNode implements TopologyControlObse
 		return lastSubgraphStrategy;
 	}
 
-	@NodePopupMethod(menuText = "BarriereExt")
+	// @NodePopupMethod(menuText = "BarriereExt")
 	public SubgraphStrategy startBarriereExt() {
 		SubgraphStrategy lastSubgraphStrategy = null;
 		try {
@@ -287,7 +283,7 @@ public class PhysicalGraphNode extends SimpleNode implements TopologyControlObse
 		return lastSubgraphStrategy;
 	}
 
-	@NodePopupMethod(menuText = "BarriereExtTools")
+	// @NodePopupMethod(menuText = "BarriereExtTools")
 	public void barriereTools() {
 		Tools.clearOutput();
 		AbstractMessageHandler amh = messageHandlerMap.get(lastSubgraphStrategy.getTopologyControlID());
@@ -314,7 +310,7 @@ public class PhysicalGraphNode extends SimpleNode implements TopologyControlObse
 		}
 	}
 
-	@NodePopupMethod(menuText = "draw rMin rMax")
+	// @NodePopupMethod(menuText = "draw rMin rMax")
 	public void drawR() {
 		this.drawRad = !drawRad;
 	}

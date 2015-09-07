@@ -22,10 +22,20 @@ public class RMYS extends BeaconlessTopologyControl {
 
 			@Override
 			public void onNotify(SubgraphStrategy topologyControl, EState event) {
-				System.out.println("notifying!!");
+				if (pdt.hasTerminated()) {
+					startMYS();
+				}
 
 			}
 		});
+
+		RMYSMessageHandler rmys=new RMYSMessageHandler(super.getTopologyControlID(), sourceNode, sourceNode, super.getStrategyType());
+		sourceNode.messageHandlerMap.put(super.getTopologyControlID(), rmys);
+
+		pdt.start();
+	}
+
+	private void startMYS() {
 
 	}
 

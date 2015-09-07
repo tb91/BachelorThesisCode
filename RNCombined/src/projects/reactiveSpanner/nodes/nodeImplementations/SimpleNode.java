@@ -169,7 +169,7 @@ public class SimpleNode extends Node{
 	/**
 	 * Standard UDG neighborhood of this node
 	 */
-	@NodePopupMethod(menuText="Neighbor UDG")
+	// @NodePopupMethod(menuText="Neighbor UDG")
 	public Set<Node> neighborUDG() {
 		Collection<Node> neighborhood = Algorithms.getNeighborNodes(this, Tools.getNodeList());
 		for(Node v: neighborhood)
@@ -183,7 +183,7 @@ public class SimpleNode extends Node{
 	/**
 	 * Gabriel Graph within the one-hop neighborhood of the current node
 	 */
-	@NodePopupMethod(menuText="Neighbor GG")
+	// @NodePopupMethod(menuText="Neighbor GG")
 	public Set<Node> neighborGG() {
 		Collection<Node> neighborhood = Algorithms.getNeighborNodes(this, Tools.getNodeList());
 		for(Node v: neighborhood)
@@ -198,7 +198,7 @@ public class SimpleNode extends Node{
 	/**
 	 * Partial Delaunay Triangulation within the one-hop neighborhood of the current node
 	 */
-	@NodePopupMethod(menuText="Neighbor PDT")
+	// @NodePopupMethod(menuText="Neighbor PDT")
 	public Set<Node> neighborPDT() {
 		Collection<Node> neighborhood = Algorithms.getNeighborNodes(this, Tools.getNodeList());
 		for(Node v: neighborhood)
@@ -213,7 +213,7 @@ public class SimpleNode extends Node{
 	/**
 	 * Partial Delaunay Triangulation Diff Gabriel Graph within the one-hop neighborhood of the current node
 	 */
-	@NodePopupMethod(menuText="Neighbor PDT/GG")
+	// @NodePopupMethod(menuText="Neighbor PDT/GG")
 	public void neighborDiffPDTandGG() {
 		Set<Node> neighborhood = Algorithms.getNeighborNodes(this, Tools.getNodeList());
 		for(Node v: neighborhood)
@@ -226,7 +226,7 @@ public class SimpleNode extends Node{
 		CustomGlobal.drawEdges(this, PDTNodes, Color.BLUE);
 	}
 	
-	@NodePopupMethod(menuText = "Circumscribed Circle (around two nodes)")
+	// @NodePopupMethod(menuText = "Circumscribed Circle (around two nodes)")
 	public void drawCircumcircleAroundTwoPoints() {
 		final Node u = this;
 		Tools.getNodeSelectedByUser(new NodeSelectionHandler() {
@@ -240,7 +240,7 @@ public class SimpleNode extends Node{
 		}, "Select the second node for the circumscribed circle");
 	}
 	
-	@NodePopupMethod(menuText = "Circumscribed Circle (around three nodes)")
+	// @NodePopupMethod(menuText = "Circumscribed Circle (around three nodes)")
 	public void drawCircumcircleAroundThreePoints() {
 		final Node u = this;
 		Tools.getNodeSelectedByUser(new NodeSelectionHandler() {
@@ -263,7 +263,8 @@ public class SimpleNode extends Node{
 		}, "Select the second node for the circumscribed circle");
 	}
 	
-	@NodePopupMethod(menuText = "Angle between three points (with angle apex at this point)")
+	// @NodePopupMethod(menuText = "Angle between three points (with angle apex
+	// at this point)")
 	public void angleBetweenThreePoints() {
 		final Node v = this;
 		v.setColor(Color.BLACK);
@@ -292,7 +293,8 @@ public class SimpleNode extends Node{
 		}, "Select the second node for the angle");
 	}
 	
-	@NodePopupMethod(menuText = "Signed Angle between three points (with angle apex at this point)")
+	// @NodePopupMethod(menuText = "Signed Angle between three points (with
+	// angle apex at this point)")
 	public void signedAngleBetweenThreePoints() {
 		final Node v = this;
 		v.setColor(Color.BLACK);
@@ -321,7 +323,8 @@ public class SimpleNode extends Node{
 		}, "Select the second node for the angle");
 	}
 	
-	@NodePopupMethod(menuText = "Colorize Open Half Planes between two nodes")
+	// @NodePopupMethod(menuText = "Colorize Open Half Planes between two
+	// nodes")
 	public void colorizeOpenHalfPlanesBetweenTwoPoints() {
 		Tools.getNodeSelectedByUser(new NodeSelectionHandler() {
 			@Override
@@ -352,7 +355,7 @@ public class SimpleNode extends Node{
 	/**
 	 * Test for edge intersection routine
 	 */
-	@NodePopupMethod(menuText="Test edge intersection")
+	// @NodePopupMethod(menuText="Test edge intersection")
 	public void testEdgeIntersection()
 	{
 		try {
