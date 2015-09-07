@@ -1,0 +1,136 @@
+package projects.reactiveSpanner.nodes.messageHandlers.buildBackbone;
+
+import java.awt.Graphics;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+
+import projects.reactiveSpanner.RoutingEntry;
+import projects.reactiveSpanner.nodes.nodeImplementations.PhysicalGraphNode;
+import sinalgo.gui.transformation.PositionTransformation;
+import sinalgo.nodes.Node;
+import sinalgo.nodes.Position;
+import sinalgo.nodes.messages.Message;
+
+public class VirtualNode implements BuildbackboneTopology {
+
+	private Position position;
+	private PhysicalGraphNode controller;
+	private int id;
+	
+	
+	private PhysicalGraphNode startnode1;
+	private PhysicalGraphNode endnode1;
+	private PhysicalGraphNode startnode2;
+	private PhysicalGraphNode endnode2;
+	
+	static int currentid=0;
+	
+	
+	private HashMap<BuildbackboneTopology, ArrayList<RoutingEntry>> routingTable=new HashMap<BuildbackboneTopology, ArrayList<RoutingEntry>>();
+	
+	
+	public VirtualNode(Position position, PhysicalGraphNode controller, PhysicalGraphNode startnode1, PhysicalGraphNode endnode1,PhysicalGraphNode startnode2, PhysicalGraphNode endnode2) {
+		this.position = position;
+		this.controller = controller;
+		id=currentid;
+		currentid++;//eventually there might be an overflow
+		
+		//we need to save on which edge-edge-intersection the virtual node is
+		this.startnode1=startnode1;
+		this.endnode1=endnode1;
+		this.startnode2=startnode2;
+		this.endnode2=endnode2;
+		
+	}
+	
+	public PhysicalGraphNode getStartnode1() {
+		return startnode1;
+	}
+
+	public PhysicalGraphNode getEndnode1() {
+		return endnode1;
+	}
+
+	public PhysicalGraphNode getStartnode2() {
+		return startnode2;
+	}
+
+	public PhysicalGraphNode getEndnode2() {
+		return endnode2;
+	}
+	
+
+	protected void receivedMessage(Message msg){
+		//not yet implemented
+		//use controllers routing table
+	}
+	
+	
+	
+
+
+	protected void drawNode(Graphics g, PositionTransformation pt) {
+		//not yet implemented
+	}
+
+	@Override
+	public HashMap<BuildbackboneTopology, ArrayList<RoutingEntry>> getRoutingTable() {
+		return routingTable;
+	}
+	
+	@Override
+	public HashMap<Integer, PhysicalGraphNode> getCollectedNodes() {
+		throw new RuntimeException("This method should not be called from VirtualNode");
+		
+	}
+
+	
+	@Override
+	public String toString(){
+		return "vNode("+ this.id + ")"; 
+	}
+
+	
+	
+	
+	/*
+	 * ========Getter und Setter===========
+	 */
+	
+	public Position getPosition() {
+		return position;
+	}
+
+	public PhysicalGraphNode getController() {
+		return controller;
+	}
+
+	
+
+	public int getId() {
+		return id;
+	}
+
+	
+	public static int getCurrentid() {
+		return currentid;
+	}
+
+	
+	protected void setRoutingTable(HashMap<BuildbackboneTopology, ArrayList<RoutingEntry>> routingTable) {
+		this.routingTable = routingTable;
+	}
+	
+	protected void addRoutingEntry(BuildbackboneTopology key, ArrayList<RoutingEntry> arrayList){
+		routingTable.put(key, arrayList);
+	}
+
+	@Override
+	public PhysicalGraphNode getNode() {
+		return this.controller;
+	}
+
+
+	
+}

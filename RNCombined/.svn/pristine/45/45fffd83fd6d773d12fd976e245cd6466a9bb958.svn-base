@@ -1,0 +1,328 @@
+package projects.reactiveSpanner;
+
+import java.io.IOException;
+import java.nio.file.OpenOption;
+import java.nio.file.StandardOpenOption;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+
+import projects.reactiveSpanner.FloydWarshall.FloydWarshall;
+import projects.reactiveSpanner.nodes.messageHandlers.SubgraphStrategy;
+import projects.reactiveSpanner.nodes.messageHandlers.Barriere.BarriereMessageHandler;
+import projects.reactiveSpanner.nodes.nodeImplementations.PhysicalGraphNode;
+import projects.reactiveSpanner.record.MessageRecord;
+import sinalgo.configuration.Configuration;
+import sinalgo.configuration.CorruptConfigurationEntryException;
+import sinalgo.nodes.Node;
+import sinalgo.tools.Tools;
+import sinalgo.tools.logging.LogL;
+import sinalgo.tools.logging.Logging;
+import sinalgo.tools.statistics.Distribution;
+
+/**
+ * CustomGlobal class for batch mode.
+ * This is a singleton class.
+ * 
+ * @author Mavs
+ */
+public class CustomGlobalBatch
+{
+	private static Logging logger = Logging.getLogger();
+	
+	private static double R = -1;
+	private static double rMin = -1;
+	private static double rMax = -1;
+	private static String activeAlgorithms = null; 
+	private static double connectionProbability=0.0;
+	static {
+		try {
+			activeAlgorithms = Configuration.getStringParameter("BatchMode/ActiveAlgorithms");
+			R = Configuration.getDoubleParameter("UDG/rMax");
+			rMin = Configuration.getDoubleParameter("QUDG/rMin");
+			rMax = Configuration.getDoubleParameter("QUDG/rMax");
+			connectionProbability = Configuration.getDoubleParameter("QUDG/connectionProbability");
+			
+		} catch (CorruptConfigurationEntryException e) {
+			e.getMessage();
+			e.printStackTrace();
+		}
+	}
+	
+	private static CustomGlobalBatch instance = null;
+	public static CustomGlobalBatch getInstance() {
+		if(instance == null) {
+			logger.logln(LogL.INFO, "Create CustomGlobalBatch");
+			instance = new CustomGlobalBatch();
+		}
+		return instance;
+	}
+	
+	/** 
+	 * Private constructor - this is a singleton implementation
+	 */
+	private CustomGlobalBatch()
+	{
+		
+	}
+
+	// for recording:
+	private static int nodeDensity;
+	private static PhysicalGraphNode forwarder;
+	private static Set<Node> neighborsGG;
+	private static Set<Node> neighborsReactivePDT;
+	private static SubgraphStrategy BFP;
+	private static SubgraphStrategy reactivePDT;
+	private static SubgraphStrategy barriere;
+	private static SubgraphStrategy barriereExt;
+	
+	private static double PDTSpan = -1;
+	private static double GGSpan = -1;
+	
+	public boolean hasTerminated()
+	{
+		return false;
+	}
+	
+	public void preRun()
+	{
+		assert(R > 0);
+		// int A = Configuration.dimX * Configuration.dimY;
+		int numNodes = Tools.getNodeList().size();
+		// int numNodes = (int) (density * A / R*R*Math.PI);
+		nodeDensity = (int) Math.round((Math.PI * R * R / (Configuration.dimX * Configuration.dimY)) * numNodes);
+		//nodeDensity = (int) Math.round(numNodes / Configuration.dimX*Configuration.dimY * (Math.PI*rMin*rMin + (connectionProbability*(Math.PI*rMax*rMax-Math.PI*rMin*rMin))));
+		logger.logln(LogL.INFO, "Examine connectiviy of graph with " + numNodes + " nodes...");
+		try {
+			Utilities.satisfyGraphConditions();
+		} catch (CorruptConfigurationEntryException e) {
+			e.printStackTrace();
+		}
+
+		//forwarder = Utilities.getRandomNodeWithinGraphBorders(PhysicalGraphNode.class, Tools.getNodeList());
+		
+		//neighborsGG = forwarder.neighborGG();
+		//neighborsReactivePDT = forwarder.neighborPDT();
+		//BFP = forwarder.startBFP();
+		//reactivePDT = forwarder.startReactivePDT();
+
+		//barriere = forwarder.startBarriere();
+		//barriereExt = forwarder.startBarriereExt();
+		
+		//quick solution, no beauty here
+		GGSpan = Algorithms.GGSpan();
+		PDTSpan = Algorithms.PDTSpan();
+	}
+
+	public void postRound()
+	{
+		//if (BFP.hasTerminated() && reactivePDT.hasTerminated()) {
+			//Tools.exit();
+		//}
+
+		//if (barriere.hasTerminated() && barriereExt.hasTerminated()) {
+			//Tools.exit();
+		//}
+		
+		Tools.exit();
+	}
+	
+	public void onExit()
+	{
+		//write_BFP_reactivePDT_Record(nodeDensity, Tools.getNodeList().size(), forwarder.getConnectedNodes().size(), neighborsGG.size(), neighborsReactivePDT.size(), forwarder.getMessageHandler(BFP.getTopologyControlID()).getCurrentMessageRecord(), forwarder.getMessageHandler(reactivePDT.getTopologyControlID()).getCurrentMessageRecord());
+
+		int numNodes = Tools.getNodeList().size();
+		//UUID barriereID = barriere.getTopologyControlID();
+		//UUID barriereExtID = barriereExt.getTopologyControlID();
+		//FloydWarshall physicalGraph = new FloydWarshall(Algorithms.getAdjMatrixEdgeWeightedDigraphBarrierePhysicalGraph(barriereID));
+		
+		//double spanningRatioVirtual = Algorithms.spanningRatio(physicalGraph, new FloydWarshall(Algorithms.getAdjMatrixEdgeWeightedDigraphBarriereSubgraphActualVirtual(barriereID)), numNodes);
+		//double spanningRatioShortest = Algorithms.spanningRatio(physicalGraph, new FloydWarshall(Algorithms.getAdjMatrixEdgeWeightedDigraphBarriereSubgraphShortestVirtual(barriereID, physicalGraph)), numNodes);
+		//double spanningRatioVirtualExt = Algorithms.spanningRatio(physicalGraph, new FloydWarshall(Algorithms.getAdjMatrixEdgeWeightedDigraphBarriereSubgraphActualVirtual(barriereExtID)), numNodes);
+		//double spanningRatioShortestExt = Algorithms.spanningRatio(physicalGraph, new FloydWarshall(Algorithms.getAdjMatrixEdgeWeightedDigraphBarriereSubgraphShortestVirtual(barriereExtID, physicalGraph)), numNodes);
+		
+		//MessageRecord barriereRecord = forwarder.getMessageHandler(barriereID).getCurrentMessageRecord();
+		//MessageRecord barriereExtRecord = forwarder.getMessageHandler(barriereExtID).getCurrentMessageRecord();
+		
+		//boolean isSymetric = this.checkBarriereSymetry(barriereID);
+		//boolean isSymetricExt = this.checkBarriereSymetry(barriereExtID);
+		
+		//long seeed = Distribution.getSeed();
+		
+		//int barriereMaxHop = getMaxHopBarriere(barriereID);
+		//int barriereExtMaxHop = getMaxHopBarriere(barriereExtID);
+		
+		//write_barriere_minimal_Record(nodeDensity, barriereMaxHop, barriereExtMaxHop);
+		
+		write_GG_PDT_Record(nodeDensity, numNodes, GGSpan, PDTSpan);
+	}
+	
+	public static void write_barriere_minimal_Record(int density, int barriereMaxHop, int barriereExtMaxHop){
+		logger.logln(LogL.INFO, "Writing message to record file...");
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		Date date = new Date();
+
+		final char valSep = ' ';
+		final String fileExtension = "dat";
+
+		StringBuffer line = new StringBuffer();
+		line.append(density);
+		line.append(valSep);
+		line.append(barriereMaxHop);
+		line.append(valSep);
+		line.append(barriereExtMaxHop);
+		
+		String filePathString = dateFormat.format(date) + "-record" + '.' + fileExtension;
+		OpenOption[] openOptions = new OpenOption[] { StandardOpenOption.CREATE, StandardOpenOption.APPEND };
+		List<String> lines = new ArrayList<String>();
+		lines.add(line.toString());
+
+		try {
+			Utilities.writeToFile(filePathString, lines, openOptions);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		logger.logln(LogL.INFO, "Saved message successfully to file " + filePathString);
+	}
+	
+	public static void write_barriere_Record(int density, int numNodes, double spanningRatioVirtual, double spanningRatioShortest, double spanningRatioVirtualExt, double spanningRatioShortestExt, MessageRecord barriereRecord, MessageRecord barriereExtRecord, boolean isSymetric, boolean isSymetricExt, long seeed) {
+		logger.logln(LogL.INFO, "Writing message record to file...");
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		Date date = new Date();
+
+		final char valSep = ' ';
+		final String fileExtension = "dat";
+
+		StringBuffer line = new StringBuffer();
+		line.append(density);
+		line.append(valSep);
+		line.append(numNodes);
+		line.append(valSep);
+		line.append(spanningRatioVirtual);
+		line.append(valSep);
+		line.append(spanningRatioShortest);
+		line.append(valSep);
+		line.append(spanningRatioVirtualExt);
+		line.append(valSep);
+		line.append(spanningRatioShortestExt);
+		line.append(valSep);
+		line.append(barriereRecord.toRecord(valSep));
+		line.append(valSep);
+		line.append(barriereExtRecord.toRecord(valSep));
+		line.append(valSep);
+		line.append(isSymetric);
+		line.append(valSep);
+		line.append(isSymetricExt);
+		line.append(valSep);
+		line.append(seeed);
+
+		String filePathString = dateFormat.format(date) + "-record" + '.' + fileExtension;
+		OpenOption[] openOptions = new OpenOption[] { StandardOpenOption.CREATE, StandardOpenOption.APPEND };
+		List<String> lines = new ArrayList<String>();
+		lines.add(line.toString());
+
+		try {
+			Utilities.writeToFile(filePathString, lines, openOptions);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		logger.logln(LogL.INFO, "Saved message successfully to file " + filePathString);
+	}
+	
+	public static void write_GG_PDT_Record(final int density, final int numNodes, double GGSpan, double PDTSpan){
+		logger.logln(LogL.INFO, "Writing message record to file...");
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		Date date = new Date();
+
+		final char valSep = ' ';
+		final String fileExtension = "dat";
+
+		StringBuffer line = new StringBuffer();
+		line.append(density);
+		line.append(valSep);
+		line.append(numNodes);
+		line.append(valSep);
+		line.append(GGSpan);
+		line.append(valSep);
+		line.append(PDTSpan);
+
+		String filePathString = dateFormat.format(date) + "-record" + '.' + fileExtension;
+		OpenOption[] openOptions = new OpenOption[] { StandardOpenOption.CREATE, StandardOpenOption.APPEND };
+		List<String> lines = new ArrayList<String>();
+		lines.add(line.toString());
+
+		try {
+			Utilities.writeToFile(filePathString, lines, openOptions);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		logger.logln(LogL.INFO, "Saved message successfully to file " + filePathString);
+	}
+
+	public static void write_BFP_reactivePDT_Record(final int density, final int numNodes, final int numUDGneighbors, 
+			final int numGGneighbors, final int numPDTneighbors, 
+			final MessageRecord bfpMsgRec, final MessageRecord rPDTMsgRec) {
+		logger.logln(LogL.INFO, "Writing message record to file...");
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		Date date = new Date();
+
+		final char valSep = ',';
+		final String fileExtension = "csv";
+
+		StringBuffer line = new StringBuffer();
+		line.append(density);
+		line.append(valSep);
+		line.append(numNodes);
+		line.append(valSep);
+		line.append(numUDGneighbors);
+		line.append(valSep);
+		line.append(numGGneighbors);
+		line.append(valSep);
+		line.append(numPDTneighbors);
+		line.append(valSep);
+		line.append(bfpMsgRec.toRecord(valSep));
+		line.append(valSep);
+		line.append(rPDTMsgRec.toRecord(valSep));
+		line.append(valSep);
+		line.append((new Long(Distribution.getSeed()).toString()));
+		line.append(valSep);
+		line.append(forwarder.toString());
+
+		String filePathString = dateFormat.format(date) + "-record" + '.' + fileExtension;
+		OpenOption[] openOptions = new OpenOption[] { StandardOpenOption.CREATE, StandardOpenOption.APPEND };
+		List<String> lines = new ArrayList<String>();
+		lines.add(line.toString());
+
+		try {
+			Utilities.writeToFile(filePathString, lines, openOptions);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		logger.logln(LogL.INFO, "Saved message successfully to file " + filePathString);
+	}
+	
+	public int getMaxHopBarriere(UUID tcID){
+		int maxHops = 0;
+		
+		try {
+			for (PhysicalGraphNode p : Utilities.getNodeCollectionByClass(PhysicalGraphNode.class)) {
+				// unsafe cast --> try catch
+				BarriereMessageHandler bmh = (BarriereMessageHandler) p.getMessageHandler(tcID);
+				
+				int currentHop = bmh.getMaxHop();
+				
+				if(currentHop>maxHops)
+					maxHops=currentHop;
+			}
+		} catch (Exception e) {
+			System.out.println("No barriere message handler last!");
+		}
+		
+		return maxHops;
+	}
+}

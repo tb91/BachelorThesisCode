@@ -1,0 +1,153 @@
+La licencia SLUC
+
+LICENCIA SLUC DE SOFTWARE LIBRE PARA USO CIVIL
+(C) Alejandro Bonet - Babel Informatica SL 2006
+
+Introducción
+
+Este documento especifica los derechos, libertades y normas que regulan el uso, distribución y modificación del programa objeto de esta licencia. En adelante nos referiremos como "este programa" o "este software" a todo el conjunto de software objeto de esta licencia, ya sea un programa único, o un conjunto de ellos. Nos referiremos como "código fuente" a la forma preferida del programa para realizar modificaciones en él.
+
+Esta licencia SLUC (Software Libre para Uso Civil) incluye las normas y derechos necesarios para impedir el uso militar del programa, asi como garantizar la libertad y el derecho de uso civil del mismo. También incluye normas para garantizar la libertad de distribución y modificación del mismo, y garantizar tambien que nadie pueda patentar ninguna de las posibles innovaciones que incluya el programa, o cualquiera de sus partes, así como asegurar que los programas derivados de este programa conlleven las mismas libertades, derechos y normas de uso que este programa. Por último incluye una claúsula de no responsabilidad del autor, en cuanto a garantía de funcionamiento, ni de idoneidad para usos concretos.
+
+Esta licencia SLUC está fuertemente basada en las ideas y normas de uso existentes en la conocida licencia GPL de la Free Software Foundation de la que es un derivado, con la diferencia principal de que impide el uso militar.
+
+La mera posesión de una copia de este programa, en cualquiera de sus formatos (como código fuente o como ejecutable binario) conlleva la aceptación de las normas y la libertad de disfrute de los derechos especificados en esta licencia.
+
+
+Acerca del uso de esta licencia
+
+Esta licencia es vinculante y el mero hecho de disponer de una copia de este programa implica la aceptación de las condiciones de esta licencia por parte de usuarios, modificadores o distribuidores.
+
+Esta licencia se somete al arbitrio y buen juicio de los tribunales de justicia civil de todos los paises del mundo, de los cuales espera el apoyo legal y justo imprescindible para proteger el espíritu original de la misma.
+
+Esta licencia no reconoce a ningún tribunal militar. Tampoco admite como legalmente válida ninguna sentencia de ningún tribunal militar.
+
+Toda copia del programa objeto de esta licencia debe adjuntar copia integra y literal de esta licencia.
+
+Esta licencia puede ser usada por cualquier persona o institución para regular y garantizar el derecho de uso, distribución y modificación de cualquier programa a la que se aplique, pero esta licencia en si misma no puede ser modificada.
+
+Esta licencia está escrita en idioma español y puede ser traducida a cualquier idioma, sin embargo, en caso de duda o controversia, la versión original en idioma español prevalecerá sobre cualquier otra.
+
+El titular del copyright de esta licencia, garantiza que ninguna limitación regulada por esta licencia será ampliada en el futuro. Las únicas posibles modificaciones de esta licencia en el futuro irán en la dirección de ampliar derechos y libertades, no limitaciones.
+
+La intención del autor de esta licencia, debe quedar bien claro, es impedir el uso militar del programa objeto de la licencia, a la vez que garantizar el derecho y libertad de uso civil, copia y modificación del mismo.
+
+Cualquier duda, comentario o aclaración sobre esta licencia SLUC debe dirigirse a la pagina web oficial de la misma:
+
+http://www.sluc.info
+
+o bien al correo electrónico:
+
+info@sluc.info
+
+Estas direcciones también pueden usarse para notificar la sospecha de cualquier uso fraudulento de cualquier software SLUC, que infrinja alguna de las normas de esta licencia.
+
+
+Solo para uso civil
+
+Este programa está diseñado para su uso exclusivamente civil. Se prohibe explicitamente su uso militar sin el permiso escrito del titular del copyright del programa. Entendemos por "uso militar" dos posibles casos:
+
+A.- El uso por parte de personal militar, tanto a titulo profesional como particular, entendiendo por "personal militar" a toda aquella persona que se encuentre sometida voluntariamente a algún tipo de legislación militar y,
+
+B.- El uso o integración en la fabricación de cualquier tipo de armamento ofensivo, entendiendo por tal el uso que permita dicha fabricación por parte de personal de empresas o instituciones cuya composición accionarial tenga más de un 51% de instituciones regidas por legislación militar, o que en la composición de su cartera de clientes tenga más de un 51% de clientes regidos por legislación militar. Se entiende por armamento ofensivo aquel que esté diseñado no para la defensa sino para el ataque contra un hipotético enemigo.
+
+Puesto que esta definición de uso militar aunque bastante precisa, puede dar lugar a multiples interpretaciones, el titular del copyright se reserva el derecho de deshacer, en cada caso concreto, las dudas que pudieran surgir. En este sentido se recomienda en caso de duda leer el documento de preguntas y respuestas sobre la licencia SLUC, que puede ser encontrado en la página web oficial indicada anteriormente.
+
+
+Derecho y libertad de uso para cualquier fin civil
+
+Esta licencia SLUC garantiza el derecho y la libertad para usar el programa para cualquier fin, exceptuando por supuesto, el uso militar indicado y definido en el apartado anterior, y garantizando también que el derecho de uso por parte de un usuario, no va a limitar de ninguna forma al derecho o libertad de uso por parte de otros usuarios.
+
+Queda prohibido por tanto, cualquier uso de este software que implique cualquier limitación de los derechos y libertades de otros usuarios, recogidos en esta licencia.
+
+Entendemos por "libertad de uso" el derecho a decidir libremente si se usa este programa o no, y por "derecho de uso" al derecho inalienable a usarlo si libremente se ha decidido hacerlo.
+
+Por tanto, nadie puede impedir a nadie usar este software para fines civiles, si su uso no limita la libertad o el derecho de otros a usarlo. En este sentido, la limitación de uso de este programa por medio de contraseñas, debe estar justificada en el sentido de proteger datos privados. La contraseña por tanto no impedirá el uso del software en si mismo, sino el acceso a datos de caracter privado a través de este software.
+
+Por último, y en consonancia con la libertad y derecho de uso, y aunque no sea este el espíritu para el que fué creado, ni parezca muy necesario decirlo, este programa podría usarse para cometer actos delictivos, siendo el único responsable de dichos delitos el usuario, y en ningún caso el autor del software o el propietario del copyright.
+
+
+Derecho y libertad de copia
+
+Esta licencia SLUC garantiza el derecho y la libertad para copiar el programa, para cualquier fin civil, por parte de cualquier persona o institución, con la unica condición de que cada copia del mismo, o de cualquiera de sus partes incluya una copia completa y literal de esta licencia SLUC, así como una copia del código fuente del mismo en caso de que sea una copia modificada.
+
+En particular, y aunque sea redundante garantiza el derecho y la libertad de hacer copias para su comercialización, por supuesto respetando el derecho y libertad de los compradores de poder copiar a su vez el programa, y disfrutar de todos los derechos y libertades especificados en esta licencia, asi como respetar la clausula de solo uso civil.
+
+También hay que aclarar que la limitación de uso militar, no impide la distribución por parte de personal militar, o la modificación por parte de personal militar. Solo impide que las modificaciones y copias hechas por militares sean usadas por militares, pero no por civiles.
+
+
+Derecho y libertad de modificación y distribución de las modificaciones y derivados
+
+Esta licencia SLUC garantiza el derecho y la libertad de modificación de este programa, de forma tal que las variantes modificadas del mismo respeten las normas, derechos y libertades especificadas en esta licencia.
+
+En particular, y aunque sea redundante, esta licencia SLUC garantiza la libertad para copiar y distribuir las copias modificadas, incluso comerciar con ellas, siempre que respeten los términos de esta licencia SLUC.
+
+Entendemos que comerciar con ellas, en principio puede significar vender una copia a cualquier precio, pero recomendamos que el precio de una copia no sea muy elevado y se contemple como "precio del soporte y/o transporte", y no como "precio del programa en si", pues se podría incurrir en el delito de "maquinaciones para alterar el precio de las cosas" (dado que hay libertad para difundir copias gratuitas), delito que existe en muchas legislaciones del mundo.
+
+Este derecho y libertad de modificar el programa, incluye por supuesto, la obligación del titular del copyright de entregar copia del código fuente a cualquiera que lo solicite, a cambio o no de una remuneración económica.
+
+
+Garantizar los mismos derechos, libertades y términos de uso para terceros
+
+Esta licencia SLUC otorga una serie de libertades de uso a los usuarios y/o modificadores del programa. Pero ninguna de estas libertades y derechos debe ser usada por nadie, con el fin de limitar las libertades y derechos de otros para usar el programa de forma civil.
+
+En este sentido, conviene aclarar que ninguna copia, modificada o no de este programa SLUC, puede dejar de llevar incluida la licencia SLUC y respetar cada uno de sus terminos.
+
+En particular, no se puede coger este u otro programa SLUC y crear un programa derivado privativo que ponga limites al derecho y libertad de uso civil, o de copia o de modificación, o que pueda ser usado para fines militares.
+
+
+Libre de patentes
+
+El autor de este programa y el titular del copyright del mismo, sean o no la misma persona, afirman que este programa fue escrito en un territorio y en un tiempo libres de patentes de software. Por tanto, el programa en si no puede ser declarado ilegal por ninguna legislación de "propiedad intelectual".
+
+En determinados paises el uso del mismo puede constituir una violación de alguna patente, pero no su copia o modificación. Solo el uso sería ilegal en dichos paises. La limitación de su distribución o su modificación incurriría en el delito de persecución o limitación de la libertad de expresión. Y esto no tiene nada que ver con ningúna legislación de patentes.
+
+Por tanto, su uso puede estar prohibido en algunos paises, pero no su distribución o modificación, ya que esto iría en contra de la libertad de expresión, que está recogida en la Declaración Universal de los Derechos Humanos, firmada por todos los paises del mundo, como una libertad básica y fundamental.
+
+En cualquier caso, el autor y el titular del copyright prohiben en terminos absolutos cualquier intento de patentar cualquiera de las ideas, procedimientos, invenciones o formatos que formen parte de este programa, por parte de cualquier persona o institución en cualquier pais del mundo.
+
+Este programa, por tanto y para resumir, no es patentable. Tampoco ninguna de sus partes.
+
+
+Ninguna garantia por parte del autor o el titular del copyright
+
+Este programa se entrega tal cual es sin ninguna garantia de funcionamiento, ni de idoneidad para usos concretos por parte del autor y/o el titular del copyright.
+
+Los distribuidores comerciales de este programa pueden ofrecer soporte técnico o garantías, que en ningún caso obliguen ni al autor ni al titular del copyright, sean o no la misma persona o institución.
+
+
+Invocación y enlazado dinámico desde otros programas no SLUC: Separabilidad y posibilidad de denegación.
+
+Esta licencia SLUC garantiza que este programa puede ser invocado por otros programas, siempre que sea para uso civil. Así mismo puede ser enlazado dinamicamente en tiempo de ejecución (dynamic link) como parte de otros programas, siempre que el uso sea civil y se incluya copia de la licencia SLUC y del código fuente de este programa o sus derivados, asi como una lista completa de los archivos separables a los que protege la licencia SLUC.
+
+El titular del Copyright de este programa se reserva el derecho de negar esta posibilidad de invocación o enlazado dinámico (en tiempo de ejecución) con otros programas si considera que dicho uso, entra en contradicción con el espíritu de la licencia SLUC. Para ello notificará fehacientemente tal decisión al autor o titular del programa enlazador o invocador, que deberá eliminar de su paquete los archivos separables que forman el programa SLUC regulado por esta licencia.
+
+En este sentido, la licencia SLUC es más abierta que la original licencia GPL en la que se basa: Permite que programas privativos enlacen o invoquen a programas SLUC, siempre que el uso final sea civil, y a no ser que diga lo contrario el titular del copyright en casos concretos. Lo que no permite es copiar el código fuente o partes de él y pegarlo como parte de un programa derivado privativo ni siquiera para uso civil, ni tampoco enlazar en tiempo de compilación (static link) este programa con ningún otro programa que no se atenga completamente a esta licencia SLUC.
+
+Se podría hablar de que, en su relación con otros programas privativos, la licencia SLUC se comporta como una licencia Lesser GPL de la Free Software Foundation.
+
+Así pues un programa no SLUC puede incluir una copia de este software e invocarla o enlazarse en tiempo de ejecución con ella sin pedir permiso al autor, pero no pueden mezclarse en tiempo de compilación, ni a nivel de código fuente. Dicho software privativo además, debe hacer mención expresa de que contiene a este programa, e incluir el texto completo de esta licencia SLUC que será aplicable a este programa, así como la totalidad del código fuente de este y la lista de archivos separables a los que se aplica esta licencia SLUC.
+
+La copia de este programa o cualquier derivado de este programa que se incluya en una distribución de software privativo, por tanto debe ser facilmente separable del resto del programa privativo como un conjunto independiente de archivos facilmente identificables.
+
+Cualquier duda respecto de este punto debe ser resuelta por el titular del copyright, o bien demostrar fehacientemente que se adapta al espíritu de esta licencia: Software Libre para uso no militar.
+
+
+Uso como servicio en redes telemáticas
+
+El uso de este programa en redes telemáticas también esta sujeto al uso civil.
+
+Se puede usar este programa como parte de un servicio telemático, pero dicho servicio telemático debe avisar claramente a sus usuarios de que parte del servicio está regido por esta licencia SLUC, y por tanto sus usuarios no pueden ser militares o pertenecientes a la industria de armamento ofensivo.
+
+Así mismo el servicio telemático en cuestión, debe garantizar que sus usuarios tendrán acceso a una copia integra del código fuente y de esta licencia SLUC, e informarles de que el uso del propio servicio telemático, en las partes de este que usen el programa SLUC, está regido por esta licencia SLUC.
+
+
+Usos difusos y confusos y "uso honrado".
+
+Es importante recalcar una vez más, que esta licencia pretende impedir el uso militar del programa, así como garantizar el derecho y libertad de su uso civil, así como el derecho y libertad de modificación y distribución libre del programa.
+
+En este sentido, cualquier duda, confusión, situación fronteriza o interpretación difusa debe someterse a este espíritu. Cualquer uso confuso que pueda crear dudas sobre si es uso militar (en cuanto a su definición en el párrafo inicial) o no, debe contar, bien con el permiso por escrito del titular del copyright, bien de su clara distinción como uso honrado y respetuoso de este espíritu, por parte de cuantas más personas o instituciones mejor. En último extremo los tribunales civiles, y no militares, serán los que decidan sobre cada caso concreto.
+
+El complemento perfecto a esta licencia, por tanto, es el documento de preguntas y respuestas de la licencia SLUC, que incluye casos y situaciones límite concretas que sirven para aclarar los conceptos involucrados, y puede consultarse en la página web oficial de la licencia SLUC:
+
+http://www.sluc.info 

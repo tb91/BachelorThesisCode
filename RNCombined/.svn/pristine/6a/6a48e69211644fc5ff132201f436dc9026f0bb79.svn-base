@@ -1,0 +1,26 @@
+package projects.reactiveSpanner.nodes.timers.BCA;
+
+import projects.reactiveSpanner.nodes.messageHandlers.BCA.BCAMessageHandler;
+import sinalgo.nodes.timers.Timer;
+
+public class FirstRequestPhaseDoneTimer extends Timer {
+	
+	BCAMessageHandler msgHandler;
+	
+	boolean enabled = true;
+	
+	public FirstRequestPhaseDoneTimer(BCAMessageHandler msgHandler){
+		this.msgHandler = msgHandler;
+	}
+
+	@Override
+	public void fire() {
+		if (enabled) {
+			msgHandler.firstRequestPhaseDone();
+		}
+	}
+	
+	public void disable() {
+		enabled = false;
+	}
+}

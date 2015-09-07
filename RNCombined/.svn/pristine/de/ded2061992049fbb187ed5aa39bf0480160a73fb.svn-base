@@ -1,0 +1,18 @@
+package projects.reactiveSpanner.nodes.messageHandlers.buildBackbone;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Set;
+
+import projects.reactiveSpanner.nodes.nodeImplementations.PhysicalGraphNode;
+
+import sinalgo.nodes.Node;
+
+public interface BuildbackboneTopology {
+
+	public HashMap<BuildbackboneTopology, ArrayList<Node>> getRoutingTable();
+	
+	public PhysicalGraphNode getNode();
+	
+	public HashMap<Integer, PhysicalGraphNode> getCollectedNodes();
+}

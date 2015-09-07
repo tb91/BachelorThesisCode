@@ -1,0 +1,487 @@
+package projects.reactiveSpanner.nodes.messageHandlers.buildBackbone;
+
+import java.awt.Color;
+import java.awt.Graphics;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
+import com.sun.accessibility.internal.resources.accessibility;
+import com.sun.org.apache.xalan.internal.xsltc.compiler.util.TestGenerator;
+
+import projects.defaultProject.nodes.timers.MessageTimer;
+import projects.reactiveSpanner.Dijkstra;
+import projects.reactiveSpanner.nodes.edges.DistEdge;
+import projects.reactiveSpanner.nodes.messageHandlers.SubgraphStrategy.EStrategy;
+import projects.reactiveSpanner.nodes.messageHandlers.BeaconMessageHandler;
+import projects.reactiveSpanner.nodes.messages.AbstractMessage;
+import projects.reactiveSpanner.nodes.messages.BeaconRequestMessage;
+import projects.reactiveSpanner.nodes.messages.NewBeaconReplyMessage;
+import projects.reactiveSpanner.nodes.nodeImplementations.PhysicalGraphNode;
+import projects.reactiveSpanner.nodes.nodeImplementations.SimpleNode;
+import projects.reactiveSpanner.nodes.timers.BeaconTimer;
+import projects.reactiveSpanner.record.MessageRecord;
+import sinalgo.gui.transformation.PositionTransformation;
+import sinalgo.nodes.Node;
+import sinalgo.nodes.Position;
+import sinalgo.nodes.edges.Edge;
+import sinalgo.tools.logging.LogL;
+
+/**
+ * @author Timmy
+ * 
+ */
+public class CreateVirtualsMessageHandler extends BeaconMessageHandler<PhysicalGraphNode> implements BuildbackboneTopology {
+
+	public static enum Phase {
+		BROADCAST1, BROADCAST2, CREATEVIRTUALS, ADDROUTING, FINISHED;
+	}
+
+	Phase currentphase;
+
+	/**
+	 * stores all nodes from the 3 hop beaconing
+	 */
+	private HashMap<Integer, PhysicalGraphNode> collectedNodes = new HashMap<Integer, PhysicalGraphNode>();
+
+	/**
+	 * the virtualNodes this node is the controller of
+	 */
+	private HashMap<Integer, VirtualNode> myVirtuals = new HashMap<Integer, VirtualNode>();
+
+	/**
+	 * the virtualNodes this node knows of but is not the controller
+	 */
+	private HashMap<Integer, VirtualNode> ghostvirtuals = new HashMap<Integer, VirtualNode>();
+
+	private HashMap<BuildbackboneTopology, ArrayList<Node>> routingTable = new HashMap<BuildbackboneTopology, ArrayList<Node>>();
+
+	protected CreateVirtualsMessageHandler(UUID tcID, PhysicalGraphNode ownerNode, PhysicalGraphNode sourceNode, EStrategy strategy, Set<PhysicalGraphNode> consideredNeighbors) {
+		super(tcID, ownerNode, sourceNode, strategy);
+		for (PhysicalGraphNode p : consideredNeighbors) {
+			knownNeighbors.add(p); // virtual Nodes will be created on intersection points created by these edges (this->p)
+		}
+	}
+
+	public boolean drawConnections = false;
+
+	public void start() {
+		currentphase = Phase.BROADCAST1;
+		new BeaconTimer(this, 1);
+		new BeaconTimer(this, 5);
+		new BeaconTimer(this, 9);
+		new BeaconTimer(this, 10);
+
+	}
+
+	@Override
+	public void receivedBeaconRequestMessage(BeaconRequestMessage brm2) {
+
+	}
+
+	public void receivedNewBeaconReplyMessage(NewBeaconReplyMessage brm2) {
+		for (Integer i : brm2.nodes.keySet()) {
+			PhysicalGraphNode p = brm2.nodes.get(i);
+
+			if (p != this.node) {
+
+				collectedNodes.put(i, p);
+			}
+
+		}
+	}
+
+	@Override
+	public void beaconTimerFire() {
+		nextPhase();
+	}
+
+	private void nextPhase() {
+		if (collectedNodes.isEmpty()) {
+			for (Edge e : this.node.outgoingConnections) { // outgoing connections must be used, because this node wants to know all of its 3-neighborhood
+				collectedNodes.put(e.endNode.ID, ((PhysicalGraphNode) e.endNode));
+
+			}
+		}
+		switch (currentphase) {
+		case BROADCAST1:
+			broadcastCollectedNodes();
+			currentphase = Phase.BROADCAST2;
+			break;
+		case BROADCAST2:
+			broadcastCollectedNodes();
+			currentphase = Phase.CREATEVIRTUALS;
+			break;
+		case CREATEVIRTUALS:
+			calculateVirtuals();
+			currentphase = Phase.ADDROUTING;
+			break;
+		case ADDROUTING:
+			addRouting();
+			currentphase=Phase.FINISHED;
+			break;
+		case FINISHED:
+			break;
+		default:
+			throw new RuntimeException("You probably forgot to change the phases from CreateVirtuals");// cannot happen
+
+		}
+
+	}
+
+	private void addRouting() {
+		for (VirtualNode virtual : myVirtuals.values()) {
+			addRoutingFromVirtualNode(virtual);
+		}
+
+	}
+
+	private void addRoutingFromVirtualNode(VirtualNode virtual) {
+
+		ArrayList<VirtualNode> nodesOnSameEdge = new ArrayList<VirtualNode>();
+
+		for (VirtualNode vnode : myVirtuals.values()) {
+			if (sameFirstEdge(virtual, vnode) && !virtual.equals(vnode)) {
+				nodesOnSameEdge.add(vnode);
+			}
+		}
+
+		for (VirtualNode vnode : ghostvirtuals.values()) {
+			if (sameFirstEdge(virtual, vnode) && !virtual.equals(vnode)) {
+				nodesOnSameEdge.add(vnode);
+			}
+		}
+
+		if (!nodesOnSameEdge.isEmpty()) {
+			// ------get left and right neighbors---------
+			VirtualNode minDist = nodesOnSameEdge.get(0);
+			VirtualNode secMinDist = nodesOnSameEdge.get(0);
+			for (VirtualNode vnode : nodesOnSameEdge) {
+				// search the 2 nearest virtual nodes on this edge
+				if (vnode.getPosition().squareDistanceTo(virtual.getPosition()) < minDist.getPosition().squareDistanceTo(virtual.getPosition())) {
+					secMinDist = minDist;
+					minDist = vnode;
+				}
+			}
+
+			if (secMinDist.equals(minDist)) {// if there are 2 virtual nodes
+				virtual.addRoutingEntry(minDist, Dijkstra.dijkstra(this.collectedNodes, virtual.getController(), minDist.getController()));
+//				if(virtual.getController().getPosition().squareDistanceTo(pos))
+				
+			} else {// if there are at least 3 virtual nodes on the same edge   X--|--X
+				if (!this.node.equals(virtual.getController())) {
+					throw new RuntimeException("Change this collectedNodes to virtual.getcontroller. ... .getcollectedNodes");
+				}
+				virtual.addRoutingEntry(minDist, Dijkstra.dijkstra(this.collectedNodes, virtual.getController(), minDist.getController()));
+				virtual.addRoutingEntry(secMinDist, Dijkstra.dijkstra(this.collectedNodes, virtual.getController(), secMinDist.getController()));
+
+			}
+		} else {
+			// if there are not more than 1 virtual node on this edge
+			// need to implement
+		}
+		System.out.println("Virtual mit id:" + virtual.getId());
+		System.out.println(virtual.getRoutingTable());
+	}
+
+	/**
+	 * @param v1
+	 * @param v2
+	 * @return not necessary any more
+	 */
+	private ArrayList<BuildbackboneTopology> findpathFromControllerToController(VirtualNode v1, VirtualNode v2) {
+		ArrayList<BuildbackboneTopology> routing = new ArrayList<BuildbackboneTopology>();
+
+		//for simplicity I assume v1.startnode1 to be the controller of v1
+		if (v2.getController().equals(v2.getStartnode1()) || v2.getController().equals(v2.getEndnode1())) {
+			routing = addRoutingToVirtual(v2.getStartnode1(), v2.getEndnode1(), v2.getStartnode2(), v2.getEndnode2());
+
+		}
+		System.out.println(routing);
+		return routing;
+
+		/*
+		 * if(v1.getController().equals(v2.getController())){ BuildbackboneTopology bbt=(BuildbackboneTopology) v1.getController().getMessageHandler(this.tcID); //TODO: ask mavs how to avoid casting routing.add(bbt); }else if()
+		 */
+
+	}
+
+	private boolean sameFirstEdge(VirtualNode v1, VirtualNode v2) {
+		if (v1.getStartnode1().equals(v2.getStartnode1()) && v1.getEndnode1().equals(v2.getEndnode1())) {
+			return true;
+		}
+		return false;
+	}
+
+	private boolean checkIfEdgeAdded(HashSet<DistEdge> set, DistEdge current) {
+		for (DistEdge de : set) {
+			if (de.startNode.equals(current.startNode) && de.endNode.equals(current.endNode) || de.startNode.equals(current.endNode) && de.endNode.equals(current.startNode)) {
+				return true;
+
+			}
+		}
+		return false;
+
+	}
+
+	private void calculateVirtuals() {
+
+		HashSet<DistEdge> checkingEdges = new HashSet<DistEdge>();
+		for (PhysicalGraphNode p : collectedNodes.values()) {
+
+			for (Node n : p.getMessageHandler(this.tcID).getKnownNeighbors()) { //<<-check: may not work since requestsubgraph does not work properly
+				//for (Node n : ((CreateVirtualsMessageHandler) p.getMessageHandler(tcID)).knownNeighbors) {
+				if (n instanceof PhysicalGraphNode) {
+					if (p.equals(n)) {
+						continue; //there cannot be an edge between p and p himself
+					}
+					DistEdge cvmhedge = new DistEdge(); // TODO: check whether this works
+					cvmhedge.startNode = p;
+					cvmhedge.endNode = n;
+
+					if (!checkIfEdgeAdded(checkingEdges, cvmhedge)) { // since we use bidirectional edges
+																		// we need to check if the edge was
+																		// already added the other way round
+						if (!cvmhedge.endNode.equals(this.node)) {// the connection from another node to this node must be filtered too
+
+							checkingEdges.add(cvmhedge);
+
+						}
+
+					}
+
+				} else {
+					logger.logln(LogL.ERROR_DETAIL, "Dist-Edges should be used only.");
+				}
+
+			}
+		
+		}
+		for (PhysicalGraphNode n : this.getKnownNeighbors()) { // for each outgoing connection (based on this topology control)
+			if (n instanceof PhysicalGraphNode) {
+				PhysicalGraphNode p = n;
+				for (DistEdge other : checkingEdges) {
+					if (other.startNode.equals(other.endNode)) {//there cannot be an edge between p and p himself
+						continue;
+					}
+					Position po = DistEdge.getIntersectionWith(this.node.getPosition(), n.getPosition(), other.startNode.getPosition(), other.endNode.getPosition());
+					//Position po = lineLineCollision(this.node.getPosition(), n.getPosition(), other.startNode.getPosition(), other.endNode.getPosition());
+					if (po != null) {
+						Node max = getMaxNode(this.node, p, other.startNode, other.endNode);
+						if (max.equals(this.node)) {
+							try {
+								VirtualNode vnode = new VirtualNode(po, this.node, this.node, p, (PhysicalGraphNode) other.startNode, (PhysicalGraphNode) other.endNode);
+								myVirtuals.put(vnode.getId(), vnode); // each node has a different ID although it is the same node, but another instance.
+								System.out.println(this.node + " creates a virtual node: "+ vnode);
+							} catch (ClassCastException ex) {
+								ex.printStackTrace();
+								logger.logln(LogL.ERROR_DETAIL, "Use PhysicalGraphNodes only. ");
+							}
+						} else {
+							if (max.equals(this.node) || max.equals(p)) {
+								VirtualNode vnode = new VirtualNode(po, (PhysicalGraphNode) max, this.node, p, (PhysicalGraphNode) other.startNode, (PhysicalGraphNode) other.endNode);
+								ghostvirtuals.put(vnode.getId(), vnode); // each node has a different ID although it is the same node.
+							} else if (max.equals(other.startNode) || max.equals(other.endNode)) {
+								VirtualNode vnode = new VirtualNode(po, (PhysicalGraphNode) max, (PhysicalGraphNode) other.startNode, (PhysicalGraphNode) other.endNode, this.node, p);
+								ghostvirtuals.put(vnode.getId(), vnode); // each node has a different ID although it is the same node.
+							} else {
+								throw new RuntimeException("max node could not be determined! " + max + " -> " + this.node + ", " + p + ", " + other.startNode + ", " + other.endNode);
+							}
+
+						}
+					}
+
+				}
+
+			} else {
+				logger.logln(LogL.ERROR_DETAIL, "PhysicalGraphNodes should be used only. " + n.toString());
+			}
+		}
+
+	}
+
+	/**
+	 * @param startNode
+	 * @param endNode
+	 * @param startNode2
+	 * @param endNode2
+	 * @return
+	 * 
+	 *         this function will be removed soon ->found better way using dijkstra
+	 */
+	private ArrayList<BuildbackboneTopology> addRoutingToVirtual(PhysicalGraphNode startNode, PhysicalGraphNode endNode, PhysicalGraphNode startNode2, PhysicalGraphNode endNode2) {
+		ArrayList<BuildbackboneTopology> myRouting = new ArrayList<BuildbackboneTopology>();
+
+		Node max = getMaxNode(startNode, endNode, startNode2, endNode2);// get controller of the virtual node
+
+		CreateVirtualsMessageHandler btcStartNode = (CreateVirtualsMessageHandler) startNode.getMessageHandler(tcID);
+		CreateVirtualsMessageHandler btcEndNode = (CreateVirtualsMessageHandler) endNode.getMessageHandler(tcID);// mavs wanted to create a "registerService" for MessageHandlers 
+		CreateVirtualsMessageHandler btcStartNode2 = (CreateVirtualsMessageHandler) startNode2.getMessageHandler(tcID);
+		CreateVirtualsMessageHandler btcEndNode2 = (CreateVirtualsMessageHandler) endNode2.getMessageHandler(tcID);
+
+		if (endNode.equals(max)) {// endnode is controller of the virtual node myRouting.add((BuildbackboneTopology) endNode.getMessageHandler(tcID)); bbtmax = btcEndNode; } else if (startNode2.equals(max)) {
+
+			if (btcStartNode.getKnownNeighbors().contains(startNode2)) {
+				myRouting.add(btcStartNode2);
+			} else if (btcEndNode.getKnownNeighbors().contains(startNode2)) {
+				myRouting.add(btcEndNode);
+				myRouting.add(btcStartNode2);
+			} else if (btcStartNode.getKnownNeighbors().contains(endNode2)) {
+				myRouting.add(btcEndNode2);
+				myRouting.add(btcStartNode2);
+			} else if (btcEndNode.getKnownNeighbors().contains(endNode2)) {
+				myRouting.add(btcEndNode);
+				myRouting.add(btcEndNode2);
+				myRouting.add(btcStartNode2);
+			} else {
+				logger.logln(LogL.ERROR_DETAIL, "There is no connection from startNode " + this.node + " to startnode2 " + startNode2);
+			}
+		} else if (endNode2.equals(max)) {
+
+			if (btcStartNode.getKnownNeighbors().contains(endNode2)) {
+				myRouting.add(btcEndNode2);
+			} else if (btcEndNode.getKnownNeighbors().contains(endNode2)) {
+				myRouting.add(btcEndNode);
+				myRouting.add(btcEndNode2);
+			} else if (btcStartNode.getKnownNeighbors().contains(startNode2)) {
+				myRouting.add(btcStartNode2);
+				myRouting.add(btcEndNode2);
+			} else if (btcEndNode.getKnownNeighbors().contains(startNode2)) {
+				myRouting.add(btcEndNode);
+				myRouting.add(btcStartNode2);
+				myRouting.add(btcEndNode2);
+			} else {
+				logger.logln(LogL.ERROR_DETAIL, "There is no connection from startNode " + this.node + " to endNode2 " + endNode2);
+			}
+		} // need to implement
+
+		return myRouting;
+	}
+
+	private static Node getMaxNode(Node n1, Node n2, Node n3, Node n4) {
+		Node result = n1;
+		if (n2.ID > result.ID) {
+			result = n2;
+		}
+		if (n3.ID > result.ID) {
+			result = n3;
+		}
+		if (n4.ID > result.ID) {
+			result = n4;
+		}
+		return result;
+	}
+
+	/**
+	 * @pre this must be the controller of vNode
+	 * @param vNode
+	 *            a virtual node which should get routing to it's neighbors
+	 * @param endNode
+	 *            node on line 1
+	 * @param startNode2
+	 *            node on line 2
+	 * @param endNode2
+	 *            node on line 2
+	 */
+	/*
+	 * private void addRoutingFromVirtualNode(VirtualNode vNode, PhysicalGraphNode endNode, PhysicalGraphNode startNode2, PhysicalGraphNode endNode2) { ArrayList<BuildbackboneTopology> myRouting = new ArrayList<BuildbackboneTopology>(); myRouting.add(this); myRouting.add(this);// since routing paths shall be saved as tuples (ID(u), ID(v)) vNode.getRoutingTable().put(this, myRouting); // add routing from the virtual Node to it's controller // -----------------add routing to 1 hop neighbor of
+	 * this--------------- ArrayList<BuildbackboneTopology> pathToNeighbor1 = new ArrayList<BuildbackboneTopology>(); BuildbackboneTopology btcEndnode = (BuildbackboneTopology) endNode.getMessageHandler(tcID); // TODO: hate doing casts... can we change this? pathToNeighbor1.add(this); pathToNeighbor1.add(btcEndnode); vNode.getRoutingTable().put(btcEndnode, pathToNeighbor1); // -----------------add routing to 2 hop neighbor-------------- ArrayList<BuildbackboneTopology> pathToNeighbor2 = new
+	 * ArrayList<BuildbackboneTopology>(); BuildbackboneTopology btcStartNode2 = (BuildbackboneTopology) startNode2.getMessageHandler(tcID); // TODO: hate doing casts... can we change this? BuildbackboneTopology btcEndnode2 = (BuildbackboneTopology) endNode2.getMessageHandler(tcID); // TODO: hate doing casts... can we change this? pathToNeighbor2.add(this); if (this.node.outgoingConnections.contains(this.node, startNode2)) { // from startNode -> startNode2 pathToNeighbor2.add(btcStartNode2); }
+	 * else if (endNode.outgoingConnections.contains(endNode, startNode2)) { pathToNeighbor2.add(btcEndnode); pathToNeighbor2.add(btcStartNode2); } else if (this.node.outgoingConnections.contains(this.node, endNode2)) { pathToNeighbor2.add(btcEndnode2); pathToNeighbor2.add(btcStartNode2); } else if (endNode.outgoingConnections.contains(endNode, endNode2)) { pathToNeighbor2.add(btcEndnode); pathToNeighbor2.add(btcEndnode2); pathToNeighbor2.add(btcStartNode2); } else {
+	 * System.out.println("There is no connection to the second startNode (" + startNode2 + ") from : " + this.node + " and " + endNode); } vNode.getRoutingTable().put(btcStartNode2, pathToNeighbor2); // -----------------add routing to 3 hop neighbor-------------- ArrayList<BuildbackboneTopology> pathToNeighbor3 = new ArrayList<BuildbackboneTopology>(); pathToNeighbor3.add(this); if (this.node.outgoingConnections.contains(this.node, endNode2)) { pathToNeighbor3.add(btcEndnode2); } else if
+	 * (this.node.outgoingConnections.contains(this.node, startNode2)) { pathToNeighbor3.add(btcStartNode2); pathToNeighbor3.add(btcEndnode2); } else if (endNode.outgoingConnections.contains(endNode, endNode2)) { pathToNeighbor3.add(btcEndnode); pathToNeighbor3.add(btcEndnode2); } else if (endNode.outgoingConnections.contains(endNode, startNode2)) { pathToNeighbor3.add(btcEndnode); pathToNeighbor3.add(btcStartNode2); pathToNeighbor3.add(btcEndnode2); } else {
+	 * System.out.println("There is no connection to the second endNode (" + endNode2 + ") from : " + this.node + " and " + endNode); } vNode.getRoutingTable().put(btcEndnode2, pathToNeighbor3); /* System.out.println("routing von virtual des nodes: " + this.node); for (BuildbackboneTopologyControl key : vNode.getRoutingTable().keySet()) { System.out.println("zu: " + key); System.out.println(vNode.getRoutingTable().get(key)); System.out.println(); }
+	 */
+
+	// }
+
+	private void broadcastCollectedNodes() {
+		this.enqueue(new MessageTimer(new NewBeaconReplyMessage(tcID, this.node, planarSubgraphCreationStrategy, collectedNodes)));
+		this.executeTimerQueue();
+	}
+
+	//	public static Position lineLineCollision(Position p1line1, Position p2line1, Position p1line2, Position p2line2) {
+	//		double denom = ((p2line2.yCoord - p1line2.yCoord) * (p2line1.xCoord - p1line1.xCoord)) - ((p2line2.xCoord - p1line2.xCoord) * (p2line1.yCoord - p1line1.yCoord));
+	//		if (denom == 0)
+	//			return null;
+	//		else {
+	//			double ua = (((p2line2.xCoord - p1line2.xCoord) * (p1line1.yCoord - p1line2.yCoord)) - ((p2line2.yCoord - p1line2.yCoord) * (p1line1.xCoord - p1line2.xCoord))) / denom;
+	//			double ub = (((p2line1.xCoord - p1line1.xCoord) * (p1line1.yCoord - p1line2.yCoord)) - ((p2line1.yCoord - p1line1.yCoord) * (p1line1.xCoord - p1line2.xCoord))) / denom;
+	//			if ((ua < 0) || (ua > 1) || (ub < 0) || (ub > 1)) {
+	//				return null;
+	//			}
+	//			Position result = add(p1line1, multiply(ua, (sub(p2line1, p1line1))));
+	//			double delta = 0.01;
+	//			if (checkAlmostEqual(result, p1line1, delta) || checkAlmostEqual(result, p2line1, delta) || checkAlmostEqual(result, p1line2, delta) || checkAlmostEqual(result, p2line2, delta)) {
+	//				return null; // if the lines cross in a point which is in the set of given positions we do not want to count this as "crossing"
+	//			}
+	//
+	//			return result;
+	//		}
+	//	}
+
+
+	@Override
+	public void receivedMessage(AbstractMessage msg) {
+		if (msg instanceof BeaconRequestMessage) {
+			throw new RuntimeException("Nodes should not receive a BeaconRequestMessage using CreateVirtuals");
+		} else if (msg instanceof NewBeaconReplyMessage) {
+			receivedNewBeaconReplyMessage((NewBeaconReplyMessage) msg);
+		} else {
+			throw new RuntimeException("Message type is not supoorted: " + msg.toString());
+		}
+
+	}
+
+	/*
+	 * @Override public void executeTimerQueue() { MessageTimer msgt; if((msgt=messageTimerQueue.poll())!=null){ } }
+	 */
+
+	@Override
+	public void drawNode(Graphics g, PositionTransformation pt) {
+		// just needed for debugging
+	//	pt.translateToGUIPosition(this.node.getPosition());
+	//	int x = pt.guiX;
+	//	int y = pt.guiY;
+		for (Node n : this.knownNeighbors) {
+			g.setColor(Color.gray);
+			pt.drawLine(g, this.node.getPosition(), n.getPosition());
+			
+
+		}
+		for (VirtualNode vn : myVirtuals.values()) {
+			//pt.translateToGUIPosition(vn.getPosition());
+			pt.drawCircle(g, vn.getPosition(), 1);
+		}
+
+	}
+
+	@Override
+	public MessageRecord getCurrentMessageRecord() {
+
+		return null;
+	}
+
+	@Override
+	public HashMap<BuildbackboneTopology, ArrayList<Node>> getRoutingTable() {
+		return routingTable;
+	}
+
+	@Override
+	public PhysicalGraphNode getNode() {
+		return this.node;
+	}
+
+	@Override
+	public HashMap<Integer, PhysicalGraphNode> getCollectedNodes() {
+		return collectedNodes;
+	}
+
+	@Override
+	public String toString() {
+		return this.node.toString();
+	}
+
+}
