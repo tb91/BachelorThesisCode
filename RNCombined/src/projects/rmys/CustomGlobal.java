@@ -96,6 +96,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
 	public static double R = -1;
 
 
+
 	static {
 		try {
 			R = Configuration.getDoubleParameter("UDG/rMax");

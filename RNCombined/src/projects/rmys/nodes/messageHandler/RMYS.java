@@ -21,6 +21,7 @@ import sinalgo.nodes.Position;
 public class RMYS extends BeaconlessTopologyControl {
 
 	private static int k = -1;
+	private static double cones_size = -1;
 
 	static {
 		try {
@@ -35,6 +36,8 @@ public class RMYS extends BeaconlessTopologyControl {
 
 	public RMYS(NewPhysicalGraphNode sourceNode) {
 		super(EStrategy.RMYS, sourceNode);
+
+		cones_size = 2 * Math.PI / k;
 		_init();
 	}
 
@@ -72,9 +75,9 @@ public class RMYS extends BeaconlessTopologyControl {
 		//NodeId -> coneId
 		HashMap<Integer, Integer> nodeIds = new HashMap<>();
 		for (SimpleNode n : sourceNode.messageHandlerMap.get(pdt.getTopologyControlID()).getKnownNeighbors()) {
-			calculateCone(n.getPosition());
+			nodeIds.put(n.ID, calculateCone(n.getPosition()));
 		}
-
+		System.out.println("finished");
 	}
 
 
@@ -103,10 +106,12 @@ public class RMYS extends BeaconlessTopologyControl {
 
 		double angle = Math.acos(vecOr.x * vechelp.x + vecOr.y * vechelp.y);
 
-		System.out.println(
-				"Angle in Node " + sourceNode.ID + " to Node at (" + pos.xCoord + ", " + pos.yCoord + ") = " + angle);
+		// System.out.println(
+		// "Angle in Node " + sourceNode.ID + " to Node at (" + pos.xCoord + ",
+		// " + pos.yCoord + ") = " + angle);
 
-		return 0;
+
+		return (int) (angle / cones_size);
 	}
 
 	private double calculateLength(Vec2d vec) {
