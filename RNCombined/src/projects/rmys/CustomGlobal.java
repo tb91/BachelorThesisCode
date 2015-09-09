@@ -52,6 +52,7 @@ import java.util.Map;
 import java.util.Set;
 
 import projects.defaultProject.models.connectivityModels.StaticQUDG;
+import projects.defaultProject.models.connectivityModels.UDG;
 import projects.defaultProject.models.interferenceModels.NoInterference;
 import projects.defaultProject.models.mobilityModels.NoMobility;
 import projects.defaultProject.models.reliabilityModels.ReliableDelivery;
@@ -60,6 +61,7 @@ import projects.reactiveSpanner.Utilities;
 import projects.reactiveSpanner.models.connectivityModels.NoConnectivity;
 import projects.reactiveSpanner.nodes.nodeImplementations.PhysicalGraphNode;
 import projects.reactiveSpanner.nodes.nodeImplementations.SimpleNode;
+import projects.rmys.nodes.nodeImplementations.NewPhysicalGraphNode;
 import sinalgo.configuration.Configuration;
 import sinalgo.configuration.CorruptConfigurationEntryException;
 import sinalgo.gui.transformation.PositionTransformation;
@@ -240,6 +242,36 @@ public class CustomGlobal extends AbstractCustomGlobal {
 		}
 	}
 
+	@AbstractCustomGlobal.CustomButton(buttonText = "create example", toolTipText = "creates simple example")
+	public void example1() throws CorruptConfigurationEntryException {
+		NewPhysicalGraphNode p1 = new NewPhysicalGraphNode();
+		p1.setPosition(31, 31, 0);
+		p1.setConnectivityModel(new UDG());
+		p1.setReliabilityModel(new ReliableDelivery());
+		p1.setInterferenceModel(new NoInterference());
+		p1.setMobilityModel(new NoMobility());
+		p1.setColor(Color.blue);
+
+		NewPhysicalGraphNode p2 = new NewPhysicalGraphNode();
+		p2.setPosition(35, 32, 0);
+		p2.setConnectivityModel(new UDG());
+		p2.setReliabilityModel(new ReliableDelivery());
+		p2.setInterferenceModel(new NoInterference());
+		p2.setMobilityModel(new NoMobility());
+		p2.setColor(Color.blue);
+
+		p1.init();
+		p2.init();
+
+		p2.RMYS();
+		Tools.getNodeList().addNode(p1);
+		Tools.getNodeList().addNode(p2);
+
+
+		sinalgo.runtime.Runtime.reevaluateConnections();
+
+		Tools.repaintGUI();
+	}
 	
 
 	@AbstractCustomGlobal.CustomButton(

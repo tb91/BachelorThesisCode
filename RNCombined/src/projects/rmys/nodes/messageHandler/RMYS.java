@@ -10,6 +10,8 @@ import projects.reactiveSpanner.nodes.messageHandlers.SubgraphStrategy;
 import projects.reactiveSpanner.nodes.messageHandlers.reactivePDT.ReactivePDT;
 import projects.reactiveSpanner.nodes.nodeImplementations.SimpleNode;
 import projects.rmys.nodes.nodeImplementations.NewPhysicalGraphNode;
+import sinalgo.configuration.Configuration;
+import sinalgo.configuration.CorruptConfigurationEntryException;
 import sinalgo.nodes.Position;
 
 /**
@@ -17,6 +19,17 @@ import sinalgo.nodes.Position;
  *
  */
 public class RMYS extends BeaconlessTopologyControl {
+
+	private static int k = -1;
+
+	static {
+		try {
+			k = Configuration.getIntegerParameter("RMYS/k_value");
+		} catch (CorruptConfigurationEntryException e) {
+			e.getMessage();
+			e.printStackTrace();
+		}
+	}
 
 	ReactivePDT pdt;
 
@@ -71,11 +84,11 @@ public class RMYS extends BeaconlessTopologyControl {
 	 */
 	private int calculateCone(Position pos) {
 		// define point to define zero on horizontal axis
-		Position help = new Position(pos.xCoord + 1, pos.yCoord, 0);
+		Position help = new Position(sourceNode.getPosition().xCoord + 1, sourceNode.getPosition().yCoord, 0);
 
 		// create vectors
-		Vec2d vecOr = new Vec2d(pos.xCoord - sourceNode.getPosition().xCoord,
-				pos.yCoord - sourceNode.getPosition().yCoord);
+		Vec2d vecOr = new Vec2d((pos.xCoord - sourceNode.getPosition().xCoord),
+				(pos.yCoord - sourceNode.getPosition().yCoord));
 		Vec2d vechelp = new Vec2d(help.xCoord - sourceNode.getPosition().xCoord,
 				help.yCoord - sourceNode.getPosition().yCoord);
 
@@ -89,8 +102,10 @@ public class RMYS extends BeaconlessTopologyControl {
 		vechelp.y /= lengthhelp;
 
 		double angle = Math.acos(vecOr.x * vechelp.x + vecOr.y * vechelp.y);
-		System.out.println("Angle: " + angle);
-		// FIXME:complete
+
+		System.out.println(
+				"Angle in Node " + sourceNode.ID + " to Node at (" + pos.xCoord + ", " + pos.yCoord + ") = " + angle);
+
 		return 0;
 	}
 

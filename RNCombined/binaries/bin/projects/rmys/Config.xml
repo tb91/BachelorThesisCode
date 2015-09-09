@@ -134,7 +134,7 @@
 		<DefaultMessageTransmissionModel value="ConstantTime" />
 
 		<!--Default connectivity model used when none is specified-->
-		<DefaultConnectivityModel value="StaticQUDG" />
+		<DefaultConnectivityModel value="UDG" ></DefaultConnectivityModel>
 
 		<!--Default distribution model used when none is specified-->
 		<DefaultDistributionModel value="Random" />
@@ -149,7 +149,7 @@
 		<DefaultReliabilityModel value="ReliableDelivery" />
 
 		<!--Default node implementation used when none is specified-->
-		<DefaultNodeImplementation value="reactiveSpanner:PhysicalGraphNode" />
+		<DefaultNodeImplementation value="rmys:NewPhysicalGraphNode" />
 
 		<!--Show the models implemented by all projects in the drop down options. When set to false, only the models by the selected project and the default project are shown.-->
 		<showModelsOfAllProjects value="false" />
@@ -221,7 +221,7 @@
 		<arrowWidth value="3" />
 
 		<!--The dsfault value of the rounds field.-->
-		<defaultRoundNumber value="50" />
+		<defaultRoundNumber value="2005" />
 
 	</Framework>
 	<Custom>
@@ -263,6 +263,10 @@
 	<TransmissionRadius value="100" />
 <!--RecordsPath: File path, where the summed up records (sent RTS, CTS and Protest messages) will be saved-->
 	<RecordsPath value="messageRecord_ReactivePDT.csv" /></ReactivePDT>
+<RMYS>
+	<!--k_value is the constant degree upper bound of each node  -->
+	<k_value value="14"/>
+</RMYS>
 <Graph>
 <!--DrawOnlyEdgesWithMessages: Any edge of the graph will be drawed only if a message is sent over it-->
 	<DrawOnlyEdgesWithMessages value="false" />
