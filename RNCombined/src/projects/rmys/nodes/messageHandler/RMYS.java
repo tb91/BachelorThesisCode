@@ -1,5 +1,6 @@
 package projects.rmys.nodes.messageHandler;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.sun.javafx.geom.Vec2d;
@@ -33,6 +34,7 @@ public class RMYS extends BeaconlessTopologyControl {
 	}
 
 	ReactivePDT pdt;
+	RMYSMessageHandler rmys;
 
 	public RMYS(NewPhysicalGraphNode sourceNode) {
 		super(EStrategy.RMYS, sourceNode);
@@ -59,8 +61,7 @@ public class RMYS extends BeaconlessTopologyControl {
 
 		// adds a RMYSMessageHandler for compatibility reasons to the
 		// ReactiveSpanner Framework
-		RMYSMessageHandler rmys = new RMYSMessageHandler(super.getTopologyControlID(), sourceNode, sourceNode,
-				super.getStrategyType());
+		RMYSMessageHandler rmys = new RMYSMessageHandler(super.getTopologyControlID(), sourceNode, sourceNode, super.getStrategyType());
 		sourceNode.messageHandlerMap.put(super.getTopologyControlID(), rmys);
 
 		pdt.start();
@@ -73,11 +74,61 @@ public class RMYS extends BeaconlessTopologyControl {
 		//for each PDT neighbour calculate its cone id
 		
 		//NodeId -> coneId
-		HashMap<Integer, Integer> nodeIds = new HashMap<>();
+		// HashMap<Integer, Integer> nodeIds = new HashMap<>();
+		// for (SimpleNode n : sourceNode.messageHandlerMap.get(pdt.getTopologyControlID()).getKnownNeighbors()) {
+		//	nodeIds.put(n.ID, calculateCone(n.getPosition()));
+		//}
+		
+		// coneId -> NewPhysicalGraphNode
+		HashMap<Integer, ArrayList<NewPhysicalGraphNode>> cones = new HashMap<>();
+
+		// find coneId for each Node and sort it into HashMap cones
 		for (SimpleNode n : sourceNode.messageHandlerMap.get(pdt.getTopologyControlID()).getKnownNeighbors()) {
-			nodeIds.put(n.ID, calculateCone(n.getPosition()));
+			if (n instanceof NewPhysicalGraphNode) {
+				int key=calculateCone(n.getPosition());
+				
+				ArrayList<NewPhysicalGraphNode> list=cones.get(key);
+				if(list!=null){
+					list.add((NewPhysicalGraphNode)n); //save Typecast
+				} else {
+					list = new ArrayList<>();
+					list.add((NewPhysicalGraphNode) n);
+				}
+				cones.put(key, list);
+
+			} else {
+				throw new RuntimeException("RMYS can use NewPhysicalGraphNodes only.");
+			}
 		}
-		System.out.println("finished");
+
+		
+		// find shortest edges for each cone
+		HashMap<Integer, NewPhysicalGraphNode> shortest = new HashMap<>();
+		for (Integer t : cones.keySet()) {
+			NewPhysicalGraphNode shortestNode = null; // variable to hold the node
+														// which is closest to sourceNode in a cone
+			double shortestvalue = Double.MAX_VALUE;
+			for (NewPhysicalGraphNode p : cones.get(t)) {
+				double distance = sourceNode.getPosition().distanceTo(p.getPosition());
+				if (shortestvalue < distance) {
+					shortestNode = p;
+					shortestvalue = distance;
+				}
+			}
+			shortest.put(t, shortestNode);
+		}
+
+		// Since these shortest edges are selected anyway, they are added to the topologyControl neighbours
+		for (NewPhysicalGraphNode p : shortest.values()) {
+
+			rmys.getKnownNeighbors().add(p);
+
+		}
+
+		// find maximal sequences of empty cones
+
+
+
 	}
 
 
@@ -114,6 +165,10 @@ public class RMYS extends BeaconlessTopologyControl {
 		return (int) (angle / cones_size);
 	}
 
+	/**
+	 * @param vec
+	 * @return Euclidean length of vec
+	 */
 	private double calculateLength(Vec2d vec) {
 		return Math.sqrt(vec.x * vec.x + vec.y * vec.y);
 	}
