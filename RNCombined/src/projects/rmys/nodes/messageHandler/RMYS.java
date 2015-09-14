@@ -1,6 +1,8 @@
 package projects.rmys.nodes.messageHandler;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 
 import com.sun.javafx.geom.Vec2d;
@@ -9,6 +11,7 @@ import projects.reactiveSpanner.TopologyControlObserver;
 import projects.reactiveSpanner.nodes.messageHandlers.BeaconlessTopologyControl;
 import projects.reactiveSpanner.nodes.messageHandlers.SubgraphStrategy;
 import projects.reactiveSpanner.nodes.messageHandlers.reactivePDT.ReactivePDT;
+import projects.reactiveSpanner.nodes.nodeImplementations.PhysicalGraphNode;
 import projects.reactiveSpanner.nodes.nodeImplementations.SimpleNode;
 import projects.rmys.nodes.nodeImplementations.NewPhysicalGraphNode;
 import sinalgo.configuration.Configuration;
@@ -22,7 +25,7 @@ import sinalgo.nodes.Position;
 public class RMYS extends BeaconlessTopologyControl {
 
 	private static int k = -1;
-	private static double cones_size = -1;
+	private static double cone_size = -1;
 
 	static {
 		try {
@@ -39,7 +42,8 @@ public class RMYS extends BeaconlessTopologyControl {
 	public RMYS(NewPhysicalGraphNode sourceNode) {
 		super(EStrategy.RMYS, sourceNode);
 
-		cones_size = 2 * Math.PI / k;
+		cone_size = 2 * Math.PI / k;
+
 		_init();
 	}
 
@@ -53,7 +57,7 @@ public class RMYS extends BeaconlessTopologyControl {
 				if (pdt.hasTerminated()) { // as soon as RMYS gets notified
 											// thats rPDT has terminated it
 											// starts Modified Yao Step
-					_start();
+					calculate();
 				}
 
 			}
@@ -62,23 +66,21 @@ public class RMYS extends BeaconlessTopologyControl {
 		// adds a RMYSMessageHandler for compatibility reasons to the
 		// ReactiveSpanner Framework
 		RMYSMessageHandler rmys = new RMYSMessageHandler(super.getTopologyControlID(), sourceNode, sourceNode, super.getStrategyType());
+		rmys.initializeKnownNeighborsSet();
 		sourceNode.messageHandlerMap.put(super.getTopologyControlID(), rmys);
 
 		pdt.start();
 	}
 
+	protected void calculate() {
+		// for each PDT neighbour calculate its cone id
 
-
-	@Override
-	protected void _start() {
-		//for each PDT neighbour calculate its cone id
-		
-		//NodeId -> coneId
+		// NodeId -> coneId
 		// HashMap<Integer, Integer> nodeIds = new HashMap<>();
 		// for (SimpleNode n : sourceNode.messageHandlerMap.get(pdt.getTopologyControlID()).getKnownNeighbors()) {
-		//	nodeIds.put(n.ID, calculateCone(n.getPosition()));
-		//}
-		
+		// nodeIds.put(n.ID, calculateCone(n.getPosition()));
+		// }
+
 		// coneId -> NewPhysicalGraphNode
 		HashMap<Integer, ArrayList<NewPhysicalGraphNode>> cones = new HashMap<>();
 		// coneId 0 is the one starting at 3 o'clock running counterclockwise
@@ -87,11 +89,11 @@ public class RMYS extends BeaconlessTopologyControl {
 		// find coneId for each Node and sort it into HashMap cones
 		for (SimpleNode n : sourceNode.messageHandlerMap.get(pdt.getTopologyControlID()).getKnownNeighbors()) {
 			if (n instanceof NewPhysicalGraphNode) {
-				int key=calculateCone(n.getPosition());
-				
-				ArrayList<NewPhysicalGraphNode> list=cones.get(key);
-				if(list!=null){
-					list.add((NewPhysicalGraphNode)n); //save Typecast
+				int key = calculateCone(n.getPosition());
+
+				ArrayList<NewPhysicalGraphNode> list = cones.get(key);
+				if (list != null) {
+					list.add((NewPhysicalGraphNode) n); // save Typecast
 				} else {
 					list = new ArrayList<>();
 					list.add((NewPhysicalGraphNode) n);
@@ -103,7 +105,6 @@ public class RMYS extends BeaconlessTopologyControl {
 			}
 		}
 
-		
 		// find shortest edges for each cone
 		HashMap<Integer, NewPhysicalGraphNode> shortest = new HashMap<>();
 		for (int l = 0; l < k; l++) {
@@ -150,13 +151,20 @@ public class RMYS extends BeaconlessTopologyControl {
 
 		// for each empty sequence do
 		for (int[] interval : empty_cones_set) {
+			// find orientation point
+			double angleToZero = cone_size * interval[0];
+			double xpos = Math.cos(angleToZero);
+			double ypos = Math.sin(angleToZero);
+			Position helppos = new Position(sourceNode.getPosition().xCoord + xpos, sourceNode.getPosition().yCoord + ypos, 0);
+
 			if (interval[0] == interval[1]) { // just one empty cone; the predecessor and the successor cone are not empty
+
 				// find nearest nodes clockwise and counterclockwise
 				// the nearest nodes must reside in the cone before interval[0] and after interval[1]
 				NewPhysicalGraphNode counterclockwise = null;
 				double smallestAngle = Double.MAX_VALUE;
 				for (NewPhysicalGraphNode p : cones.get(interval[0] - 1)) {
-					double currentangle = calculateAngle(p.getPosition());
+					double currentangle = calculateAngleForCone(p.getPosition(), helppos);
 					if (currentangle < smallestAngle) {
 						smallestAngle = currentangle;
 						counterclockwise = p;
@@ -167,7 +175,7 @@ public class RMYS extends BeaconlessTopologyControl {
 				NewPhysicalGraphNode clockwise = null;
 				double greatestAngle = 0;
 				for (NewPhysicalGraphNode p : cones.get(interval[1] + 1)) {
-					double currentangle = calculateAngle(p.getPosition());
+					double currentangle = calculateAngleForCone(p.getPosition(), helppos);
 					if (currentangle > greatestAngle) {
 						greatestAngle = currentangle;
 						clockwise = p;
@@ -195,11 +203,52 @@ public class RMYS extends BeaconlessTopologyControl {
 
 			} else {
 
+				// for the sake of simplicity all neighbors are sorted with respect to the angle between
+				// the empty cone sequence and themselves in sourceNode
+				ArrayList<NewPhysicalGraphNode> sortedNeighbors = new ArrayList<>();
+				final HashMap<NewPhysicalGraphNode, Double> anglemap = new HashMap<>();
+				for (ArrayList<NewPhysicalGraphNode> list : cones.values()) {
+					for (NewPhysicalGraphNode p : list) {
+						anglemap.put(p, calculateAngleForCone(p.getPosition(), helppos));
+						sortedNeighbors.add(p);
+					}
+				}
+
+				Collections.sort(sortedNeighbors, new Comparator<NewPhysicalGraphNode>() {
+
+					@Override
+					public int compare(NewPhysicalGraphNode o1, NewPhysicalGraphNode o2) {
+						if (anglemap.get(o1) < anglemap.get(o2)) {
+							return -1;
+						} else if (anglemap.get(o1) == anglemap.get(o2)) {
+							return 0;
+						} else {
+							return 1;
+						}
+					}
+				});
+
+				// calculate sequence length
+				int sequence_l = interval[1] - interval[0] + 1; // eg. 8-7=1, but means 8 and 7 are empty-> so plus 1
+				assert(sequence_l > 1);
+
+				int clockwiseNeighbors = (int) (sequence_l / 2.0);
+				int counterclockwiseNeighbors = (int) ((sequence_l + 1) / 2.0);
+
+				System.out.println();
+				System.out.println("List of Node: " + sourceNode.toString());
+				for (PhysicalGraphNode p : sortedNeighbors) {
+					System.out.println("Node " + p.toString() + " with angle: " + anglemap.get(p));
+				}
 			}
 		}
 
 	}
 
+	@Override
+	protected void _start() {
+
+	}
 
 	/**
 	 * @param pos
@@ -209,7 +258,7 @@ public class RMYS extends BeaconlessTopologyControl {
 
 		double angle = calculateAngle(pos);
 
-		return (int) (angle / cones_size);
+		return (int) (angle / cone_size);
 	}
 
 	/**
@@ -217,12 +266,19 @@ public class RMYS extends BeaconlessTopologyControl {
 	 * @return the angle between the horzontal axis source node and pos (starting at 3 o'clock counterclockwise)
 	 */
 	private double calculateAngle(Position pos) {
-		// define point to define zero on horizontal axis
-		Position help = new Position(sourceNode.getPosition().xCoord + 1, sourceNode.getPosition().yCoord, 0);
+		return calculateAngleForCone(pos, new Position(sourceNode.getPosition().xCoord + 1, sourceNode.getPosition().yCoord, 0));
+	}
+
+	/**
+	 * @param pos
+	 * @param reference
+	 * @return the angle between pos and reference in sourceNode
+	 */
+	private double calculateAngleForCone(Position pos, Position reference) {
 
 		// create vectors
 		Vec2d vecOr = new Vec2d((pos.xCoord - sourceNode.getPosition().xCoord), (pos.yCoord - sourceNode.getPosition().yCoord));
-		Vec2d vechelp = new Vec2d(help.xCoord - sourceNode.getPosition().xCoord, help.yCoord - sourceNode.getPosition().yCoord);
+		Vec2d vechelp = new Vec2d(reference.xCoord - sourceNode.getPosition().xCoord, reference.yCoord - sourceNode.getPosition().yCoord);
 
 		// normalize vectors
 		double lengthOr = calculateLength(vecOr);
