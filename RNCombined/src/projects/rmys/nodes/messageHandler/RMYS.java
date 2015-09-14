@@ -174,6 +174,24 @@ public class RMYS extends BeaconlessTopologyControl {
 					}
 				}
 
+				if (rmys.getKnownNeighbors().contains(clockwise)) {
+					rmys.getKnownNeighbors().add(counterclockwise);
+				} else if (rmys.getKnownNeighbors().contains(counterclockwise)) {
+					rmys.getKnownNeighbors().add(clockwise);
+				} else {
+					double disclock = clockwise.getPosition().distanceTo(sourceNode.getPosition());
+					double discounter = counterclockwise.getPosition().distanceTo(sourceNode.getPosition());
+					if (disclock < discounter) {
+						rmys.getKnownNeighbors().add(clockwise);
+					} else if (discounter < disclock) {
+						rmys.getKnownNeighbors().add(counterclockwise);
+					} else {
+						throw new RuntimeException("unspecified behaviour: distance from " + sourceNode.toString() + " to "
+								+ clockwise.toString() + " and " + counterclockwise.toString() + " is equal."); // is not specified in Modified Yao
+																												// Step
+
+					}
+				}
 
 			} else {
 
