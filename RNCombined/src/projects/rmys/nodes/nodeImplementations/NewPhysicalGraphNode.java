@@ -12,6 +12,8 @@ import projects.reactiveSpanner.routing.RoutingProtocol.ERoutingState;
 //Creating a new Node to point out differences to ReactiveSpanner
 public class NewPhysicalGraphNode extends PhysicalGraphNode {
 
+
+
 	/**
 	 * 
 	 */
@@ -19,6 +21,7 @@ public class NewPhysicalGraphNode extends PhysicalGraphNode {
 
 	public NewPhysicalGraphNode() {
 		super();
+
 
 	}
 

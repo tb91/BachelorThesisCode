@@ -81,6 +81,8 @@ public class RMYS extends BeaconlessTopologyControl {
 		
 		// coneId -> NewPhysicalGraphNode
 		HashMap<Integer, ArrayList<NewPhysicalGraphNode>> cones = new HashMap<>();
+		// coneId 0 is the one starting at 3 o'clock running counterclockwise
+		// counterclockwise indicates ids with increasing number
 
 		// find coneId for each Node and sort it into HashMap cones
 		for (SimpleNode n : sourceNode.messageHandlerMap.get(pdt.getTopologyControlID()).getKnownNeighbors()) {
@@ -104,6 +106,9 @@ public class RMYS extends BeaconlessTopologyControl {
 		
 		// find shortest edges for each cone
 		HashMap<Integer, NewPhysicalGraphNode> shortest = new HashMap<>();
+		for (int l = 0; l < k; l++) {
+			shortest.put(l, null); // for easier calculations initialize array with all possible coneIds
+		}
 		for (Integer t : cones.keySet()) {
 			NewPhysicalGraphNode shortestNode = null; // variable to hold the node
 														// which is closest to sourceNode in a cone
@@ -118,7 +123,7 @@ public class RMYS extends BeaconlessTopologyControl {
 			shortest.put(t, shortestNode);
 		}
 
-		// Since these shortest edges are selected anyway, they are added to the topologyControl neighbours
+		// Since these shortest edges are selected anyway, they are added to the topologyControl neighbors
 		for (NewPhysicalGraphNode p : shortest.values()) {
 
 			rmys.getKnownNeighbors().add(p);
@@ -126,8 +131,54 @@ public class RMYS extends BeaconlessTopologyControl {
 		}
 
 		// find maximal sequences of empty cones
+		ArrayList<int[]> empty_cones_set = new ArrayList<>();
+
+		for (int i = 0; i < cones.keySet().size(); i++) {
+			if (cones.get(i).size() == 0) {// start of a empty sequence found
+				int j;
+				for (j = i + 1; j < cones.keySet().size(); j++) {
+					if (cones.get(j).size() != 0) { // determines end of an empty sequence
+						j -= 1;
+						break;
+					}
+				}
+				int[] empty_interval = { i, j }; // [0] indicates start, [1] indicates end of empty sequence of cones
+				empty_cones_set.add(empty_interval);
+				i = j + 1; // prohibit duplicates
+			}
+		}
+
+		// for each empty sequence do
+		for (int[] interval : empty_cones_set) {
+			if (interval[0] == interval[1]) { // just one empty cone; the predecessor and the successor cone are not empty
+				// find nearest nodes clockwise and counterclockwise
+				// the nearest nodes must reside in the cone before interval[0] and after interval[1]
+				NewPhysicalGraphNode counterclockwise = null;
+				double smallestAngle = Double.MAX_VALUE;
+				for (NewPhysicalGraphNode p : cones.get(interval[0] - 1)) {
+					double currentangle = calculateAngle(p.getPosition());
+					if (currentangle < smallestAngle) {
+						smallestAngle = currentangle;
+						counterclockwise = p;
+					}
+				}
+
+				// same for the nearest node clockwise
+				NewPhysicalGraphNode clockwise = null;
+				double greatestAngle = 0;
+				for (NewPhysicalGraphNode p : cones.get(interval[1] + 1)) {
+					double currentangle = calculateAngle(p.getPosition());
+					if (currentangle > greatestAngle) {
+						greatestAngle = currentangle;
+						clockwise = p;
+					}
+				}
 
 
+			} else {
+
+			}
+		}
 
 	}
 
@@ -137,14 +188,23 @@ public class RMYS extends BeaconlessTopologyControl {
 	 * @return id of the cone in which pos lies with respect to sourceNode
 	 */
 	private int calculateCone(Position pos) {
+
+		double angle = calculateAngle(pos);
+
+		return (int) (angle / cones_size);
+	}
+
+	/**
+	 * @param pos
+	 * @return the angle between the horzontal axis source node and pos (starting at 3 o'clock counterclockwise)
+	 */
+	private double calculateAngle(Position pos) {
 		// define point to define zero on horizontal axis
 		Position help = new Position(sourceNode.getPosition().xCoord + 1, sourceNode.getPosition().yCoord, 0);
 
 		// create vectors
-		Vec2d vecOr = new Vec2d((pos.xCoord - sourceNode.getPosition().xCoord),
-				(pos.yCoord - sourceNode.getPosition().yCoord));
-		Vec2d vechelp = new Vec2d(help.xCoord - sourceNode.getPosition().xCoord,
-				help.yCoord - sourceNode.getPosition().yCoord);
+		Vec2d vecOr = new Vec2d((pos.xCoord - sourceNode.getPosition().xCoord), (pos.yCoord - sourceNode.getPosition().yCoord));
+		Vec2d vechelp = new Vec2d(help.xCoord - sourceNode.getPosition().xCoord, help.yCoord - sourceNode.getPosition().yCoord);
 
 		// normalize vectors
 		double lengthOr = calculateLength(vecOr);
@@ -155,14 +215,7 @@ public class RMYS extends BeaconlessTopologyControl {
 		vechelp.x /= lengthhelp;
 		vechelp.y /= lengthhelp;
 
-		double angle = Math.acos(vecOr.x * vechelp.x + vecOr.y * vechelp.y);
-
-		// System.out.println(
-		// "Angle in Node " + sourceNode.ID + " to Node at (" + pos.xCoord + ",
-		// " + pos.yCoord + ") = " + angle);
-
-
-		return (int) (angle / cones_size);
+		return Math.acos(vecOr.x * vechelp.x + vecOr.y * vechelp.y);
 	}
 
 	/**

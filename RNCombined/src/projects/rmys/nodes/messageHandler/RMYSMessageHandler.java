@@ -1,6 +1,7 @@
 package projects.rmys.nodes.messageHandler;
 
 import java.awt.Graphics;
+import java.util.HashMap;
 import java.util.UUID;
 
 import projects.reactiveSpanner.nodes.messageHandlers.BeaconlessMessageHandler;
@@ -10,14 +11,20 @@ import projects.reactiveSpanner.nodes.messages.CTS;
 import projects.reactiveSpanner.nodes.messages.RTS;
 import projects.reactiveSpanner.nodes.nodeImplementations.PhysicalGraphNode;
 import projects.reactiveSpanner.record.MessageRecord;
+import projects.rmys.nodes.nodeImplementations.NewPhysicalGraphNode;
 import sinalgo.gui.transformation.PositionTransformation;
 
 public class RMYSMessageHandler extends BeaconlessMessageHandler {
 
+	/**
+	 * indicates that this was selected from another node
+	 */
+	HashMap<NewPhysicalGraphNode, Boolean> is_selected;
+
 	protected RMYSMessageHandler(UUID tcID, PhysicalGraphNode ownerNode, PhysicalGraphNode sourceNode,
 			EStrategy strategy) {
 		super(tcID, ownerNode, sourceNode, strategy);
-		// TODO Auto-generated constructor stub
+		is_selected = new HashMap<>();
 	}
 
 	@Override
