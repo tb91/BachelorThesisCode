@@ -65,7 +65,7 @@ public class RMYS extends BeaconlessTopologyControl {
 
 		// adds a RMYSMessageHandler for compatibility reasons to the
 		// ReactiveSpanner Framework
-		RMYSMessageHandler rmys = new RMYSMessageHandler(super.getTopologyControlID(), sourceNode, sourceNode, super.getStrategyType());
+		rmys = new RMYSMessageHandler(super.getTopologyControlID(), sourceNode, sourceNode, super.getStrategyType());
 		rmys.initializeKnownNeighborsSet();
 		sourceNode.messageHandlerMap.put(super.getTopologyControlID(), rmys);
 
@@ -83,6 +83,9 @@ public class RMYS extends BeaconlessTopologyControl {
 
 		// coneId -> NewPhysicalGraphNode
 		HashMap<Integer, ArrayList<NewPhysicalGraphNode>> cones = new HashMap<>();
+		for (int l = 0; l < k; l++) {// for easier calculations initialize hashmap with all possible coneIds
+			cones.put(l, new ArrayList<NewPhysicalGraphNode>());
+		}
 		// coneId 0 is the one starting at 3 o'clock running counterclockwise
 		// counterclockwise indicates ids with increasing number
 
@@ -107,8 +110,8 @@ public class RMYS extends BeaconlessTopologyControl {
 
 		// find shortest edges for each cone
 		HashMap<Integer, NewPhysicalGraphNode> shortest = new HashMap<>();
-		for (int l = 0; l < k; l++) {
-			shortest.put(l, null); // for easier calculations initialize array with all possible coneIds
+		for (int l = 0; l < k; l++) {// for easier calculations initialize hashmap with all possible coneIds
+			shortest.put(l, null);
 		}
 		for (Integer t : cones.keySet()) {
 			NewPhysicalGraphNode shortestNode = null; // variable to hold the node
@@ -116,7 +119,7 @@ public class RMYS extends BeaconlessTopologyControl {
 			double shortestvalue = Double.MAX_VALUE;
 			for (NewPhysicalGraphNode p : cones.get(t)) {
 				double distance = sourceNode.getPosition().distanceTo(p.getPosition());
-				if (shortestvalue < distance) {
+				if (shortestvalue > distance) {
 					shortestNode = p;
 					shortestvalue = distance;
 				}
@@ -126,26 +129,30 @@ public class RMYS extends BeaconlessTopologyControl {
 
 		// Since these shortest edges are selected anyway, they are added to the topologyControl neighbors
 		for (NewPhysicalGraphNode p : shortest.values()) {
-
-			rmys.getKnownNeighbors().add(p);
+			if (p != null) {
+				rmys.getKnownNeighbors().add(p);
+			}
 
 		}
 
 		// find maximal sequences of empty cones
 		ArrayList<int[]> empty_cones_set = new ArrayList<>();
 
-		for (int i = 0; i < cones.keySet().size(); i++) {
+		for (int i = 0; i < k; i++) {
 			if (cones.get(i).size() == 0) {// start of a empty sequence found
 				int j;
-				for (j = i + 1; j < cones.keySet().size(); j++) {
+				for (j = i + 1; j < k; j++) {
 					if (cones.get(j).size() != 0) { // determines end of an empty sequence
 						j -= 1;
 						break;
 					}
 				}
+				if (j == k) {// if last cone is empty, too
+					j -= 1;
+				}
 				int[] empty_interval = { i, j }; // [0] indicates start, [1] indicates end of empty sequence of cones
 				empty_cones_set.add(empty_interval);
-				i = j + 1; // prohibit duplicates
+				i = j; // prohibit duplicates
 			}
 		}
 
@@ -153,7 +160,7 @@ public class RMYS extends BeaconlessTopologyControl {
 		for (int[] interval : empty_cones_set) {
 			// find orientation point
 			double angleToZero = cone_size * interval[0];
-			double xpos = Math.cos(angleToZero);
+			double xpos = Math.cos(angleToZero); // rotate orientation point (1,0) to empty cone
 			double ypos = Math.sin(angleToZero);
 			Position helppos = new Position(sourceNode.getPosition().xCoord + xpos, sourceNode.getPosition().yCoord + ypos, 0);
 
@@ -163,7 +170,11 @@ public class RMYS extends BeaconlessTopologyControl {
 				// the nearest nodes must reside in the cone before interval[0] and after interval[1]
 				NewPhysicalGraphNode counterclockwise = null;
 				double smallestAngle = Double.MAX_VALUE;
-				for (NewPhysicalGraphNode p : cones.get(interval[0] - 1)) {
+				Integer before = interval[0] - 1;
+				if (before == -1) {// ensure loop
+					before = k - 1;
+				}
+				for (NewPhysicalGraphNode p : cones.get(before)) {
 					double currentangle = calculateAngleForCone(p.getPosition(), helppos);
 					if (currentangle < smallestAngle) {
 						smallestAngle = currentangle;
@@ -174,7 +185,11 @@ public class RMYS extends BeaconlessTopologyControl {
 				// same for the nearest node clockwise
 				NewPhysicalGraphNode clockwise = null;
 				double greatestAngle = 0;
-				for (NewPhysicalGraphNode p : cones.get(interval[1] + 1)) {
+				Integer after = interval[1] + 1;
+				if (after == k) { // ensure loop
+					after = 0;
+				}
+				for (NewPhysicalGraphNode p : cones.get(after)) {
 					double currentangle = calculateAngleForCone(p.getPosition(), helppos);
 					if (currentangle > greatestAngle) {
 						greatestAngle = currentangle;
@@ -236,13 +251,49 @@ public class RMYS extends BeaconlessTopologyControl {
 				int counterclockwiseNeighbors = (int) ((sequence_l + 1) / 2.0);
 
 				System.out.println();
+				System.out.println("clockwise count: " + clockwiseNeighbors);
+				System.out.println("counterclockwise count: " + counterclockwiseNeighbors);
 				System.out.println("List of Node: " + sourceNode.toString());
 				for (PhysicalGraphNode p : sortedNeighbors) {
 					System.out.println("Node " + p.toString() + " with angle: " + anglemap.get(p));
 				}
+
+				// choose the first counterclockwiseNeighbors which are not already selected
+				int index = 0;
+				while (counterclockwiseNeighbors > 0 && index < sortedNeighbors.size()) {
+
+					NewPhysicalGraphNode p = sortedNeighbors.get(index);
+					if (rmys.getKnownNeighbors().contains(p)) {
+						index++;
+						continue;// take next node
+					}
+					rmys.getKnownNeighbors().add(p);
+					index++;
+					counterclockwiseNeighbors -= 1;
+				}
+
+				// choose the first clockwiseNeighbors which are not already selected
+				index = sortedNeighbors.size() - 1;
+				while (clockwiseNeighbors > 0 && index >= 0) {
+					NewPhysicalGraphNode p = sortedNeighbors.get(index);
+					if (rmys.getKnownNeighbors().contains(p)) {
+						index--;
+						continue;// take next node
+					}
+					rmys.getKnownNeighbors().add(p);
+					index--;
+					clockwiseNeighbors -= 1;
+				}
+
 			}
 		}
 
+		System.out.println("Neighbors for node: " + sourceNode.toString());
+		System.out.print("(");
+		for (PhysicalGraphNode pn : rmys.getKnownNeighbors()) {
+			System.out.print(pn.toString() + ", ");
+		}
+		System.out.println(")");
 	}
 
 	@Override
