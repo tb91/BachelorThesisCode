@@ -22,10 +22,13 @@ public class RMYSMessageHandler extends BeaconlessMessageHandler {
 	HashMap<NewPhysicalGraphNode, Boolean> is_selected;
 
 	protected RMYSMessageHandler(UUID tcID, PhysicalGraphNode ownerNode, PhysicalGraphNode sourceNode,
-			EStrategy strategy) {
+ EStrategy strategy) {
 		super(tcID, ownerNode, sourceNode, strategy);
 		is_selected = new HashMap<>();
+		initializeKnownNeighborsSet();
 	}
+
+
 
 	@Override
 	public void timerTriggerEvent() {
