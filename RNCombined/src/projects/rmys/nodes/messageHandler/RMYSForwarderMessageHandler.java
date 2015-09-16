@@ -1,5 +1,7 @@
 package projects.rmys.nodes.messageHandler;
 
+import java.awt.Color;
+import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -13,6 +15,7 @@ import projects.reactiveSpanner.nodes.messageHandlers.SubgraphStrategy.EStrategy
 import projects.reactiveSpanner.nodes.nodeImplementations.PhysicalGraphNode;
 import projects.reactiveSpanner.nodes.nodeImplementations.SimpleNode;
 import projects.rmys.nodes.nodeImplementations.NewPhysicalGraphNode;
+import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.nodes.Position;
 
 public class RMYSForwarderMessageHandler extends RMYSMessageHandler {
@@ -200,13 +203,15 @@ public class RMYSForwarderMessageHandler extends RMYSMessageHandler {
 				int clockwiseNeighbors = (int) (sequence_l / 2.0);
 				int counterclockwiseNeighbors = (int) ((sequence_l + 1) / 2.0);
 
-				System.out.println();
-				System.out.println("clockwise count: " + clockwiseNeighbors);
-				System.out.println("counterclockwise count: " + counterclockwiseNeighbors);
-				System.out.println("List of Node: " + sourceNode.toString());
-				for (PhysicalGraphNode p : sortedNeighbors) {
-					System.out.println("Node " + p.toString() + " with angle: " + anglemap.get(p));
-				}
+				// System.out.println();
+				// System.out.println("clockwise count: " + clockwiseNeighbors);
+				// System.out.println("counterclockwise count: " +
+				// counterclockwiseNeighbors);
+				// System.out.println("List of Node: " + sourceNode.toString());
+				// for (PhysicalGraphNode p : sortedNeighbors) {
+				// System.out.println("Node " + p.toString() + " with angle: " +
+				// anglemap.get(p));
+				// }
 
 				// choose the first counterclockwiseNeighbors which are not already selected
 				int index = 0;
@@ -246,6 +251,21 @@ public class RMYSForwarderMessageHandler extends RMYSMessageHandler {
 		System.out.println(")");
 	}
 
+	@Override
+	public void drawNode(Graphics g, PositionTransformation pt) {
+
+		for (int i = 0; i < RMYS.k; i++) {
+			double angle = i * RMYS.cone_size;
+			double xpos = RMYS.unit_radius * Math.cos(angle);
+			double ypos = RMYS.unit_radius * Math.sin(angle);
+			Position helppos = new Position(sourceNode.getPosition().xCoord + xpos,
+					sourceNode.getPosition().yCoord + ypos, 0);
+			g.setColor(Color.black);
+			pt.drawLine(g, sourceNode.getPosition(), helppos);
+		}
+
+	}
+
 	/**
 	 * @param pos
 	 * @return id of the cone in which pos lies with respect to sourceNode
@@ -275,17 +295,15 @@ public class RMYSForwarderMessageHandler extends RMYSMessageHandler {
 		// create vectors
 		Vec2d vecOr = new Vec2d((pos.xCoord - sourceNode.getPosition().xCoord), (pos.yCoord - sourceNode.getPosition().yCoord));
 		Vec2d vechelp = new Vec2d(reference.xCoord - sourceNode.getPosition().xCoord, reference.yCoord - sourceNode.getPosition().yCoord);
+		Vec2d poshelp = new Vec2d(reference.xCoord - pos.xCoord, reference.yCoord - pos.yCoord);
 
-		// normalize vectors
-		double lengthOr = calculateLength(vecOr);
-		vecOr.x /= lengthOr;
-		vecOr.y /= lengthOr;
-
-		double lengthhelp = calculateLength(vechelp);
-		vechelp.x /= lengthhelp;
-		vechelp.y /= lengthhelp;
-
-		return Math.acos(vecOr.x * vechelp.x + vecOr.y * vechelp.y);
+		double vecOr_l=calculateLength(vecOr);
+		double vechelp_l=calculateLength(vechelp);
+		double poshelp_l=calculateLength(poshelp);
+		
+		double angle = Math
+				.acos((vechelp_l * vechelp_l + vecOr_l * vecOr_l - poshelp_l * poshelp_l) / (2 * vechelp_l * vecOr_l));
+		return angle;
 	}
 
 	/**

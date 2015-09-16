@@ -60,16 +60,19 @@ public class RMYSMessageHandler extends BeaconlessMessageHandler {
 
 	}
 
-	@Override
-	public void drawNode(Graphics g, PositionTransformation pt) {
-		// TODO Auto-generated method stub
-
-	}
 
 	@Override
 	public MessageRecord getCurrentMessageRecord() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+
+
+	@Override
+	public void drawNode(Graphics g, PositionTransformation pt) {
+
+
 	}
 
 }
