@@ -4,6 +4,8 @@ import java.awt.Graphics;
 import java.util.HashMap;
 import java.util.UUID;
 
+import com.sun.corba.se.impl.protocol.giopmsgheaders.RequestMessage;
+
 import projects.reactiveSpanner.nodes.messageHandlers.BeaconlessMessageHandler;
 import projects.reactiveSpanner.nodes.messageHandlers.SubgraphStrategy.EStrategy;
 import projects.reactiveSpanner.nodes.messages.AbstractMessage;
@@ -21,9 +23,8 @@ public class RMYSMessageHandler extends BeaconlessMessageHandler {
 	 */
 	HashMap<NewPhysicalGraphNode, Boolean> is_selected;
 
-	protected RMYSMessageHandler(UUID tcID, PhysicalGraphNode ownerNode, PhysicalGraphNode sourceNode,
- EStrategy strategy) {
-		super(tcID, ownerNode, sourceNode, strategy);
+	protected RMYSMessageHandler(UUID tcID, PhysicalGraphNode ownerNode, PhysicalGraphNode sourceNode) {
+		super(tcID, ownerNode, sourceNode, EStrategy.RMYS);
 		is_selected = new HashMap<>();
 		initializeKnownNeighborsSet();
 	}
@@ -57,6 +58,11 @@ public class RMYSMessageHandler extends BeaconlessMessageHandler {
 	@Override
 	public void receivedMessage(AbstractMessage msg) {
 		System.out.println("got message: " + msg.toString());
+		if (msg instanceof RequestMessage) {
+
+		} else {
+			System.err.println(this.sourceNode.toString() + " got an unkown message: " + msg.toString());
+		}
 
 	}
 

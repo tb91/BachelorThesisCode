@@ -11,9 +11,9 @@ import java.util.UUID;
 import com.sun.javafx.geom.Vec2d;
 
 import projects.reactiveSpanner.nodes.messageHandlers.SubgraphStrategy;
-import projects.reactiveSpanner.nodes.messageHandlers.SubgraphStrategy.EStrategy;
 import projects.reactiveSpanner.nodes.nodeImplementations.PhysicalGraphNode;
 import projects.reactiveSpanner.nodes.nodeImplementations.SimpleNode;
+import projects.rmys.nodes.messages.RequestMessage;
 import projects.rmys.nodes.nodeImplementations.NewPhysicalGraphNode;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.nodes.Position;
@@ -21,11 +21,11 @@ import sinalgo.nodes.Position;
 public class RMYSForwarderMessageHandler extends RMYSMessageHandler {
 	SubgraphStrategy pdt;
 	protected RMYSForwarderMessageHandler(UUID tcID, PhysicalGraphNode sourceNode, SubgraphStrategy neighborhood) {
-		super(tcID, sourceNode, sourceNode, EStrategy.RMYS);
+		super(tcID, sourceNode, sourceNode);
 		this.pdt = neighborhood;
 	}
 
-	public void start() {
+	public static void start(NewPhysicalGraphNode sourceNode, SubgraphStrategy pdt, RMYSMessageHandler rmys) {
 		// for each PDT neighbour calculate its cone id
 
 		// NodeId -> coneId
@@ -45,7 +45,7 @@ public class RMYSForwarderMessageHandler extends RMYSMessageHandler {
 		// find coneId for each Node and sort it into HashMap cones
 		for (SimpleNode n : sourceNode.messageHandlerMap.get(pdt.getTopologyControlID()).getKnownNeighbors()) {
 			if (n instanceof NewPhysicalGraphNode) {
-				int key = calculateCone(n.getPosition());
+				int key = calculateCone(n.getPosition(), sourceNode);
 
 				ArrayList<NewPhysicalGraphNode> list = cones.get(key);
 				if (list != null) {
@@ -83,7 +83,7 @@ public class RMYSForwarderMessageHandler extends RMYSMessageHandler {
 		// Since these shortest edges are selected anyway, they are added to the topologyControl neighbors
 		for (NewPhysicalGraphNode p : shortest.values()) {
 			if (p != null) {
-				getKnownNeighbors().add(p);
+				rmys.getKnownNeighbors().add(p);
 			}
 
 		}
@@ -128,7 +128,7 @@ public class RMYSForwarderMessageHandler extends RMYSMessageHandler {
 					before = RMYS.k - 1;
 				}
 				for (NewPhysicalGraphNode p : cones.get(before)) {
-					double currentangle = calculateAngleForCone(p.getPosition(), helppos);
+					double currentangle = calculateAngleForCone(p.getPosition(), helppos, sourceNode);
 					if (currentangle < smallestAngle) {
 						smallestAngle = currentangle;
 						counterclockwise = p;
@@ -143,24 +143,24 @@ public class RMYSForwarderMessageHandler extends RMYSMessageHandler {
 					after = 0;
 				}
 				for (NewPhysicalGraphNode p : cones.get(after)) {
-					double currentangle = calculateAngleForCone(p.getPosition(), helppos);
+					double currentangle = calculateAngleForCone(p.getPosition(), helppos, sourceNode);
 					if (currentangle > greatestAngle) {
 						greatestAngle = currentangle;
 						clockwise = p;
 					}
 				}
 
-				if (getKnownNeighbors().contains(clockwise)) {
-					getKnownNeighbors().add(counterclockwise);
-				} else if (getKnownNeighbors().contains(counterclockwise)) {
-					getKnownNeighbors().add(clockwise);
+				if (rmys.getKnownNeighbors().contains(clockwise)) {
+					rmys.getKnownNeighbors().add(counterclockwise);
+				} else if (rmys.getKnownNeighbors().contains(counterclockwise)) {
+					rmys.getKnownNeighbors().add(clockwise);
 				} else {
 					double disclock = clockwise.getPosition().distanceTo(sourceNode.getPosition());
 					double discounter = counterclockwise.getPosition().distanceTo(sourceNode.getPosition());
 					if (disclock < discounter) {
-						getKnownNeighbors().add(clockwise);
+						rmys.getKnownNeighbors().add(clockwise);
 					} else if (discounter < disclock) {
-						getKnownNeighbors().add(counterclockwise);
+						rmys.getKnownNeighbors().add(counterclockwise);
 					} else {
 						throw new RuntimeException("unspecified behaviour: distance from " + sourceNode.toString() + " to "
 								+ clockwise.toString() + " and " + counterclockwise.toString() + " is equal."); // is not specified in Modified Yao
@@ -177,7 +177,7 @@ public class RMYSForwarderMessageHandler extends RMYSMessageHandler {
 				final HashMap<NewPhysicalGraphNode, Double> anglemap = new HashMap<>();
 				for (ArrayList<NewPhysicalGraphNode> list : cones.values()) {
 					for (NewPhysicalGraphNode p : list) {
-						anglemap.put(p, calculateAngleForCone(p.getPosition(), helppos));
+						anglemap.put(p, calculateAngleForCone(p.getPosition(), helppos, sourceNode));
 						sortedNeighbors.add(p);
 					}
 				}
@@ -218,11 +218,11 @@ public class RMYSForwarderMessageHandler extends RMYSMessageHandler {
 				while (counterclockwiseNeighbors > 0 && index < sortedNeighbors.size()) {
 
 					NewPhysicalGraphNode p = sortedNeighbors.get(index);
-					if (getKnownNeighbors().contains(p)) {
+					if (rmys.getKnownNeighbors().contains(p)) {
 						index++;
 						continue;// take next node
 					}
-					getKnownNeighbors().add(p);
+					rmys.getKnownNeighbors().add(p);
 					index++;
 					counterclockwiseNeighbors -= 1;
 				}
@@ -231,11 +231,11 @@ public class RMYSForwarderMessageHandler extends RMYSMessageHandler {
 				index = sortedNeighbors.size() - 1;
 				while (clockwiseNeighbors > 0 && index >= 0) {
 					NewPhysicalGraphNode p = sortedNeighbors.get(index);
-					if (getKnownNeighbors().contains(p)) {
+					if (rmys.getKnownNeighbors().contains(p)) {
 						index--;
 						continue;// take next node
 					}
-					getKnownNeighbors().add(p);
+					rmys.getKnownNeighbors().add(p);
 					index--;
 					clockwiseNeighbors -= 1;
 				}
@@ -245,8 +245,13 @@ public class RMYSForwarderMessageHandler extends RMYSMessageHandler {
 
 		System.out.println("Neighbors for node: " + sourceNode.toString());
 		System.out.print("(");
-		for (PhysicalGraphNode pn : getKnownNeighbors()) {
+		for (PhysicalGraphNode pn : rmys.getKnownNeighbors()) {
 			System.out.print(pn.toString() + ", ");
+
+			RequestMessage request = new RequestMessage(rmys.tcID, sourceNode);
+
+			sourceNode.send(request, pn);// ask each neighbour for
+												// acknowledgement
 		}
 		System.out.println(")");
 	}
@@ -270,9 +275,9 @@ public class RMYSForwarderMessageHandler extends RMYSMessageHandler {
 	 * @param pos
 	 * @return id of the cone in which pos lies with respect to sourceNode
 	 */
-	private int calculateCone(Position pos) {
+	private static int calculateCone(Position pos, NewPhysicalGraphNode sourceNode) {
 
-		double angle = calculateAngle(pos);
+		double angle = calculateAngle(pos, sourceNode);
 
 		return (int) (angle / RMYS.cone_size);
 	}
@@ -281,8 +286,9 @@ public class RMYSForwarderMessageHandler extends RMYSMessageHandler {
 	 * @param pos
 	 * @return the angle between the horzontal axis source node and pos (starting at 3 o'clock counterclockwise)
 	 */
-	private double calculateAngle(Position pos) {
-		return calculateAngleForCone(pos, new Position(sourceNode.getPosition().xCoord + 1, sourceNode.getPosition().yCoord, 0));
+	private static double calculateAngle(Position pos, NewPhysicalGraphNode sourceNode) {
+		return calculateAngleForCone(pos,
+				new Position(sourceNode.getPosition().xCoord + 1, sourceNode.getPosition().yCoord, 0), sourceNode);
 	}
 
 	/**
@@ -290,7 +296,7 @@ public class RMYSForwarderMessageHandler extends RMYSMessageHandler {
 	 * @param reference
 	 * @return the angle between pos and reference in sourceNode
 	 */
-	private double calculateAngleForCone(Position pos, Position reference) {
+	private static double calculateAngleForCone(Position pos, Position reference, NewPhysicalGraphNode sourceNode) {
 
 		// create vectors
 		Vec2d vecOr = new Vec2d((pos.xCoord - sourceNode.getPosition().xCoord), (pos.yCoord - sourceNode.getPosition().yCoord));
@@ -310,7 +316,7 @@ public class RMYSForwarderMessageHandler extends RMYSMessageHandler {
 	 * @param vec
 	 * @return Euclidean length of vec
 	 */
-	private double calculateLength(Vec2d vec) {
+	private static double calculateLength(Vec2d vec) {
 		return Math.sqrt(vec.x * vec.x + vec.y * vec.y);
 	}
 

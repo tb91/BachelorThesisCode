@@ -45,28 +45,34 @@ public class RMYS extends BeaconlessTopologyControl {
 
 	@Override
 	protected void _init() {
-		pdt = new ReactivePDT(sourceNode);
-		pdt.addObserver(new TopologyControlObserver() {
+		if (sourceNode instanceof NewPhysicalGraphNode) {
+			pdt = new ReactivePDT(sourceNode);
+			pdt.addObserver(new TopologyControlObserver() {
 
-			@Override
-			public void onNotify(SubgraphStrategy topologyControl, EState event) {
-				if (pdt.hasTerminated()) { // as soon as RMYS gets notified
-											// thats rPDT has terminated it
-											// starts Modified Yao Step
+				@Override
+				public void onNotify(SubgraphStrategy topologyControl, EState event) {
+					if (pdt.hasTerminated()) { // as soon as RMYS gets notified
+												// thats rPDT has terminated it
+												// starts Modified Yao Step
 
-					forwarderMh.start();
+						RMYSForwarderMessageHandler.start((NewPhysicalGraphNode) sourceNode, pdt, forwarderMh);
+					}
+
 				}
+			});
 
-			}
-		});
+			// adds a RMYSMessageHandler for compatibility reasons to the
+			// ReactiveSpanner Framework
+			forwarderMh = new RMYSForwarderMessageHandler(getTopologyControlID(), sourceNode, pdt);
+			forwarderMh.initializeKnownNeighborsSet();
+			sourceNode.messageHandlerMap.put(super.getTopologyControlID(), forwarderMh);
 
-		// adds a RMYSMessageHandler for compatibility reasons to the
-		// ReactiveSpanner Framework
-		forwarderMh = new RMYSForwarderMessageHandler(getTopologyControlID(), sourceNode, pdt);
-		forwarderMh.initializeKnownNeighborsSet();
-		sourceNode.messageHandlerMap.put(super.getTopologyControlID(), forwarderMh);
+			pdt.start();
+		} else {
+			throw new RuntimeException("RMYS can use NewPhysicalGraphNodes only.");
+		}
 
-		pdt.start();
+
 	}
 
 	protected void calculate() {
