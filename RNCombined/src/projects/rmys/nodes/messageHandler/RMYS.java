@@ -23,6 +23,15 @@ import sinalgo.nodes.Position;
 /**
  * @author timmy
  *
+ *         also korrektheitsbeweis MY(PDT(v))<=>RMYS(v)...
+ * 
+ *         Beispiel aufschreiben rpdt im grundlagen rmys im kasten (abstrakt) rmys als beispiel
+ * 
+ *         korrektheitsbeweis
+ * 
+ *         eigenschaften: planar zusammenhang des graphen kosntant node degree spanner vermutung aufschreiben mit gründen anzahl der nachrichten
+ *         (nachrichtenkomplexität) (Nachrichtengröße) local rmys pdt mit 1hop beaconing(mit mys) worst case szenario mit punkten immer weiter
+ *         entfernt
  */
 public class RMYS extends BeaconlessTopologyControl {
 
@@ -56,7 +65,7 @@ public class RMYS extends BeaconlessTopologyControl {
 		if (sourceNode instanceof NewPhysicalGraphNode) {
 			pdt = new ReactivePDT(sourceNode);
 			pdt.addObserver(new TopologyControlObserver() {
-
+				// 77654767234
 				@Override
 				public void onNotify(SubgraphStrategy topologyControl, EState event) {
 					if (pdt.hasTerminated()) { // as soon as RMYS gets notified
@@ -340,6 +349,7 @@ public class RMYS extends BeaconlessTopologyControl {
 				// perform actual communication
 				RequestMessage request = new RequestMessage(rmys.tcID, sourceNode);
 
+				// FIXME: broadcast
 				sourceNode.send(request, pn);// ask each neighbour for
 												// acknowledgement of this edge
 			}

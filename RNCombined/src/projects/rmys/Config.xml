@@ -68,7 +68,7 @@
 		<useSameSeedAsInPreviousRun value="false" />
 
 		<!--If set to true, and useSameSeedAsInPreviousRun is set to false,  the random number generators of the framework uses the specified fixed seed.-->
-		<useFixedSeed value="true" />
+		<useFixedSeed value="false" />
 
 		<!--The seed to be used by the random number generators if useFixedSeed is set to true.-->
 		<fixedSeed value="77654767234" />
@@ -281,6 +281,6 @@ observation-->
 <!--Specify the active algorithms in batch mode. Each algorithm is separated by a comma. For more information see the CustomGlobalBatch-->
 	<ActiveAlgorithms value="BFP,rPDT" />
 </BatchMode>
-		</Custom>
+			</Custom>
 </Document>
 

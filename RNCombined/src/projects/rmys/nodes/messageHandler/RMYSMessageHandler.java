@@ -1,5 +1,6 @@
 package projects.rmys.nodes.messageHandler;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.util.HashMap;
 import java.util.UUID;
@@ -87,12 +88,15 @@ public class RMYSMessageHandler extends BeaconlessMessageHandler {
 		RMYS.calculateRMYS((NewPhysicalGraphNode) this.node, pdt, this); // this part can be optimized
 		Boolean accepted = false;
 		if (this.getKnownNeighbors().contains(sourceNode)) {
+			this.node.setColor(Color.green);
 			accepted = true;
 		} else {
+			this.node.setColor(Color.red);
 			accepted = false;
 		}
 		AcknowlegdementMessage ackms = new AcknowlegdementMessage(this.tcID, this.node, accepted);
 		this.node.send(ackms, sourceNode); // send answer to forwarder
+
 
 	}
 
