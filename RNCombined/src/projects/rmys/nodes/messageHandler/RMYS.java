@@ -6,8 +6,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 
-import com.sun.javafx.geom.Vec2d;
-
 import projects.reactiveSpanner.TopologyControlObserver;
 import projects.reactiveSpanner.nodes.messageHandlers.AbstractMessageHandler;
 import projects.reactiveSpanner.nodes.messageHandlers.BeaconlessTopologyControl;
@@ -391,25 +389,6 @@ public class RMYS extends BeaconlessTopologyControl {
 		System.out.println("not implemented yet");
 		return 0.0;
 
-	}
-
-	/**
-	 * @param vec
-	 * @return Euclidean length of vec
-	 */
-	private static double calculateLength(Vec2d vec) {
-		return Math.sqrt(vec.x * vec.x + vec.y * vec.y);
-	}
-
-	private static double dot(Vec2d vec1, Vec2d vec2) {
-		return (vec1.x * vec2.x + vec1.y * vec1.x);
-	}
-
-	private static Vec2d cross(Vec2d vec1, Vec2d vec2) {
-		Vec2d cr = new Vec2d();
-		cr.x = vec1.x * vec2.y;
-		cr.y = -vec1.y * vec2.x;
-		return cr;
 	}
 
 	@Override

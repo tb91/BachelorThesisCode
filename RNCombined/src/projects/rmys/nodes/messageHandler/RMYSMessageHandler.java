@@ -102,12 +102,12 @@ public class RMYSMessageHandler extends BeaconlessMessageHandler {
 		return null;
 	}
 
-
-
 	@Override
 	public void drawNode(Graphics g, PositionTransformation pt) {
 
 
 	}
+
+
 
 }

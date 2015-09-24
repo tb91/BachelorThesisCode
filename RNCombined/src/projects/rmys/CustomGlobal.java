@@ -342,14 +342,20 @@ public class CustomGlobal extends AbstractCustomGlobal {
 	 */
 	@Override
 	public void customPaint(Graphics g, PositionTransformation pt) {
-		
-		
+		for (SimpleNode n : Utilities.getNodeCollectionByClass(NewPhysicalGraphNode.class)) {
+			g.setColor(Color.red);
+
+			pt.translateToGUIPosition(new Position(Configuration.dimX + 1.0, Configuration.dimY - 0.75, 0));
+			final int startX = (int) (pt.guiX - Configuration.dimX * pt.getZoomFactor());
+			final int startY = (int) (pt.guiY - Configuration.dimY * pt.getZoomFactor());
+			g.drawString("" + n.ID + "", (int) (startX + n.getPosition().xCoord * pt.getZoomFactor()),
+					(int) (startY + n.getPosition().yCoord * pt.getZoomFactor()));
+
+		}
 
 	}
 
-	private void drawGrid(Color c, double diagonal, Graphics g, PositionTransformation pt) {
 
-	}
 
 	/**
 	 * Draw the edge from Node v to Node u (and vice versa from Node u to node v) in Color color
