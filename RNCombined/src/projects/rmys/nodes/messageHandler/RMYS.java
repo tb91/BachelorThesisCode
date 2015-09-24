@@ -370,8 +370,7 @@ public class RMYS extends BeaconlessTopologyControl {
 	 * @return the angle between the horizontal axis source node and node (starting at 3 o'clock counterclockwise)
 	 */
 	private static double calculateAngle(NewPhysicalGraphNode node, NewPhysicalGraphNode sourceNode) {
-		return calculateAngleForCone(node,
-				new Position(sourceNode.getPosition().xCoord + 1, sourceNode.getPosition().yCoord, 0), sourceNode);
+		return calculateAngleForCone(node, sourceNode);
 	}
 
 	/**
@@ -379,25 +378,19 @@ public class RMYS extends BeaconlessTopologyControl {
 	 * @param reference
 	 * @return the angle between pos and reference in sourceNode
 	 */
+	public static double calculateAngleForCone(NewPhysicalGraphNode node, NewPhysicalGraphNode sourceNode) {
+
+		double angle = Math.atan2(node.getPosition().yCoord - sourceNode.getPosition().yCoord,
+				sourceNode.getPosition().xCoord - node.getPosition().xCoord) + Math.PI;
+
+		return angle;
+	}
+
 	private static double calculateAngleForCone(NewPhysicalGraphNode node, Position reference,
 			NewPhysicalGraphNode sourceNode) {
+		System.out.println("not implemented yet");
+		return 0.0;
 
-		Position pos = node.getPosition();
-		// create vectors
-		Vec2d vecOr = new Vec2d((pos.xCoord - sourceNode.getPosition().xCoord),
-				(pos.yCoord - sourceNode.getPosition().yCoord));
-		Vec2d vechelp = new Vec2d(reference.xCoord - sourceNode.getPosition().xCoord,
-				reference.yCoord - sourceNode.getPosition().yCoord);
-		Vec2d poshelp = new Vec2d(reference.xCoord - pos.xCoord, reference.yCoord - pos.yCoord);
-
-		double vecOr_l = calculateLength(vecOr);
-		double vechelp_l = calculateLength(vechelp);
-		double poshelp_l = calculateLength(poshelp);
-
-		double angle = Math.atan2(dot(poshelp, cross(vecOr, vechelp)), dot(vecOr, vechelp));
-		System.out.println("angle between pos:" + node.toString() + ", source:" + sourceNode.toString() + ", with ref:"
-				+ reference.toString() + " = " + angle * 180 / Math.PI);
-		return angle;
 	}
 
 	/**
