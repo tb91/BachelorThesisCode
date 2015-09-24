@@ -23,18 +23,29 @@ import sinalgo.nodes.Position;
 /**
  * @author timmy
  *
- *         also korrektheitsbeweis MY(PDT(v))<=>RMYS(v)...
- * 
- *         Beispiel aufschreiben rpdt im grundlagen rmys im kasten (abstrakt) rmys als beispiel
- * 
- *         korrektheitsbeweis
- * 
- *         eigenschaften: planar zusammenhang des graphen kosntant node degree spanner vermutung aufschreiben mit gründen anzahl der nachrichten
- *         (nachrichtenkomplexität) (Nachrichtengröße) local rmys pdt mit 1hop beaconing(mit mys) worst case szenario mit punkten immer weiter
- *         entfernt
+ *         
  */
 public class RMYS extends BeaconlessTopologyControl {
-
+	/*
+	 * also korrektheitsbeweis MY(PDT(v))<=>RMYS(v)...
+	 * 
+	 *         Beispiel aufschreiben 
+	 *         rpdt im grundlagen 
+	 *         rmys im kasten (abstrakt) 
+	 *         rmys als beispiel
+	 * 
+	 *         korrektheitsbeweis
+	 * 
+	 *         eigenschaften: 
+	 *         planar 
+	 *         zusammenhang des graphen 
+	 *         kosntant node degree 
+	 *         spanner vermutung aufschreiben mit gründen 
+	 *         anzahl der nachrichten (nachrichtenkomplexität) (Nachrichtengröße) 
+	 *         local rmys pdt mit 1hop beaconing(mit mys)
+	 *         
+	 *         worst case szenario mit punkten immer weiter entfernt
+	 */
 	public static int k = -1;
 	public static double cone_size = -1;
 	public static double unit_radius = -1;
@@ -72,7 +83,7 @@ public class RMYS extends BeaconlessTopologyControl {
 												// thats rPDT has terminated it
 												// starts Modified Yao Step
 
-						calculateRMYS((NewPhysicalGraphNode) sourceNode, pdt, forwarderMh);
+						calculateMYS((NewPhysicalGraphNode) sourceNode, pdt, forwarderMh);
 					}
 
 				}
@@ -92,7 +103,7 @@ public class RMYS extends BeaconlessTopologyControl {
 
 	}
 
-	public static void calculateRMYS(NewPhysicalGraphNode sourceNode, SubgraphStrategy pdt, RMYSMessageHandler rmys) {
+	public static void calculateMYS(NewPhysicalGraphNode sourceNode, SubgraphStrategy pdt, RMYSMessageHandler rmys) {
 		// for each PDT neighbour calculate its cone id
 
 		// NodeId -> coneId

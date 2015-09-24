@@ -85,7 +85,7 @@ public class RMYSMessageHandler extends BeaconlessMessageHandler {
 	}
 
 	private void runRMYS(ReactivePDT pdt) {
-		RMYS.calculateRMYS((NewPhysicalGraphNode) this.node, pdt, this); // this part can be optimized
+		RMYS.calculateMYS((NewPhysicalGraphNode) this.node, pdt, this); // this part can be optimized
 		Boolean accepted = false;
 		if (this.getKnownNeighbors().contains(sourceNode)) {
 			this.node.setColor(Color.green);
