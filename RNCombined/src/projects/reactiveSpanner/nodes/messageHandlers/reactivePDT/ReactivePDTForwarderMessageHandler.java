@@ -2,6 +2,7 @@ package projects.reactiveSpanner.nodes.messageHandlers.reactivePDT;
 
 import java.awt.Color;
 import java.awt.Graphics;
+
 import projects.reactiveSpanner.CustomGlobal;
 import projects.reactiveSpanner.nodes.messageHandlers.BeaconlessTopologyControl;
 import projects.reactiveSpanner.nodes.messages.CTS;
@@ -9,7 +10,6 @@ import projects.reactiveSpanner.nodes.messages.RTS;
 import projects.reactiveSpanner.nodes.nodeImplementations.PhysicalGraphNode;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.tools.Tools;
-import sinalgo.tools.logging.LogL;
 
 public class ReactivePDTForwarderMessageHandler extends	ReactivePDTMessageHandler
 {
@@ -31,7 +31,7 @@ public class ReactivePDTForwarderMessageHandler extends	ReactivePDTMessageHandle
 	protected void receivedRTS(final RTS rts)
 	{
 		String warningMsg = "Warning: " + this.node.toString() + " received RTS as forwarder node. This case is not considered";
-		logger.logln(LogL.WARNING, warningMsg);
+		// logger.logln(LogL.WARNING, warningMsg);
 		throw new RuntimeException(warningMsg);
 	}
 	
@@ -44,20 +44,20 @@ public class ReactivePDTForwarderMessageHandler extends	ReactivePDTMessageHandle
 		if(hasTerminated)
 		{
 			String msg = new String("ReactivePDTForwarderNode " + this.sourceNode.toString() + " received CTS of Node " + cts.getTransmitter().toString() + " but has already terminated.");
-			logger.logln(LogL.WARNING, msg);
+			// logger.logln(LogL.WARNING, msg);
 			Tools.showMessageDialog(msg);
 //			throw new RuntimeException(msg);
 		}
 		if(this.knownNeighbors == null)
 			throw new RuntimeException("knownNeighbors Set of " + this.node.toString() + "and for topology control ID "+ tcID.toString() + " was not initialized!");
 		
-		logger.logln(LogL.INFO, "ReactivePDTForwarderNode " + this.sourceNode.toString() + " received CTS of Node " + cts.getTransmitter().toString());
+		// logger.logln(LogL.INFO, "ReactivePDTForwarderNode " + this.sourceNode.toString() + " received CTS of Node " + cts.getTransmitter().toString());
 		knownNeighbors.add(cts.getTransmitter());
 	}
 	
 	@Override
 	public void timerTriggerEvent() {
-		logger.logln(LogL.INFO, this.sourceNode.toString() + " has terminated it's reactive calculation of it's PDT neighborhood");
+		// logger.logln(LogL.INFO, this.sourceNode.toString() + " has terminated it's reactive calculation of it's PDT neighborhood");
 		sourceNode.connect(knownNeighbors, Color.PINK);
 		hasTerminated = true;
 		subgraphControl.notifyTermination();

@@ -69,13 +69,16 @@ public class RMYSMessageHandler extends BeaconlessMessageHandler {
 
 				@Override
 				public void onNotify(SubgraphStrategy topologyControl, EState event) {
-					runRMYS(pdt);
+					if (pdt.hasTerminated()) {
+						runRMYS(pdt);
+					}
+
 				}
 			});
 
 			pdt.start();
 		} else {
-			System.err.println(this.sourceNode.toString() + " got an unkown message: " + msg.toString());
+			System.err.println(this.node.toString() + " got an unkown message: " + msg.toString());
 		}
 
 	}

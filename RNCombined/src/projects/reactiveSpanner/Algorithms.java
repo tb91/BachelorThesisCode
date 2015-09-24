@@ -6,23 +6,15 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-
-
-
-
-
-
-
-
+import projects.reactiveSpanner.FloydWarshall.AdjMatrixEdgeWeightedDigraph;
+import projects.reactiveSpanner.FloydWarshall.DirectedEdge;
+import projects.reactiveSpanner.FloydWarshall.FloydWarshall;
 import projects.reactiveSpanner.nodes.messageHandlers.AbstractMessageHandler;
 import projects.reactiveSpanner.nodes.messageHandlers.SubgraphStrategy;
 import projects.reactiveSpanner.nodes.messageHandlers.SubgraphStrategy.EStrategy;
 import projects.reactiveSpanner.nodes.messageHandlers.Barriere.BarriereMessageHandler;
 import projects.reactiveSpanner.nodes.nodeImplementations.PhysicalGraphNode;
 import projects.reactiveSpanner.nodes.nodeImplementations.SimpleNode;
-import projects.reactiveSpanner.FloydWarshall.AdjMatrixEdgeWeightedDigraph;
-import projects.reactiveSpanner.FloydWarshall.DirectedEdge;
-import projects.reactiveSpanner.FloydWarshall.FloydWarshall;
 import sinalgo.configuration.Configuration;
 import sinalgo.configuration.CorruptConfigurationEntryException;
 import sinalgo.nodes.Node;
@@ -635,7 +627,8 @@ public class Algorithms {
 	
 	public static <T extends Node> boolean isViolatingGPDTCriteria(final Node u, final Node v, final Set<T> workingSet)
 	{
-		CustomGlobal.logger.logln(sinalgo.tools.logging.LogL.INFO, "proving of GPDT Criteria between " + u.toString() + " and " + v.toString() + " on working set " + workingSet.toString());
+		// CustomGlobal.logger.logln(sinalgo.tools.logging.LogL.INFO, "proving of GPDT Criteria between " + u.toString() + " and " + v.toString() + " on working
+		// set " + workingSet.toString());
 		Set<? extends Node> nodesInDisk = Algorithms.disk(u, v, workingSet).nodesInDisk;
 		
 		//needed in the inner loop
@@ -645,15 +638,16 @@ public class Algorithms {
 		for(Node w: nodesInDisk)
 		{
 			Set<? extends Node> nodesInUniqueCircle = Algorithms.disk(u, v, w, workingSet).nodesInDisk;
-			CustomGlobal.logger.logln(sinalgo.tools.logging.LogL.INFO, "nodes in unique circle of " + u.toString() + ", " + v.toString() + ", " + w.toString() + ": " + nodesInUniqueCircle.toString());
+			// CustomGlobal.logger.logln(sinalgo.tools.logging.LogL.INFO, "nodes in unique circle of " + u.toString() + ", " + v.toString() + ", " +
+			// w.toString() + ": " + nodesInUniqueCircle.toString());
 			
 			//we use those nodes that are not in the open half plane to that w belongs 
 			Set<T> nodesOfOtherHalfPlane = getNodesOfOpenHalfPlane(nodesInHalfPlanes, w, false);
 			
-			CustomGlobal.logger.logln(sinalgo.tools.logging.LogL.INFO, "nodes nodesOfOtherHalfPlane: " + nodesOfOtherHalfPlane.toString());
+			// CustomGlobal.logger.logln(sinalgo.tools.logging.LogL.INFO, "nodes nodesOfOtherHalfPlane: " + nodesOfOtherHalfPlane.toString());
 			nodesInUniqueCircle.retainAll(nodesOfOtherHalfPlane);
 			
-			CustomGlobal.logger.logln(sinalgo.tools.logging.LogL.INFO, "nodes in unique circle and in other half plane: " + nodesInUniqueCircle.toString());
+			// CustomGlobal.logger.logln(sinalgo.tools.logging.LogL.INFO, "nodes in unique circle and in other half plane: " + nodesInUniqueCircle.toString());
 			//if there are no nodes in the intersection of the circumcircle and the open half plane, 
 			//we have to prove if the sinus of the angle (uwv) is not smaller than the normalized distance (uv)
 			if(nodesInUniqueCircle.isEmpty())
@@ -663,13 +657,14 @@ public class Algorithms {
 				
 				if(sinAngle < normalizedDistUV)
 				{
-					CustomGlobal.logger.logln(sinalgo.tools.logging.LogL.INFO, "Sinus of angle between " + u.toString() + ", " + w.toString() 
-							+ " and " + v.toString() + "=" + sinAngle + " is smaller then normalized distance of " 
-							+ v.toString() + " to " + u.toString() + "="  + normalizedDistUV + " => Violation of GPDT Criteria");
+					// CustomGlobal.logger.logln(sinalgo.tools.logging.LogL.INFO, "Sinus of angle between " + u.toString() + ", " + w.toString()
+					// + " and " + v.toString() + "=" + sinAngle + " is smaller then normalized distance of "
+					// + v.toString() + " to " + u.toString() + "=" + normalizedDistUV + " => Violation of GPDT Criteria");
 					return true;
 				}
 			} else { //we do not continue if the unique circle contains nodes
-				CustomGlobal.logger.logln(sinalgo.tools.logging.LogL.INFO, "There are nodes in unique circle and other half plane => Violation of GPDT Criteria");
+				// CustomGlobal.logger.logln(sinalgo.tools.logging.LogL.INFO, "There are nodes in unique circle and other half plane => Violation of GPDT
+				// Criteria");
 				return true;
 			}
 		}
@@ -1059,7 +1054,7 @@ public class Algorithms {
 				
 				for(Node v : bmh.getKnownNeighbors()){
 					if(hopDistance){
-						DirectedEdge de = new DirectedEdge(u.ID, v.ID, (double)bmh.getHopsTo(v));
+						DirectedEdge de = new DirectedEdge(u.ID, v.ID, bmh.getHopsTo(v));
 						matrix.addEdge(de);
 					}else{
 						if(bmh.isVirtualNode(v)){

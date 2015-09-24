@@ -17,7 +17,6 @@ import projects.reactiveSpanner.record.ReactivePDTMessageRecord;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.nodes.Node;
 import sinalgo.tools.Tools;
-import sinalgo.tools.logging.LogL;
 
 public class ReactivePDTMessageHandler extends BeaconlessMessageHandler
 {		
@@ -52,7 +51,7 @@ public class ReactivePDTMessageHandler extends BeaconlessMessageHandler
 	{
 		this.t_max = ReactivePDT.getMaximumTimeout();
 		double timeout = delay();
-		logger.logln(LogL.INFO, this.node.toString() + " sets its contentionTimer to " + timeout + " ms");
+		// logger.logln(LogL.INFO, this.node.toString() + " sets its contentionTimer to " + timeout + " ms");
 		this.node.setColor(Color.CYAN);
 		currentMaxAngle = Math.PI * 0.5;
 		contentionTimer = new BeaconlessTimer(this.tcID, timeout, this.node);
@@ -63,7 +62,7 @@ public class ReactivePDTMessageHandler extends BeaconlessMessageHandler
 
 	@Override
 	protected void receivedCTS(final CTS cts) {
-		logger.logln(LogL.INFO, this.node.toString() + " received CTS from " + cts.getTransmitter().toString());
+		// logger.logln(LogL.INFO, this.node.toString() + " received CTS from " + cts.getTransmitter().toString());
 		if(this.knownNeighbors == null)
 			throw new RuntimeException("knownNeighbors Set of " + this.node.toString() + "and for topology control ID "+ tcID.toString() + " was not initialized!");
 		if(hasSentCTSMessage)
@@ -84,7 +83,8 @@ public class ReactivePDTMessageHandler extends BeaconlessMessageHandler
 					currentMaxAngle = angle;
 					
 					double oldTimeout = contentionTimer.getFireTime() - Tools.getGlobalTime();
-					System.out.println("oldTimeout: " + oldTimeout + " d: " + d + " angle: " + Math.toDegrees(angle) + " UDGr: " + BeaconlessTopologyControl.R + " tmax: " + t_max);
+					// System.out.println("oldTimeout: " + oldTimeout + " d: " + d + " angle: " + Math.toDegrees(angle) + " UDGr: " +
+					// BeaconlessTopologyControl.R + " tmax: " + t_max);
 					
 					final double timeProportionalToDiameterUVW = (d / (Math.sin(angle) * BeaconlessTopologyControl.R)) * t_max;
 					final double alreadyDelayedTime = Tools.getGlobalTime() - this.absoluteStartTime;	//relative
@@ -95,7 +95,7 @@ public class ReactivePDTMessageHandler extends BeaconlessMessageHandler
 					if(newRelativeTimeout < 0)
 						throw new RuntimeException("newRelativeTimeout=" + newRelativeTimeout +" cannot be negative!");
 					
-					logger.logln(LogL.INFO, this.node.toString() + " set contention timer from " + oldTimeout + " to " + newRelativeTimeout);
+					// logger.logln(LogL.INFO, this.node.toString() + " set contention timer from " + oldTimeout + " to " + newRelativeTimeout);
 					contentionTimer.cancel();
 					contentionTimer = new BeaconlessTimer(this.tcID, newRelativeTimeout, this.node);					
 				}

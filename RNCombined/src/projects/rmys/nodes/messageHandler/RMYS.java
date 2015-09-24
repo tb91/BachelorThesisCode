@@ -108,7 +108,7 @@ public class RMYS extends BeaconlessTopologyControl {
 		// find coneId for each Node and sort it into HashMap cones
 		for (SimpleNode n : sourceNode.messageHandlerMap.get(pdt.getTopologyControlID()).getKnownNeighbors()) {
 			if (n instanceof NewPhysicalGraphNode) {
-				int key = calculateCone(n.getPosition(), sourceNode);
+				int key = calculateCone((NewPhysicalGraphNode) n, sourceNode);
 
 				ArrayList<NewPhysicalGraphNode> list = cones.get(key);
 				if (list != null) {
@@ -143,7 +143,9 @@ public class RMYS extends BeaconlessTopologyControl {
 					shortestvalue = distance;
 				}
 			}
+			if (shortest != null) {
 			shortest.put(t, shortestNode);
+			}
 		}
 
 		// Since these shortest edges are selected anyway, they are added to the
@@ -203,7 +205,7 @@ public class RMYS extends BeaconlessTopologyControl {
 					before = RMYS.k - 1;
 				}
 				for (NewPhysicalGraphNode p : cones.get(before)) {
-					double currentangle = calculateAngleForCone(p.getPosition(), helppos, sourceNode);
+					double currentangle = calculateAngleForCone(p, helppos, sourceNode);
 					if (currentangle < smallestAngle) {
 						smallestAngle = currentangle;
 						counterclockwise = p;
@@ -218,7 +220,7 @@ public class RMYS extends BeaconlessTopologyControl {
 					after = 0;
 				}
 				for (NewPhysicalGraphNode p : cones.get(after)) {
-					double currentangle = calculateAngleForCone(p.getPosition(), helppos, sourceNode);
+					double currentangle = calculateAngleForCone(p, helppos, sourceNode);
 					if (currentangle > greatestAngle) {
 						greatestAngle = currentangle;
 						clockwise = p;
@@ -237,14 +239,9 @@ public class RMYS extends BeaconlessTopologyControl {
 					} else if (discounter < disclock) {
 						rmys.getKnownNeighbors().add(counterclockwise);
 					} else {
-						throw new RuntimeException("unspecified behaviour: distance from " + sourceNode.toString()
-								+ " to " + clockwise.toString() + " and " + counterclockwise.toString() + " is equal."); // is
-																															// not
-																															// specified
-																															// in
-																															// Modified
-																															// Yao
-																															// Step
+						throw new RuntimeException("unspecified behavior: distance from " + sourceNode.toString()
+								+ " to " + clockwise.toString() + " and " + counterclockwise.toString() + " is equal.");
+						// is not specified in Modified Yao Step
 
 					}
 				}
@@ -258,7 +255,7 @@ public class RMYS extends BeaconlessTopologyControl {
 				final HashMap<NewPhysicalGraphNode, Double> anglemap = new HashMap<>();
 				for (ArrayList<NewPhysicalGraphNode> list : cones.values()) {
 					for (NewPhysicalGraphNode p : list) {
-						anglemap.put(p, calculateAngleForCone(p.getPosition(), helppos, sourceNode));
+						anglemap.put(p, calculateAngleForCone(p, helppos, sourceNode));
 						sortedNeighbors.add(p);
 					}
 				}
@@ -359,22 +356,21 @@ public class RMYS extends BeaconlessTopologyControl {
 
 	/**
 	 * @param pos
-	 * @return id of the cone in which pos lies with respect to sourceNode
+	 * @return id of the cone in which node lies with respect to sourceNode
 	 */
-	private static int calculateCone(Position pos, NewPhysicalGraphNode sourceNode) {
+	private static int calculateCone(NewPhysicalGraphNode node, NewPhysicalGraphNode sourceNode) {
 
-		double angle = calculateAngle(pos, sourceNode);
+		double angle = calculateAngle(node, sourceNode);
 
 		return (int) (angle / RMYS.cone_size);
 	}
 
 	/**
 	 * @param pos
-	 * @return the angle between the horzontal axis source node and pos
-	 *         (starting at 3 o'clock counterclockwise)
+	 * @return the angle between the horizontal axis source node and node (starting at 3 o'clock counterclockwise)
 	 */
-	private static double calculateAngle(Position pos, NewPhysicalGraphNode sourceNode) {
-		return calculateAngleForCone(pos,
+	private static double calculateAngle(NewPhysicalGraphNode node, NewPhysicalGraphNode sourceNode) {
+		return calculateAngleForCone(node,
 				new Position(sourceNode.getPosition().xCoord + 1, sourceNode.getPosition().yCoord, 0), sourceNode);
 	}
 
@@ -383,8 +379,10 @@ public class RMYS extends BeaconlessTopologyControl {
 	 * @param reference
 	 * @return the angle between pos and reference in sourceNode
 	 */
-	private static double calculateAngleForCone(Position pos, Position reference, NewPhysicalGraphNode sourceNode) {
+	private static double calculateAngleForCone(NewPhysicalGraphNode node, Position reference,
+			NewPhysicalGraphNode sourceNode) {
 
+		Position pos = node.getPosition();
 		// create vectors
 		Vec2d vecOr = new Vec2d((pos.xCoord - sourceNode.getPosition().xCoord),
 				(pos.yCoord - sourceNode.getPosition().yCoord));
@@ -396,8 +394,9 @@ public class RMYS extends BeaconlessTopologyControl {
 		double vechelp_l = calculateLength(vechelp);
 		double poshelp_l = calculateLength(poshelp);
 
-		double angle = Math
-				.acos((vechelp_l * vechelp_l + vecOr_l * vecOr_l - poshelp_l * poshelp_l) / (2 * vechelp_l * vecOr_l));
+		double angle = Math.atan2(dot(poshelp, cross(vecOr, vechelp)), dot(vecOr, vechelp));
+		System.out.println("angle between pos:" + node.toString() + ", source:" + sourceNode.toString() + ", with ref:"
+				+ reference.toString() + " = " + angle * 180 / Math.PI);
 		return angle;
 	}
 
@@ -407,6 +406,17 @@ public class RMYS extends BeaconlessTopologyControl {
 	 */
 	private static double calculateLength(Vec2d vec) {
 		return Math.sqrt(vec.x * vec.x + vec.y * vec.y);
+	}
+
+	private static double dot(Vec2d vec1, Vec2d vec2) {
+		return (vec1.x * vec2.x + vec1.y * vec1.x);
+	}
+
+	private static Vec2d cross(Vec2d vec1, Vec2d vec2) {
+		Vec2d cr = new Vec2d();
+		cr.x = vec1.x * vec2.y;
+		cr.y = -vec1.y * vec2.x;
+		return cr;
 	}
 
 	@Override
