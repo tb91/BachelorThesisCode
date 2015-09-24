@@ -46,7 +46,6 @@ public class RMYSForwarderMessageHandler extends RMYSMessageHandler {
 					System.err.println(this.sourceNode
 							+ " tried to remove a node which was not in it's knownNeighbors-set.\nThis should not occur!");
 				}
-
 				System.err.println(
 						this.sourceNode + " removed " + msg.getTransmitter() + " from it's list of knownNeighbors");
 			}

@@ -224,24 +224,28 @@ public class RMYS extends BeaconlessTopologyControl {
 						clockwise = p;
 					}
 				}
-
-				if (rmys.getKnownNeighbors().contains(clockwise)) {
-					rmys.getKnownNeighbors().add(counterclockwise);
-				} else if (rmys.getKnownNeighbors().contains(counterclockwise)) {
-					rmys.getKnownNeighbors().add(clockwise);
-				} else {
-					double disclock = clockwise.getPosition().distanceTo(sourceNode.getPosition());
-					double discounter = counterclockwise.getPosition().distanceTo(sourceNode.getPosition());
-					if (disclock < discounter) {
-						rmys.getKnownNeighbors().add(clockwise);
-					} else if (discounter < disclock) {
+				if (clockwise != null && counterclockwise != null) {
+					if (rmys.getKnownNeighbors().contains(clockwise)) {
 						rmys.getKnownNeighbors().add(counterclockwise);
+					} else if (rmys.getKnownNeighbors().contains(counterclockwise)) {
+						rmys.getKnownNeighbors().add(clockwise);
 					} else {
-						throw new RuntimeException("unspecified behavior: distance from " + sourceNode.toString()
-								+ " to " + clockwise.toString() + " and " + counterclockwise.toString() + " is equal.");
-						// is not specified in Modified Yao Step
+						double disclock = clockwise.getPosition().distanceTo(sourceNode.getPosition());
+						double discounter = counterclockwise.getPosition().distanceTo(sourceNode.getPosition());
+						if (disclock < discounter) {
+							rmys.getKnownNeighbors().add(clockwise);
+						} else if (discounter < disclock) {
+							rmys.getKnownNeighbors().add(counterclockwise);
+						} else {
+							throw new RuntimeException("unspecified behavior: distance from " + sourceNode.toString()
+									+ " to " + clockwise.toString() + " and " + counterclockwise.toString()
+									+ " is equal.");
+							// is not specified in Modified Yao Step
 
+						}
 					}
+				} else {
+
 				}
 
 			} else {
@@ -368,26 +372,32 @@ public class RMYS extends BeaconlessTopologyControl {
 	 * @return the angle between the horizontal axis source node and node (starting at 3 o'clock counterclockwise)
 	 */
 	private static double calculateAngle(NewPhysicalGraphNode node, NewPhysicalGraphNode sourceNode) {
-		return calculateAngleForCone(node, sourceNode);
+		return calculateAngleForCone(node.getPosition(), sourceNode.getPosition());
 	}
 
 	/**
 	 * @param pos
-	 * @param reference
-	 * @return the angle between pos and reference in sourceNode
+	 * @param sourceNodePos
+	 * @return the angle between pos and x-axis in sourceNodePos between 0 and 2Pi
 	 */
-	public static double calculateAngleForCone(NewPhysicalGraphNode node, NewPhysicalGraphNode sourceNode) {
+	public static double calculateAngleForCone(Position pos, Position sourceNodePos) {
 
-		double angle = Math.atan2(node.getPosition().yCoord - sourceNode.getPosition().yCoord,
-				sourceNode.getPosition().xCoord - node.getPosition().xCoord) + Math.PI;
+		double angle = Math.atan2(pos.yCoord - sourceNodePos.yCoord, sourceNodePos.xCoord - pos.xCoord) + Math.PI;
 
 		return angle;
 	}
 
 	private static double calculateAngleForCone(NewPhysicalGraphNode node, Position reference,
 			NewPhysicalGraphNode sourceNode) {
-		System.out.println("not implemented yet");
-		return 0.0;
+
+		Position nodePos = node.getPosition();
+		Position sourceNodePos = sourceNode.getPosition();
+
+		double refangle = calculateAngleForCone(reference, sourceNodePos);
+		double posangle = calculateAngleForCone(nodePos, sourceNodePos);
+		double oriangle = posangle - refangle;
+		
+		return oriangle;
 
 	}
 
