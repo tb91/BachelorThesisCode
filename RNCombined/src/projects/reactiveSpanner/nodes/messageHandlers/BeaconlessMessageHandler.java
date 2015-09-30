@@ -44,7 +44,7 @@ public abstract class BeaconlessMessageHandler extends AbstractMessageHandler<Ph
 	 * Broadcasting a CTS message to all neighbors in connection range
 	 */
 	public void broadcastCTS(){
-		logger.logln(LogL.INFO, this.node.toString() + " broadcasts CTS to topology control ID " + this.tcID.toString());
+		// logger.logln(LogL.INFO, this.node.toString() + " broadcasts CTS to topology control ID " + this.tcID.toString());
 		MessageTimer broadcastCTSTimer = new MessageTimer(new CTS(this.tcID, node, this.planarSubgraphCreationStrategy));
 		broadcastCTSTimer.startRelative(1, node); // Synchronized mode does not allow direct broadcast
 		

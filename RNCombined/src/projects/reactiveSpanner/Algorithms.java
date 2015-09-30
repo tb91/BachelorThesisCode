@@ -668,7 +668,7 @@ public class Algorithms {
 				return true;
 			}
 		}
-		CustomGlobal.logger.logln(sinalgo.tools.logging.LogL.INFO, "No violation of GPDT Criteria");
+		// CustomGlobal.logger.logln(sinalgo.tools.logging.LogL.INFO, "No violation of GPDT Criteria");
 		return false;
 	}
 	
