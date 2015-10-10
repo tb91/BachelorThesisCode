@@ -64,23 +64,26 @@ public class RMYSMessageHandler extends BeaconlessMessageHandler {
 	@Override
 	public void receivedMessage(AbstractMessage msg) {
 		if (msg instanceof RequestMessage) {
-			final ReactivePDT pdt = new ReactivePDT(this.node);
+			if (((RequestMessage) msg).candidates.contains(this.node)) {
+				final ReactivePDT pdt = new ReactivePDT(this.node);
 
-			pdt.addObserver(new TopologyControlObserver() {
+				pdt.addObserver(new TopologyControlObserver() {
 
-				@Override
-				public void onNotify(SubgraphStrategy topologyControl, EState event) {
-					if (pdt.hasTerminated()) {
-						runRMYS(pdt);
+					@Override
+					public void onNotify(SubgraphStrategy topologyControl, EState event) {
+						if (pdt.hasTerminated()) {
+							runRMYS(pdt);
+						}
+
 					}
+				});
 
-				}
-			});
-
-			pdt.start();
+				pdt.start();
+			}
 		} else {
 			System.err.println(this.node.toString() + " got an unkown message: " + msg.toString());
 		}
+
 
 	}
 

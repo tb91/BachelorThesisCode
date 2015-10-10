@@ -350,30 +350,27 @@ public class RMYS extends BeaconlessTopologyControl {
 		}
 
 		if (rmys instanceof RMYSForwarderMessageHandler) {
+			RequestMessage request = new RequestMessage(rmys.tcID, sourceNode);
 			for (PhysicalGraphNode pn : rmys.getKnownNeighbors()) {
 				// create Messagehandler so the node knows what to do
+				// this is needed, because of the use of the message handlers for each node
 
 				RMYSMessageHandler mh = new RMYSMessageHandler(rmys.tcID, pn, sourceNode);
 				pn.messageHandlerMap.put(rmys.tcID, mh);
 
+				request.candidates.add((NewPhysicalGraphNode) pn);// save typecast
 
-				// perform actual communication
-				RequestMessage request = new RequestMessage(rmys.tcID, sourceNode);
-
-				// FIXME: broadcast
-				sourceNode.send(request, pn);// ask each neighbour for
-												// acknowledgement of this edge
 			}
+			System.out.println("Neighbors for node: " + sourceNode.toString());
+			System.out.print("(");
+			for (PhysicalGraphNode pn : rmys.getKnownNeighbors()) {
+				System.out.print(pn.toString() + ", ");
+			}
+			System.out.println(")");
 		} else {
-
 		}
 
-		System.out.println("Neighbors for node: " + sourceNode.toString());
-		System.out.print("(");
-		for (PhysicalGraphNode pn : rmys.getKnownNeighbors()) {
-			System.out.print(pn.toString() + ", ");
-		}
-		System.out.println(")");
+
 
 	}
 
