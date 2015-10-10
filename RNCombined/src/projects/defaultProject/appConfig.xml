@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sinalgo>
 	<ProjectSelector windowWidth="822" windowHeight="479" lastChosenProject="rmys" windowPosX="702" windowPosY="325" isMaximized="false" selectedTab="2" />
-	<GUI windowWidth="800" windowHeight="600" windowPosX="176" windowPosY="286" isMaximized="false" ControlPanelExpandSimulation="true" ControlPanelShowFullViewPanel="true" ControlPanelShowTextPanel="true" ControlPanelShowProjectControl="true" RunOperationIsLimited="true" helpWindowWidth="500" helpWindowHeight="500" helpWindowPosX="200" helpWindowPosY="200" helpWindowIsMaximized="false" />
-	<RandomSeed seedFromPreviousRun="-2606450525689614283" />
-	<App lastSelectedFileDirectory="" checkForUpdatesAtStartup="true" updateCheckTimeStamp="1443073547965" runCmdLineArgs="" />
-	<GenNodesDlg numNodes="200" />
+	<GUI windowWidth="800" windowHeight="600" windowPosX="1063" windowPosY="215" isMaximized="false" ControlPanelExpandSimulation="true" ControlPanelShowFullViewPanel="true" ControlPanelShowTextPanel="true" ControlPanelShowProjectControl="true" RunOperationIsLimited="true" helpWindowWidth="500" helpWindowHeight="500" helpWindowPosX="200" helpWindowPosY="200" helpWindowIsMaximized="false" />
+	<RandomSeed seedFromPreviousRun="1436212559431585288" />
+	<App lastSelectedFileDirectory="" checkForUpdatesAtStartup="true" updateCheckTimeStamp="1444488089970" runCmdLineArgs="-batch -project rmys -gen 157 rmys:NewPhysicalGraphNode Random UDG -overwrite outputToConsole=true logConfiguration=false dimX=300 dimY=300 UDG/rMax=30 " />
+	<GenNodesDlg numNodes="50" />
 </sinalgo>
 

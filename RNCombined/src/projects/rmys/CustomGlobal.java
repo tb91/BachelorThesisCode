@@ -94,7 +94,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
 
 	public static CustomGlobalBatch batch = CustomGlobalBatch.getInstance();
 	public static double R = -1;
-
+	public static boolean showids = true;
 
 
 	static {
@@ -243,6 +243,8 @@ public class CustomGlobal extends AbstractCustomGlobal {
 		}
 	}
 
+
+
 	@AbstractCustomGlobal.CustomButton(buttonText = "create example", toolTipText = "creates simple example")
 	public void example1() throws CorruptConfigurationEntryException {
 		NewPhysicalGraphNode p1 = new NewPhysicalGraphNode();
@@ -282,6 +284,12 @@ public class CustomGlobal extends AbstractCustomGlobal {
 			v.neighborUDG();
 		}
 		// saveGraphInCache("UDG");
+	}
+
+	@AbstractCustomGlobal.CustomButton(buttonText = "IDS", toolTipText = "draws ids in red next to each node")
+	public void toogleShowIds() {
+		showids = !showids;
+		Tools.repaintGUI();
 	}
 
 	@AbstractCustomGlobal.CustomButton(
@@ -342,6 +350,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
 	 */
 	@Override
 	public void customPaint(Graphics g, PositionTransformation pt) {
+		if (showids) {
 		for (SimpleNode n : Utilities.getNodeCollectionByClass(NewPhysicalGraphNode.class)) {
 			g.setColor(Color.red);
 
@@ -352,7 +361,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
 					(int) (startY + n.getPosition().yCoord * pt.getZoomFactor()));
 
 		}
-
+		}
 	}
 
 

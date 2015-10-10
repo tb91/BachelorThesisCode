@@ -27,21 +27,21 @@ import sinalgo.nodes.Position;
  */
 public class RMYS extends BeaconlessTopologyControl {
 	/*
-	 * also korrektheitsbeweis MY(PDT(v))<=>RMYS(v)...
+	 * also korrektheitsbeweis MY(PDT(v))<=>RMYS(v)... erledigt
 	 * 
 	 *         Beispiel aufschreiben 
 	 *         rpdt im grundlagen 
-	 *         rmys im kasten (abstrakt) 
+	 *         rmys im kasten (abstrakt)  erledigt
 	 *         rmys als beispiel
 	 * 
-	 *         korrektheitsbeweis
+	 *         korrektheitsbeweis X erledigt
 	 * 
 	 *         eigenschaften: 
 	 *         planar 
 	 *         zusammenhang des graphen 
 	 *         kosntant node degree 
 	 *         spanner vermutung aufschreiben mit gründen 
-	 *         anzahl der nachrichten (nachrichtenkomplexität) (Nachrichtengröße) 
+	 *         anzahl der nachrichten (nachrichtenkomplexität) (Nachrichtengröße) erledigt 
 	 *         local rmys pdt mit 1hop beaconing(mit mys)
 	 *         
 	 *         worst case szenario mit punkten immer weiter entfernt

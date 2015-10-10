@@ -43,7 +43,7 @@ my $SQRT2 = 1.41421356237309504880;
 my $dimX = 300; # x dimension of plane
 my $dimY = 300; # y dimension of plane
 my $rUDG = 30; #radius of the unit disk; should not be larger than GeometricNodeCollection/rMax
-my $numRounds = 4004;	# number of rounds, sinalgo have at least to run (for BFP it should be at least 2000 because of numeric errors)
+my $numRounds = 100;	# number of rounds, sinalgo have at least to run (for BFP it should be at least 2000 because of numeric errors)
 ################
 #STARTING POINT#
 ################
@@ -107,19 +107,16 @@ for(;$density <= $maxDensity; $density += 1) {
 			"sinalgo.Run " .
 			"-batch " .						#run the simulation in batch mode
 			#"exitAfter=true exitAfter/Rounds=$numRounds " .
-			"-project reactiveSpanner " .
-			"-gen $randomNodes reactiveSpanner:PhysicalGraphNode Random UDG " .
-			"-gen 2 reactiveSpanner:PhysicalGraphNode Line2D UDG " . # we put the routing start and destination node at fixed positions
+			"-project rmys " .
+			"-gen $randomNodes rmys:NewPhysicalGraphNode Random UDG " .
 			"-overwrite " .
-			"outputToConsole=false " .					# no logging output in the terminal
+			"outputToConsole=true " .					# no logging output in the terminal
 			"logConfiguration=false " .					# no logging output to file
 			"dimX=$dimX " .								# set the dimension
 			"dimY=$dimY " .
 			#"-rounds $numRounds " .					# number of rounds
 			#"AutoStart=true " .               			# Automatically start communication protocol
-			"UDG/rMax=$rUDG " .							# radius of the unit disk; should not be larger than GeometricNodeCollection/rMax
-			"DistributionModel/Line/ToX=$toX " .		# x-coordinate of the routing destination (start position is (0,0))
-			"DistributionModel/Line/ToY=$toY "		# y-coordinate of the routing destination (start position is (0,0)) 
+			"UDG/rMax=$rUDG " 							# radius of the unit disk; should not be larger than GeometricNodeCollection/rMax
 			);		
 	}
 	print "Completed calculation with density " . $density . ". Current simulation time: " . (time - $roundTime) . " seconds. \n\n";

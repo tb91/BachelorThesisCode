@@ -47,9 +47,9 @@ import java.lang.reflect.InvocationTargetException;
 import javax.swing.JOptionPane;
 
 import sinalgo.Run;
+import sinalgo.configuration.AppConfig;
 import sinalgo.configuration.Configuration;
 import sinalgo.configuration.CorruptConfigurationEntryException;
-import sinalgo.configuration.AppConfig;
 import sinalgo.configuration.WrongConfigurationException;
 import sinalgo.gui.GUI;
 import sinalgo.gui.ProjectSelector;
@@ -235,6 +235,8 @@ public class Main{
 			Global.log.logln(LogL.ALWAYS, "> Starting the Simulation.\n");
 			
 			runtime.preRun();
+
+			System.out.println("numberofrounds: " + runtime.getNumberOfRounds());
 
 			runtime.run(runtime.getNumberOfRounds(), false); // possibly call it with 0 (in batch mode, we run until the stopping criteria is met in this case.
 		}
