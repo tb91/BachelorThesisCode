@@ -42,7 +42,7 @@ use Carp;
 my $density = $ARGV[0];	# in general 4 is a good value
 my $maxDensity = $ARGV[1];
 my $passes = $ARGV[2];
-my $euclDistance = $ARGV[3]; # distance between start position and end position (used for routing)
+#my $euclDistance = $ARGV[3]; # distance between start position and end position (used for routing)
 
 unless (defined $density && defined $maxDensity && defined $passes)
 {
@@ -57,10 +57,10 @@ unless ($passes > 0 && $density > 0 && $maxDensity > 0)
 {
 	die "Given parameter have to be positive!"
 }
-unless (defined $euclDistance)
-{
-    $euclDistance = 100;    
-}
+#unless (defined $euclDistance)
+#{
+#    $euclDistance = 100;    
+#}
 
 
 #run from density $density until $maxDensity and for each $passes times
@@ -75,7 +75,7 @@ unless(defined $ARGV[4])
 for(;$density <= $maxDensity; $density += 1) {
 	my $pid = fork();
     if ($pid==0) { # child
-        exec("perl generateSamples.pl $density $density $passes $euclDistance"); #never returns
+        exec("perl generateSamples.pl $density $density $passes"); #never returns
         die "Exec $density failed: $!\n";
     } elsif (!defined $pid) {
         warn "Fork $density failed: $!\n";
@@ -100,7 +100,7 @@ sub handleSpecial {
     {
         my $pid = fork();
         if ($pid==0) { # child
-            exec("perl generateSamples.pl $density $density $ARGV[4] $euclDistance"); #never returns
+            exec("perl generateSamples.pl $density $density $ARGV[4]"); #never returns
             die "Exec $density failed: $!\n";
         } elsif (!defined $pid) {
             warn "Fork $density failed: $!\n";

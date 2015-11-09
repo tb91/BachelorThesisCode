@@ -8,10 +8,10 @@
 		<dimensions value="2" />
 
 		<!--Length of the deployment field along the x-axis.-->
-		<dimX value="100" />
+		<dimX value="300" />
 
 		<!--Length of the deployment field along the y-axis.-->
-		<dimY value="100" />
+		<dimY value="300" />
 
 		<!--Length of the deployment field along the z-axis.-->
 		<dimZ value="0" />
@@ -71,7 +71,7 @@
 		<useFixedSeed value="true" />
 
 		<!--The seed to be used by the random number generators if useFixedSeed is set to true.-->
-		<fixedSeed value="77654767234" />
+		<fixedSeed value="2423061921790389888" />
 
 		<!--***********************************************************************-->
 		<!--  Logging                                                              -->
@@ -281,6 +281,6 @@ observation-->
 <!--Specify the active algorithms in batch mode. Each algorithm is separated by a comma. For more information see the CustomGlobalBatch-->
 	<ActiveAlgorithms value="BFP,rPDT" />
 </BatchMode>
-				</Custom>
+								</Custom>
 </Document>
 

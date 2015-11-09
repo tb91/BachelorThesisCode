@@ -59,7 +59,7 @@ chdir $dir;
 my $density = $ARGV[0];	# in general 4 is a good value
 my $maxDensity = $ARGV[1];
 my $passes = $ARGV[2];
-my $euclDistance = $ARGV[3]; # distance between start position and end position (used for routing)
+#my $euclDistance = $ARGV[3]; # distance between start position and end position (used for routing)
 
 unless (defined $density && defined $maxDensity && defined $passes)
 {
@@ -74,22 +74,22 @@ unless ($passes > 0 && $density > 0 && $maxDensity > 0)
 {
 	die "Given parameter have to be positive!";
 }
-unless (defined $euclDistance)
-{
-	if($euclDistance <= 0)
-	{
-		die "Euclidean distance is given, but has to be positive!";
-	}
-	$euclDistance = 100;	
-}
+#unless (defined $euclDistance)
+#{
+#	if($euclDistance <= 0)
+#	{
+#		die "Euclidean distance is given, but has to be positive!";
+#	}
+#	$euclDistance = 100;	
+#}
 
-my $toX = $SQRT2 * $euclDistance / 2;
-my $toY = $SQRT2 * $euclDistance / 2;
+#my $toX = $SQRT2 * $euclDistance / 2;
+#my $toY = $SQRT2 * $euclDistance / 2;
 
-unless ($toX <= $dimX && $toY <= $dimY)
-{
-	die "Given Euclidean distance $euclDistance exceeds dimensions of the simulation area!";
-}
+#unless ($toX <= $dimX && $toY <= $dimY)
+#{
+#	die "Given Euclidean distance $euclDistance exceeds dimensions of the simulation area!";
+#}
 #run from density $density until $maxDensity and for each $passes times
 print "Generating $passes graphs each for node densities from $density to $maxDensity...\n";
 
