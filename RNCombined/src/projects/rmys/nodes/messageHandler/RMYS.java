@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import projects.reactiveSpanner.TopologyControlObserver;
 import projects.reactiveSpanner.nodes.messageHandlers.AbstractMessageHandler;
@@ -18,33 +20,29 @@ import projects.rmys.nodes.nodeImplementations.NewPhysicalGraphNode;
 import sinalgo.configuration.Configuration;
 import sinalgo.configuration.CorruptConfigurationEntryException;
 import sinalgo.gui.transformation.PositionTransformation;
+import sinalgo.nodes.Node;
 import sinalgo.nodes.Position;
 
 /**
  * @author timmy
  *
- *         
+ * 
  */
 public class RMYS extends BeaconlessTopologyControl {
 	/*
 	 * also korrektheitsbeweis MY(PDT(v))<=>RMYS(v)... erledigt
 	 * 
-	 *         Beispiel aufschreiben 
-	 *         rpdt im grundlagen 
-	 *         rmys im kasten (abstrakt)  erledigt
-	 *         rmys als beispiel
+	 * Beispiel aufschreiben rpdt im grundlagen rmys im kasten (abstrakt)
+	 * erledigt rmys als beispiel
 	 * 
-	 *         korrektheitsbeweis X erledigt
+	 * korrektheitsbeweis X erledigt
 	 * 
-	 *         eigenschaften: 
-	 *         planar 
-	 *         zusammenhang des graphen 
-	 *         kosntant node degree 
-	 *         spanner vermutung aufschreiben mit gründen 
-	 *         anzahl der nachrichten (nachrichtenkomplexität) (Nachrichtengröße) erledigt 
-	 *         local rmys pdt mit 1hop beaconing(mit mys)
-	 *         
-	 *         worst case szenario mit punkten immer weiter entfernt
+	 * eigenschaften: planar zusammenhang des graphen kosntant node degree
+	 * spanner vermutung aufschreiben mit gründen anzahl der nachrichten
+	 * (nachrichtenkomplexität) (Nachrichtengröße) erledigt local rmys pdt
+	 * mit 1hop beaconing(mit mys)
+	 * 
+	 * worst case szenario mit punkten immer weiter entfernt
 	 */
 	public static int k = -1;
 	public static double cone_size = -1;
@@ -83,7 +81,8 @@ public class RMYS extends BeaconlessTopologyControl {
 												// thats rPDT has terminated it
 												// starts Modified Yao Step
 
-						calculateMYS((NewPhysicalGraphNode) sourceNode, pdt, forwarderMh);
+						forwarderMh.getKnownNeighbors().addAll(calculateMYS((NewPhysicalGraphNode) sourceNode, pdt));
+						checkIfEdgeIsBidirectional(forwarderMh);
 					}
 
 				}
@@ -100,10 +99,9 @@ public class RMYS extends BeaconlessTopologyControl {
 			throw new RuntimeException("RMYS can use NewPhysicalGraphNodes only.");
 		}
 
-
 	}
 
-	public static void calculateMYS(NewPhysicalGraphNode sourceNode, SubgraphStrategy pdt, RMYSMessageHandler rmys) {
+	public static Set<NewPhysicalGraphNode> calculateMYS(NewPhysicalGraphNode sourceNode, SubgraphStrategy pdt) {
 		// for each PDT neighbour calculate its cone id
 
 		// NodeId -> coneId
@@ -162,15 +160,16 @@ public class RMYS extends BeaconlessTopologyControl {
 				}
 			}
 			if (shortest != null) {
-			shortest.put(t, shortestNode);
+				shortest.put(t, shortestNode);
 			}
 		}
 
+		HashSet<NewPhysicalGraphNode> calculatedNeighbors = new HashSet<>();
 		// Since these shortest edges are selected anyway, they are added to the
 		// topologyControl neighbors
 		for (NewPhysicalGraphNode p : shortest.values()) {
 			if (p != null) {
-				rmys.getKnownNeighbors().add(p);
+				calculatedNeighbors.add(p);
 			}
 
 		}
@@ -245,17 +244,17 @@ public class RMYS extends BeaconlessTopologyControl {
 					}
 				}
 				if (clockwise != null && counterclockwise != null) {
-					if (rmys.getKnownNeighbors().contains(clockwise)) {
-						rmys.getKnownNeighbors().add(counterclockwise);
-					} else if (rmys.getKnownNeighbors().contains(counterclockwise)) {
-						rmys.getKnownNeighbors().add(clockwise);
+					if (calculatedNeighbors.contains(clockwise)) {
+						calculatedNeighbors.add(counterclockwise);
+					} else if (calculatedNeighbors.contains(counterclockwise)) {
+						calculatedNeighbors.add(clockwise);
 					} else {
 						double disclock = clockwise.getPosition().distanceTo(sourceNode.getPosition());
 						double discounter = counterclockwise.getPosition().distanceTo(sourceNode.getPosition());
 						if (disclock < discounter) {
-							rmys.getKnownNeighbors().add(clockwise);
+							calculatedNeighbors.add(clockwise);
 						} else if (discounter < disclock) {
-							rmys.getKnownNeighbors().add(counterclockwise);
+							calculatedNeighbors.add(counterclockwise);
 						} else {
 							throw new RuntimeException("unspecified behavior: distance from " + sourceNode.toString()
 									+ " to " + clockwise.toString() + " and " + counterclockwise.toString()
@@ -302,7 +301,7 @@ public class RMYS extends BeaconlessTopologyControl {
 																// and 7 are
 																// empty-> so
 																// plus 1
-				assert(sequence_l > 1);
+				assert (sequence_l > 1);
 
 				int clockwiseNeighbors = (int) (sequence_l / 2.0);
 				int counterclockwiseNeighbors = (int) ((sequence_l + 1) / 2.0);
@@ -323,11 +322,11 @@ public class RMYS extends BeaconlessTopologyControl {
 				while (counterclockwiseNeighbors > 0 && index < sortedNeighbors.size()) {
 
 					NewPhysicalGraphNode p = sortedNeighbors.get(index);
-					if (rmys.getKnownNeighbors().contains(p)) {
+					if (calculatedNeighbors.contains(p)) {
 						index++;
 						continue;// take next node
 					}
-					rmys.getKnownNeighbors().add(p);
+					calculatedNeighbors.add(p);
 					index++;
 					counterclockwiseNeighbors -= 1;
 				}
@@ -337,11 +336,11 @@ public class RMYS extends BeaconlessTopologyControl {
 				index = sortedNeighbors.size() - 1;
 				while (clockwiseNeighbors > 0 && index >= 0) {
 					NewPhysicalGraphNode p = sortedNeighbors.get(index);
-					if (rmys.getKnownNeighbors().contains(p)) {
+					if (calculatedNeighbors.contains(p)) {
 						index--;
 						continue;// take next node
 					}
-					rmys.getKnownNeighbors().add(p);
+					calculatedNeighbors.add(p);
 					index--;
 					clockwiseNeighbors -= 1;
 				}
@@ -349,28 +348,28 @@ public class RMYS extends BeaconlessTopologyControl {
 			}
 		}
 
-		if (rmys instanceof RMYSForwarderMessageHandler) {
-			RequestMessage request = new RequestMessage(rmys.tcID, sourceNode);
-			for (PhysicalGraphNode pn : rmys.getKnownNeighbors()) {
-				// create Messagehandler so the node knows what to do
-				// this is needed, because of the use of the message handlers for each node
+		return calculatedNeighbors;
 
-				RMYSMessageHandler mh = new RMYSMessageHandler(rmys.tcID, pn, sourceNode);
-				pn.messageHandlerMap.put(rmys.tcID, mh);
+	}
 
-				request.candidates.add((NewPhysicalGraphNode) pn);// save typecast
+	public static void checkIfEdgeIsBidirectional(RMYSForwarderMessageHandler rmys) {
 
-			}
-			System.out.println("Neighbors for node: " + sourceNode.toString());
-			System.out.print("(");
-			for (PhysicalGraphNode pn : rmys.getKnownNeighbors()) {
-				System.out.print(pn.toString() + ", ");
-			}
-			System.out.println(")");
-		} else {
+		RequestMessage request = new RequestMessage(rmys.tcID, rmys.node);
+		for (PhysicalGraphNode pn : rmys.getKnownNeighbors()) {
+			// create Messagehandler so the node knows what to do
+			// this is needed, because of the use of the message handlers for
+			// each node
+
+			RMYSMessageHandler mh = new RMYSMessageHandler(rmys.tcID, pn, rmys.node);
+			pn.messageHandlerMap.put(rmys.tcID, mh);
+
+			request.candidates.add((NewPhysicalGraphNode) pn);// save typecast
+
 		}
-
-
+		System.out.println("Neighbors for node: " + rmys.node.toString());
+		System.out.print("(");
+		System.out.println(rmys.getKnownNeighbors());
+		System.out.println(")");
 
 	}
 
@@ -387,7 +386,8 @@ public class RMYS extends BeaconlessTopologyControl {
 
 	/**
 	 * @param pos
-	 * @return the angle between the horizontal axis source node and node (starting at 3 o'clock counterclockwise)
+	 * @return the angle between the horizontal axis source node and node
+	 *         (starting at 3 o'clock counterclockwise)
 	 */
 	private static double calculateAngle(NewPhysicalGraphNode node, NewPhysicalGraphNode sourceNode) {
 		return calculateAngleForCone(node.getPosition(), sourceNode.getPosition());
@@ -396,7 +396,8 @@ public class RMYS extends BeaconlessTopologyControl {
 	/**
 	 * @param pos
 	 * @param sourceNodePos
-	 * @return the angle between pos and x-axis in sourceNodePos between 0 and 2Pi
+	 * @return the angle between pos and x-axis in sourceNodePos between 0 and
+	 *         2Pi
 	 */
 	public static double calculateAngleForCone(Position pos, Position sourceNodePos) {
 
@@ -414,7 +415,7 @@ public class RMYS extends BeaconlessTopologyControl {
 		double refangle = calculateAngleForCone(reference, sourceNodePos);
 		double posangle = calculateAngleForCone(nodePos, sourceNodePos);
 		double oriangle = posangle - refangle;
-		
+
 		return oriangle;
 
 	}
@@ -432,6 +433,5 @@ public class RMYS extends BeaconlessTopologyControl {
 			amh.drawNode(g, pt);
 		}
 	}
-
 
 }
