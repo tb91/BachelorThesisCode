@@ -1,6 +1,8 @@
 package projects.rmys;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.OpenOption;
 import java.nio.file.StandardOpenOption;
@@ -20,6 +22,7 @@ import sinalgo.configuration.Configuration;
 import sinalgo.configuration.CorruptConfigurationEntryException;
 import sinalgo.io.graphFileIO.GraphFileWriter;
 import sinalgo.io.positionFile.PositionFileIO;
+import sinalgo.runtime.Global;
 import sinalgo.tools.Tools;
 import sinalgo.tools.logging.LogL;
 import sinalgo.tools.logging.Logging;
@@ -64,24 +67,76 @@ public class CustomGlobalBatch {
 	// for recording:
 	private static int nodeDensity;
 	private static boolean finished = false;
+	
+	private double exitAfterRounds=0;
+	private String src = "";
+	private int numNodes;
 
 	public boolean hasTerminated() {
 		return finished;
 	}
 
 	public void preRun() {
-	generateGraphs();
+		String algorithm = "";
+		try {
+			algorithm = Configuration.getStringParameter("algorithm/name");
+		} catch (CorruptConfigurationEntryException e) {
+			Tools.fatalError("Option 'algorithm/name' is missing or in wrong format.");
+		}
+		if (algorithm.toUpperCase().equals("GENERATEGRAPHS")) {
+			System.out.println("Generating nodes!");
+			generateGraphs();
+			Tools.exit();
+		}else if(algorithm.toUpperCase().equals("MEASUREMENT")){
+			System.out.println("STARTING ALGORITHM MEASURING!");
+			try {
+				src = Configuration.getStringParameter("positionFile/src");
+				System.out.println("Found position File: " + src);
+				
+				numNodes = 0;
+				try {
+					BufferedReader br = null;
+					br = new BufferedReader(new FileReader(new File(src)));
+					String line = br.readLine();
+					br.close();
+					numNodes = Integer.parseInt(line.split(":")[1].trim());
+				} catch (IOException e) {
+					e.printStackTrace();
+					System.exit(1);
+				}
+				
+				
+				Tools.generateNodes(numNodes, "rmys:NewPhysicalGraphNode", "PositionFile", "("+ src +")");
+				Tools.reevaluateConnections();
+				
+				System.out.println("Loaded nodes from positionfile: " + src);
+				
+			} catch (CorruptConfigurationEntryException e) {
+				Tools.fatalError("Option 'positionFile/src' is missing or in wrong format.");
+			}
+			try{
+				exitAfterRounds= Configuration.getDoubleParameter("exitAfterRounds");
+				System.out.println("Exiting after " + exitAfterRounds + " rounds");
+			}catch (CorruptConfigurationEntryException e){
+				Tools.fatalError("Could not find or read: exitAfterRounds in Configurationfile");
+			}
+			
+			
+		}
+			
 	}
 
 	public void postRound() {
-		
+		if(Global.currentTime >= exitAfterRounds){
+			System.out.println("round " +  exitAfterRounds + " was reached.");
+			Tools.exit();
+		}
 
 	}
 	
 	public void generateGraphs(){
 		int numNodes = Tools.getNodeList().size();
 		nodeDensity = (int) Math.round((Math.PI * R * R / (Configuration.dimX * Configuration.dimY)) * numNodes);
-		logger.logln(LogL.INFO, nodeDensity + "  " + numNodes);
 		if (GraphConnectivity.isGraphConnected(Tools.getNodeList())) {
 			logger.logln(LogL.INFO, "connected graph found! Saving..");
 			String path = PATHPREFIX + "\\Dens" + nodeDensity + "\\";
@@ -94,25 +149,33 @@ public class CustomGlobalBatch {
 				graphid++;
 			}
 			path = path + graphid + ".graph";
+			
 			PositionFileIO.printPos(path);
 			finished = true;
 
 		} else {
-
+			logger.logln(LogL.INFO, "Graph is not connected!");
 		}
-		Tools.exit();
 	}
 
 	public void write_data() {
 		logger.logln(LogL.INFO, "Writing message record to file...");
+		
+		int numNodes = Tools.getNodeList().size();
+		double ratio=Algorithms_ext.rmysSpan();
+		
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		Date date = new Date();
 
 		final char valSep = ' ';
 		final String fileExtension = "dat";
-
+				
 		StringBuffer line = new StringBuffer();
 		line.append(nodeDensity);
+		line.append(valSep);
+		line.append(numNodes);
+		line.append(valSep);
+		line.append(ratio);
 		line.append(valSep);
 
 		String filePathString = dateFormat.format(date) + "-record" + '.' + fileExtension;

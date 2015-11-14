@@ -281,6 +281,6 @@ observation-->
 <!--Specify the active algorithms in batch mode. Each algorithm is separated by a comma. For more information see the CustomGlobalBatch-->
 	<ActiveAlgorithms value="BFP,rPDT" />
 </BatchMode>
-								</Custom>
+										</Custom>
 </Document>
 

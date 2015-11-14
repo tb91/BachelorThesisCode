@@ -18,7 +18,7 @@ $rUDG = 30; #radius of the unit disk; should not be larger than GeometricNodeCol
 print "Please type in the number of graphs per node density that should be generated:";
 $maxPasses = <>;
 $density = 4;
-$maxDensity = 30;
+$maxDensity = 16;
 #run from density $density until $maxDensity and for each $maxPasses times
 print "Generating $maxPasses graphs for node densities from $density to $maxDensity...";
 

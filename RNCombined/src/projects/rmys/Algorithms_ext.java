@@ -46,7 +46,8 @@ public class Algorithms_ext {
 		FloydWarshall UDGfw = new FloydWarshall(UDGMatrix);
 		FloydWarshall RMYSfw = new FloydWarshall(RMYSMatrix);
 		
-		return Algorithms.spanningRatio(UDGfw, RMYSfw, V);
+		double ratio= Algorithms.spanningRatio(UDGfw, RMYSfw, V);
+		return ratio;
 	}
 
 	private static <T extends Node> Set<T> buildRMYS(Collection<T> neighborhood, T n, NodeCollectionInterface nodeList) {
