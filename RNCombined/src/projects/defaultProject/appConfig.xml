@@ -2,8 +2,8 @@
 <sinalgo>
 	<ProjectSelector windowWidth="600" windowHeight="400" lastChosenProject="" windowPosX="50" windowPosY="50" isMaximized="false" selectedTab="1" />
 	<GUI windowWidth="800" windowHeight="600" windowPosX="50" windowPosY="50" isMaximized="false" ControlPanelExpandSimulation="true" ControlPanelShowFullViewPanel="true" ControlPanelShowTextPanel="true" ControlPanelShowProjectControl="true" RunOperationIsLimited="true" helpWindowWidth="500" helpWindowHeight="500" helpWindowPosX="200" helpWindowPosY="200" helpWindowIsMaximized="false" />
-	<RandomSeed seedFromPreviousRun="-2535515238846667842" />
-	<App lastSelectedFileDirectory="" checkForUpdatesAtStartup="true" updateCheckTimeStamp="0" runCmdLineArgs="-project rmys -batch -overwrite AutoStart=true exitOnTerminationInGUI=true algorithm/name=MEASUREMENT positionFile/src=C:\Users\timmy\bachelorarbeit_code\RNCombined\scripts\graphs\dens16\10.graph resultsLog=C:Userstimmybachelorarbeit_codeRNCombinedscriptsresults16-10-11-[16, 10, 11, 4] useFixedSeed=false exitAfterRounds=2006 " />
+	<RandomSeed seedFromPreviousRun="7465157903352563126" />
+	<App lastSelectedFileDirectory="" checkForUpdatesAtStartup="true" updateCheckTimeStamp="1447521543666" runCmdLineArgs="-project rmys -batch -overwrite AutoStart=true algorithm/name=MEASUREMENT positionFile/src=C:\Users\timmy\bachelorarbeit_code\RNCombined\scripts\graphs\Dens16\0.graph resultsLog=C:\Users\timmy\bachelorarbeit_code\RNCombined\scripts\results\16-0-0-0 useFixedSeed=false exitAfterRounds=2006 " />
 	<GenNodesDlg numNodes="100" />
 </sinalgo>
 

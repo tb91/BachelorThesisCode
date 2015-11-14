@@ -4,11 +4,11 @@ from multiprocessing import Pool
 import sys
 
 # Simulation parameters
-PROCESSES  = 8
+PROCESSES  = 1
 DENSITIES_START  = int(sys.argv[1])
 DENSITIES_END    = int(sys.argv[2])
 FROM_ID          = 0
-TO_ID            = 20
+TO_ID            = 0
 PATH = os.path.dirname(os.path.abspath(__file__)) + '\\'
 
 
@@ -23,7 +23,7 @@ def main():
             args.append([density, round(procs*passes/PROCESSES), end, procs])
             # collect arguments for the processes to be started
         
-    
+    print (args)
     # execute the simulations via a process pool
     pool = Pool(PROCESSES)
     pool.map(simulate, args)
@@ -36,9 +36,9 @@ def simulate(settings):
     endid = settings[2]
     processid=settings[3]
     # simulate one algorithm for one density
-    logfile=PATH+ "results\\" + str(density)+"-"+str(startid)+"-"+str(endid)+"-"+str(settings)
+    logfile=PATH+ "results\\" + str(density)+"-"+str(startid)+"-"+str(endid)+"-"+str(processid) + ".log"
     
-    for i in range(startid, endid):
+    for i in range(startid, endid+1):
         posFile=PATH + "graphs\\Dens" + str(density) + "\\" + str(i) + ".graph"
         command = (
             "java -cp 'binaries/bin;binaries/jdom.jar ' sinalgo.Run "
@@ -46,14 +46,13 @@ def simulate(settings):
             "-batch " +
             "-overwrite " +
             "AutoStart=true " +
-            "exitOnTerminationInGUI=true " +
             "algorithm/name=MEASUREMENT " +
             "positionFile/src='" + posFile + "' " + 
-            "resultsLog=" + logfile + 
-            " useFixedSeed=false " +
+            "resultsLog='" + logfile + 
+            "' useFixedSeed=false " +
             "exitAfterRounds=2006"
         )
-        print(posFile)
+        print(command)
     args = shlex.split(command)
     subprocess.call(args)
 
