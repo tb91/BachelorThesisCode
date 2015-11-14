@@ -2,8 +2,11 @@ package projects.rmys;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.nio.file.OpenOption;
 import java.nio.file.StandardOpenOption;
 import java.text.DateFormat;
@@ -71,6 +74,7 @@ public class CustomGlobalBatch {
 	private double exitAfterRounds=0;
 	private String src = "";
 	private int numNodes;
+	private String resultsLog;
 
 	public boolean hasTerminated() {
 		return finished;
@@ -121,7 +125,17 @@ public class CustomGlobalBatch {
 				Tools.fatalError("Could not find or read: exitAfterRounds in Configurationfile");
 			}
 			
+			try{
+				resultsLog= Configuration.getStringParameter("resultsLog");
+				System.out.println("path to log: " + resultsLog);
+			}catch (CorruptConfigurationEntryException e){
+				Tools.fatalError("Could not find or read: resultsLog in Configurationfile");
+			}
 			
+			//===========
+			
+			double ratio=Algorithms_ext.rmysSpan();
+			System.out.println(ratio);
 		}
 			
 	}
@@ -158,12 +172,9 @@ public class CustomGlobalBatch {
 		}
 	}
 
-	public void write_data() {
+	public void write_data(ArrayList<String> values) {
 		logger.logln(LogL.INFO, "Writing message record to file...");
-		
-		int numNodes = Tools.getNodeList().size();
-		double ratio=Algorithms_ext.rmysSpan();
-		
+	
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		Date date = new Date();
 
@@ -171,12 +182,16 @@ public class CustomGlobalBatch {
 		final String fileExtension = "dat";
 				
 		StringBuffer line = new StringBuffer();
-		line.append(nodeDensity);
+		/*line.append(nodeDensity);
 		line.append(valSep);
 		line.append(numNodes);
 		line.append(valSep);
 		line.append(ratio);
-		line.append(valSep);
+		line.append(valSep);*/
+		for(String value:values){
+			line.append(value);
+			line.append(valSep);
+		}
 
 		String filePathString = dateFormat.format(date) + "-record" + '.' + fileExtension;
 		OpenOption[] openOptions = new OpenOption[] { StandardOpenOption.CREATE, StandardOpenOption.APPEND };
