@@ -8,6 +8,9 @@ import projects.reactiveSpanner.Algorithms;
 import projects.reactiveSpanner.FloydWarshall.AdjMatrixEdgeWeightedDigraph;
 import projects.reactiveSpanner.FloydWarshall.DirectedEdge;
 import projects.reactiveSpanner.FloydWarshall.FloydWarshall;
+import projects.reactiveSpanner.nodes.nodeImplementations.SimpleNode;
+import projects.rmys.nodes.messageHandler.RMYS;
+import projects.rmys.nodes.nodeImplementations.NewPhysicalGraphNode;
 import sinalgo.nodes.Node;
 import sinalgo.runtime.nodeCollection.NodeCollectionInterface;
 import sinalgo.tools.Tools;
@@ -22,7 +25,15 @@ public class Algorithms_ext {
 		for(Node n : Tools.getNodeList()){
 			Collection<Node> neighborhood = Algorithms.getNeighborNodes(n, Tools.getNodeList());
 			Set<Node> PDTNodes = Algorithms.buildPartialDelaunayTriangulation(neighborhood,n);
-			Set<Node> RMYSNodes = buildRMYS(PDTNodes, n, Tools.getNodeList());
+			Set<NewPhysicalGraphNode> castedPDTNodes=new HashSet<>();
+			
+			for(Node p: PDTNodes){
+				if(p instanceof NewPhysicalGraphNode){
+					castedPDTNodes.add((NewPhysicalGraphNode) p);
+				}
+			}
+			
+			Set<NewPhysicalGraphNode> RMYSNodes = buildRMYS(castedPDTNodes, (NewPhysicalGraphNode)n);
 			for(Node v: neighborhood)
 			{
 				DirectedEdge de = null;
@@ -50,11 +61,8 @@ public class Algorithms_ext {
 		return ratio;
 	}
 
-	private static <T extends Node> Set<T> buildRMYS(Collection<T> neighborhood, T n, NodeCollectionInterface nodeList) {
-		Set<T> RMYSNodes = new HashSet<T>();
-		for(T p: neighborhood){
-			
-		}
-		return null;
+	private static Set<NewPhysicalGraphNode> buildRMYS(Set<NewPhysicalGraphNode> neighborhood, NewPhysicalGraphNode n) {
+		return RMYS.calculateMYS((NewPhysicalGraphNode) n, neighborhood);
+		
 	}
 }

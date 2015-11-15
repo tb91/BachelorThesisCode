@@ -43,7 +43,14 @@ public class RMYS extends BeaconlessTopologyControl {
 	 * mit 1hop beaconing(mit mys)
 	 * 
 	 * worst case szenario mit punkten immer weiter entfernt
-	 */
+	 * 
+	 *----------------------------
+	 *verbesserung dass letzte broadcast nicht gebraucht wird:
+	 * Wenn kante einmal gefunden -> automatisch hinzufügen -> planarity bleibt erhalten
+	 * weil pdt planaren graphen erzeugt und RMYS nur kanten wegnimmt (selbst wenn es alle hinzufügt)
+	 * Spanning ratio kann nur besser werden
+	 * einzige was man untersuchen muss ist contant node degree...
+	 *	 */
 	public static int k = -1;
 	public static double cone_size = -1;
 	public static double unit_radius = -1;
@@ -81,7 +88,9 @@ public class RMYS extends BeaconlessTopologyControl {
 												// thats rPDT has terminated it
 												// starts Modified Yao Step
 
-						forwarderMh.getKnownNeighbors().addAll(calculateMYS((NewPhysicalGraphNode) sourceNode, pdt));
+						forwarderMh.getKnownNeighbors().addAll(calculateMYS(
+								(NewPhysicalGraphNode) sourceNode, 
+								sourceNode.getMessageHandler(pdt.getTopologyControlID()).getKnownNeighbors()));
 						checkIfEdgeIsBidirectional(forwarderMh);
 					}
 
@@ -101,7 +110,7 @@ public class RMYS extends BeaconlessTopologyControl {
 
 	}
 
-	public static Set<NewPhysicalGraphNode> calculateMYS(NewPhysicalGraphNode sourceNode, SubgraphStrategy pdt) {
+	public static Set<NewPhysicalGraphNode> calculateMYS(NewPhysicalGraphNode sourceNode, Set<? extends SimpleNode> pdtNeighbors) {
 		// for each PDT neighbour calculate its cone id
 
 		// NodeId -> coneId
@@ -111,7 +120,7 @@ public class RMYS extends BeaconlessTopologyControl {
 		// {
 		// nodeIds.put(n.ID, calculateCone(n.getPosition()));
 		// }
-
+		System.out.println("Constructing neighborhood of node: " + sourceNode.toString());
 		// coneId -> NewPhysicalGraphNode
 		HashMap<Integer, ArrayList<NewPhysicalGraphNode>> cones = new HashMap<>();
 		for (int l = 0; l < RMYS.k; l++) {// for easier calculations initialize
@@ -122,7 +131,7 @@ public class RMYS extends BeaconlessTopologyControl {
 		// counterclockwise indicates ids with increasing number
 
 		// find coneId for each Node and sort it into HashMap cones
-		for (SimpleNode n : sourceNode.messageHandlerMap.get(pdt.getTopologyControlID()).getKnownNeighbors()) {
+		for (SimpleNode n : pdtNeighbors) {
 			if (n instanceof NewPhysicalGraphNode) {
 				int key = calculateCone((NewPhysicalGraphNode) n, sourceNode);
 
@@ -139,7 +148,7 @@ public class RMYS extends BeaconlessTopologyControl {
 				throw new RuntimeException("RMYS can use NewPhysicalGraphNodes only.");
 			}
 		}
-
+		
 		// find shortest edges for each cone
 		HashMap<Integer, NewPhysicalGraphNode> shortest = new HashMap<>();
 		for (int l = 0; l < RMYS.k; l++) {// for easier calculations initialize

@@ -285,6 +285,12 @@ public class CustomGlobal extends AbstractCustomGlobal {
 		}
 		// saveGraphInCache("UDG");
 	}
+	
+	@AbstractCustomGlobal.CustomButton(
+			buttonText = "RMYSSpan", toolTipText = "prints spanning ratio of RMYS")
+	public void RMYSSpan() {
+		System.out.println("Spanning Ratio:" + Algorithms_ext.rmysSpan());		
+	}
 
 	@AbstractCustomGlobal.CustomButton(buttonText = "IDS", toolTipText = "draws ids in red next to each node")
 	public void toogleShowIds() {

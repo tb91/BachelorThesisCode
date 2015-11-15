@@ -56,7 +56,7 @@
 		<handleEmptyEventQueue value="true" />
 
 		<!--The java-command used to start the simulation process. E.g. 'java', 'nice -n 19 java', 'time java' This command should NOT contain the -Xmx flag, nor set the classpath of java.-->
-		<javaCmd value="java" />
+		<javaCmd value="java -agentlib:jdwp=transport=dt_socket,address=localhost:8000,suspend=n,server=y -ea" />
 
 		<!--Maximum memory the Java VM is allowed to use (in MB)-->
 		<javaVMmaxMem value="2000" />
