@@ -262,19 +262,19 @@ public class RMYS extends BeaconlessTopologyControl {
 				if (clockwise != null && counterclockwise != null) {
 					if (calculatedNeighbors.contains(clockwise)) {
 						calculatedNeighbors.add(counterclockwise);
-						System.out.println("adding counterclockwise");
+						System.out.println("adding counterclockwise: " + counterclockwise.toString());
 					} else if (calculatedNeighbors.contains(counterclockwise)) {
 						calculatedNeighbors.add(clockwise);
-						System.out.println("adding clockwise");
+						System.out.println("adding clockwise: " + clockwise.toString());
 					} else {
 						double disclock = clockwise.getPosition().distanceTo(sourceNode.getPosition());
 						double discounter = counterclockwise.getPosition().distanceTo(sourceNode.getPosition());
 						if (disclock < discounter) {
 							calculatedNeighbors.add(clockwise);
-							System.out.println("adding clockwise with distance: " + disclock);
+							System.out.println("adding clockwise " + clockwise.toString() +" with distance: " + disclock);
 						} else if (discounter < disclock) {
 							calculatedNeighbors.add(counterclockwise);
-							System.out.println("adding counterclockwise with distance: " + discounter);
+							System.out.println("adding counterclockwise " + counterclockwise.toString() +" with distance: " + discounter);
 						} else {
 							throw new RuntimeException("unspecified behavior: distance from " + sourceNode.toString()
 									+ " to " + clockwise.toString() + " and " + counterclockwise.toString()
