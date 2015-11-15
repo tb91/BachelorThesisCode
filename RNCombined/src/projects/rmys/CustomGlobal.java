@@ -242,6 +242,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
 
 		}
 	}
+	
 
 
 
@@ -494,14 +495,19 @@ public class CustomGlobal extends AbstractCustomGlobal {
 	}
 
 	private void createNode(String[] lines) {
-		PhysicalGraphNode neu = new PhysicalGraphNode();
+		NewPhysicalGraphNode neu = new NewPhysicalGraphNode();
 
 		neu.setPosition(new Position(Double.parseDouble(lines[0]), Double.parseDouble(lines[1]), 0));
 
 		/*
 		 * try { neu.setConnectivityModel(new StaticQUDG()); } catch (CorruptConfigurationEntryException e) { // TODO Auto-generated catch block e.printStackTrace(); }
 		 */
-		neu.setConnectivityModel(new NoConnectivity());
+		try {
+			neu.setConnectivityModel(new UDG());
+		} catch (CorruptConfigurationEntryException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		neu.setReliabilityModel(new ReliableDelivery());
 		neu.setInterferenceModel(new NoInterference());
 		neu.setMobilityModel(new NoMobility());

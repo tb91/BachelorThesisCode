@@ -32,8 +32,7 @@ public class RMYSMessageHandler extends BeaconlessMessageHandler {
 	protected RMYSMessageHandler(UUID tcID, PhysicalGraphNode ownerNode, PhysicalGraphNode sourceNode) {
 		super(tcID, ownerNode, sourceNode, EStrategy.RMYS);
 		is_selected = new HashMap<>();
-		initializeKnownNeighborsSet();
-	}
+    }
 
 
 

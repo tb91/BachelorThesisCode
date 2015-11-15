@@ -22,6 +22,7 @@ import sinalgo.configuration.CorruptConfigurationEntryException;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.nodes.Node;
 import sinalgo.nodes.Position;
+import sun.awt.image.IntegerInterleavedRaster;
 
 /**
  * @author timmy
@@ -168,8 +169,9 @@ public class RMYS extends BeaconlessTopologyControl {
 					shortestvalue = distance;
 				}
 			}
-			if (shortest != null) {
+			if (shortestNode != null) {
 				shortest.put(t, shortestNode);
+				System.out.println("cone:"+ t +" shortest distance to node: " + shortestNode);
 			}
 		}
 
@@ -209,6 +211,10 @@ public class RMYS extends BeaconlessTopologyControl {
 
 		// for each empty sequence do
 		for (int[] interval : empty_cones_set) {
+			if(pdtNeighbors.size()==calculatedNeighbors.size()){
+				System.out.println("breaking loop since calculatedNeighbors contains all nodes out of pdtNeighbors");
+				break;
+			}
 			// find orientation point
 			double angleToZero = RMYS.cone_size * interval[0];
 			double xpos = Math.cos(angleToZero); // rotate orientation point
@@ -237,7 +243,7 @@ public class RMYS extends BeaconlessTopologyControl {
 						counterclockwise = p;
 					}
 				}
-
+				System.out.println("for empty cone " + interval[0] + " " + counterclockwise.toString() + " is the next node counterclockwise" );
 				// same for the nearest node clockwise
 				NewPhysicalGraphNode clockwise = null;
 				double greatestAngle = 0;
@@ -252,18 +258,23 @@ public class RMYS extends BeaconlessTopologyControl {
 						clockwise = p;
 					}
 				}
+				System.out.println("for empty cone " + interval[0] + " " + clockwise.toString() + " is the next node clockwise" );
 				if (clockwise != null && counterclockwise != null) {
 					if (calculatedNeighbors.contains(clockwise)) {
 						calculatedNeighbors.add(counterclockwise);
+						System.out.println("adding counterclockwise");
 					} else if (calculatedNeighbors.contains(counterclockwise)) {
 						calculatedNeighbors.add(clockwise);
+						System.out.println("adding clockwise");
 					} else {
 						double disclock = clockwise.getPosition().distanceTo(sourceNode.getPosition());
 						double discounter = counterclockwise.getPosition().distanceTo(sourceNode.getPosition());
 						if (disclock < discounter) {
 							calculatedNeighbors.add(clockwise);
+							System.out.println("adding clockwise with distance: " + disclock);
 						} else if (discounter < disclock) {
 							calculatedNeighbors.add(counterclockwise);
+							System.out.println("adding counterclockwise with distance: " + discounter);
 						} else {
 							throw new RuntimeException("unspecified behavior: distance from " + sourceNode.toString()
 									+ " to " + clockwise.toString() + " and " + counterclockwise.toString()
@@ -272,8 +283,6 @@ public class RMYS extends BeaconlessTopologyControl {
 
 						}
 					}
-				} else {
-
 				}
 
 			} else {
@@ -289,6 +298,7 @@ public class RMYS extends BeaconlessTopologyControl {
 						sortedNeighbors.add(p);
 					}
 				}
+				
 
 				Collections.sort(sortedNeighbors, new Comparator<NewPhysicalGraphNode>() {
 
@@ -310,11 +320,11 @@ public class RMYS extends BeaconlessTopologyControl {
 																// and 7 are
 																// empty-> so
 																// plus 1
-				assert (sequence_l > 1);
+				assert (sequence_l > 1): "sequence_length must be greater than 1 here!";
 
 				int clockwiseNeighbors = (int) (sequence_l / 2.0);
 				int counterclockwiseNeighbors = (int) ((sequence_l + 1) / 2.0);
-
+				assert clockwiseNeighbors+ counterclockwiseNeighbors == sequence_l: "one neighbor too less!";
 				// System.out.println();
 				// System.out.println("clockwise count: " + clockwiseNeighbors);
 				// System.out.println("counterclockwise count: " +
@@ -328,6 +338,7 @@ public class RMYS extends BeaconlessTopologyControl {
 				// choose the first counterclockwiseNeighbors which are not
 				// already selected
 				int index = 0;
+				System.out.println("sequence in the interval [" + interval[0] + ", " + interval[1]  + "] chooses: ");
 				while (counterclockwiseNeighbors > 0 && index < sortedNeighbors.size()) {
 
 					NewPhysicalGraphNode p = sortedNeighbors.get(index);
@@ -336,10 +347,13 @@ public class RMYS extends BeaconlessTopologyControl {
 						continue;// take next node
 					}
 					calculatedNeighbors.add(p);
+					System.out.print(p.toString() + " ");
 					index++;
 					counterclockwiseNeighbors -= 1;
 				}
-
+				
+				System.out.println("counterclockwise");
+				System.out.print("and: ");
 				// choose the first clockwiseNeighbors which are not already
 				// selected
 				index = sortedNeighbors.size() - 1;
@@ -350,10 +364,11 @@ public class RMYS extends BeaconlessTopologyControl {
 						continue;// take next node
 					}
 					calculatedNeighbors.add(p);
+					System.out.print(p.toString() + " ");
 					index--;
 					clockwiseNeighbors -= 1;
 				}
-
+				System.out.println("clockwise");
 			}
 		}
 
