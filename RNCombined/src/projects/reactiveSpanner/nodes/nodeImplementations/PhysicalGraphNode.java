@@ -29,6 +29,8 @@ import projects.reactiveSpanner.routing.RoutingObserver;
 import projects.reactiveSpanner.routing.RoutingProtocol;
 import projects.reactiveSpanner.routing.RoutingProtocol.ERouting;
 import projects.reactiveSpanner.routing.RoutingProtocol.ERoutingState;
+import projects.rmys.nodes.messageHandler.RMYS;
+import projects.rmys.nodes.messageHandler.RMYSMessageHandler;
 import sinalgo.configuration.Configuration;
 import sinalgo.configuration.CorruptConfigurationEntryException;
 import sinalgo.gui.helper.NodeSelectionHandler;
@@ -388,6 +390,7 @@ public class PhysicalGraphNode extends SimpleNode implements TopologyControlObse
 		UUID ID = msg.getID();
 		if (!messageHandlerMap.containsKey(ID)) {
 			if (!(msg instanceof Request)) {
+				System.out.println("Message from: " + msg.getTransmitter() +" "+ msg.getClass().getName() + " id:" +ID);
 				logger.logln(LogL.INFO, this.toString() + " received message of unknown ID, but was no RTS");
 				return;
 			}
@@ -404,6 +407,10 @@ public class PhysicalGraphNode extends SimpleNode implements TopologyControlObse
 			case BCA:
 				logger.logln(LogL.INFO, this.toString() + " received RTS and creates BCAMessageHandler with UUID " + ID.toString());
 				messageHandlerMap.put(ID, new BCAMessageHandler(ID, this, msg.getTransmitter()));
+				break;
+			case RMYS:
+				logger.logln(LogL.INFO, this.toString() + " received RTS and creates RMYSMessageHandler with UUID " + ID.toString());
+				messageHandlerMap.put(ID, new RMYSMessageHandler(ID, this, msg.getTransmitter()));
 				break;
 			default:
 				String errorMsg = "Node " + this.ID + " has received a beaconless message from " + msg.getTransmitter() + ". The classified strategy for beaconless subgraph creation is unknown or not set.";

@@ -5,11 +5,12 @@ import java.util.UUID;
 
 import projects.reactiveSpanner.nodes.messageHandlers.SubgraphStrategy.EStrategy;
 import projects.reactiveSpanner.nodes.messages.BeaconlessMessage;
+import projects.reactiveSpanner.nodes.messages.Request;
 import projects.reactiveSpanner.nodes.nodeImplementations.PhysicalGraphNode;
 import projects.rmys.nodes.nodeImplementations.NewPhysicalGraphNode;
 import sinalgo.nodes.messages.Message;
 
-public class RequestMessage extends BeaconlessMessage {
+public class RequestMessage extends BeaconlessMessage implements Request {
 
 	public ArrayList<NewPhysicalGraphNode> candidates;
 

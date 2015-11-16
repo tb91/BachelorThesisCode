@@ -29,7 +29,7 @@ public class RMYSMessageHandler extends BeaconlessMessageHandler {
 	HashMap<NewPhysicalGraphNode, Boolean> is_selected;
 
 
-	protected RMYSMessageHandler(UUID tcID, PhysicalGraphNode ownerNode, PhysicalGraphNode sourceNode) {
+	public RMYSMessageHandler(UUID tcID, PhysicalGraphNode ownerNode, PhysicalGraphNode sourceNode) {
 		super(tcID, ownerNode, sourceNode, EStrategy.RMYS);
 		is_selected = new HashMap<>();
     }
@@ -50,7 +50,7 @@ public class RMYSMessageHandler extends BeaconlessMessageHandler {
 
 	@Override
 	protected void receivedRTS(RTS msg) {
-		// TODO Auto-generated method stub
+		System.out.println("RTS NO MESSAGE");
 
 	}
 

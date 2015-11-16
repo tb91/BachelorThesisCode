@@ -230,54 +230,54 @@ public class RMYS extends BeaconlessTopologyControl {
 				// find nearest nodes clockwise and counterclockwise
 				// the nearest nodes must reside in the cone before interval[0]
 				// and after interval[1]
-				NewPhysicalGraphNode counterclockwise = null;
-				double smallestAngle = Double.MAX_VALUE;
+				NewPhysicalGraphNode clockwise = null;
+				double smallestAngle = 0;
 				Integer before = interval[0] - 1;
 				if (before == -1) {// ensure loop
 					before = RMYS.k - 1;
 				}
 				for (NewPhysicalGraphNode p : cones.get(before)) {
 					double currentangle = calculateAngleForCone(p, helppos, sourceNode);
-					if (currentangle < smallestAngle) {
+					if (currentangle > smallestAngle) {
 						smallestAngle = currentangle;
-						counterclockwise = p;
+						clockwise = p;
 					}
 				}
-				System.out.println("for empty cone " + interval[0] + " " + counterclockwise.toString() + " is the next node counterclockwise" );
-				// same for the nearest node clockwise
-				NewPhysicalGraphNode clockwise = null;
-				double greatestAngle = 0;
+				System.out.println("for empty cone " + interval[0] + " " + clockwise.toString() + " is the next node clockwise" );
+				// same for the nearest node counterclockwise
+				NewPhysicalGraphNode counterclockwise = null;
+				double greatestAngle = Double.MAX_VALUE;
 				Integer after = interval[1] + 1;
 				if (after == RMYS.k) { // ensure loop
 					after = 0;
 				}
 				for (NewPhysicalGraphNode p : cones.get(after)) {
 					double currentangle = calculateAngleForCone(p, helppos, sourceNode);
-					if (currentangle > greatestAngle) {
+					if (currentangle < greatestAngle) {
 						greatestAngle = currentangle;
-						clockwise = p;
+						counterclockwise = p;
 					}
 				}
-				System.out.println("for empty cone " + interval[0] + " " + clockwise.toString() + " is the next node clockwise" );
-				if (clockwise != null && counterclockwise != null) {
-					if (calculatedNeighbors.contains(clockwise)) {
-						calculatedNeighbors.add(counterclockwise);
-						System.out.println("adding counterclockwise: " + counterclockwise.toString());
-					} else if (calculatedNeighbors.contains(counterclockwise)) {
+				System.out.println("for empty cone " + interval[0] + " " + counterclockwise.toString() + " is the next node counterclockwise" );
+				if (counterclockwise != null && clockwise != null) {
+					if (calculatedNeighbors.contains(counterclockwise)) {
 						calculatedNeighbors.add(clockwise);
 						System.out.println("adding clockwise: " + clockwise.toString());
+					} else if (calculatedNeighbors.contains(clockwise)) {
+						calculatedNeighbors.add(counterclockwise);
+						System.out.println("adding counterclockwise: " + counterclockwise.toString());
 					} else {
-						double disclock = clockwise.getPosition().distanceTo(sourceNode.getPosition());
-						double discounter = counterclockwise.getPosition().distanceTo(sourceNode.getPosition());
+						double disclock = counterclockwise.getPosition().distanceTo(sourceNode.getPosition());
+						double discounter = clockwise.getPosition().distanceTo(sourceNode.getPosition());
 						if (disclock < discounter) {
-							calculatedNeighbors.add(clockwise);
-							System.out.println("adding clockwise " + clockwise.toString() +" with distance: " + disclock);
-						} else if (discounter < disclock) {
 							calculatedNeighbors.add(counterclockwise);
-							System.out.println("adding counterclockwise " + counterclockwise.toString() +" with distance: " + discounter);
+							System.out.println("adding counterclockwise " + counterclockwise.toString() +" with distance: " + disclock);
+						} else if (discounter < disclock) {
+							calculatedNeighbors.add(clockwise);
+							System.out.println("adding clockwise " + clockwise.toString() +" with distance: " + discounter);
 						} else {
 							throw new RuntimeException("unspecified behavior: distance from " + sourceNode.toString()
-									+ " to " + clockwise.toString() + " and " + counterclockwise.toString()
+									+ " to " + counterclockwise.toString() + " and " + clockwise.toString()
 									+ " is equal.");
 							// is not specified in Modified Yao Step
 
@@ -395,6 +395,7 @@ public class RMYS extends BeaconlessTopologyControl {
 		System.out.println(rmys.getKnownNeighbors());
 		System.out.println(")");
 
+		rmys.node.broadcast(request);
 	}
 
 	/**
