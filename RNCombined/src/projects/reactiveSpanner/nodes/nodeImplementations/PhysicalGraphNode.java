@@ -400,7 +400,7 @@ public class PhysicalGraphNode extends SimpleNode implements TopologyControlObse
 				messageHandlerMap.put(ID, new BFPMessageHandler(ID, this, msg.getTransmitter()));
 				break;
 			case REACTIVE_PDT:
-				logger.logln(LogL.INFO, this.toString() + " received RTS and creates ReactivePDTMessageHandler with UUID " + ID.toString());
+				//logger.logln(LogL.INFO, this.toString() + " received RTS and creates ReactivePDTMessageHandler with UUID " + ID.toString());
 				messageHandlerMap.put(ID, new ReactivePDTMessageHandler(ID, this, msg.getTransmitter()));
 				break;
 			case BCA:
@@ -408,7 +408,8 @@ public class PhysicalGraphNode extends SimpleNode implements TopologyControlObse
 				messageHandlerMap.put(ID, new BCAMessageHandler(ID, this, msg.getTransmitter()));
 				break;
 			case RMYS:
-				logger.logln(LogL.INFO, this.toString() + " received RTS and creates RMYSMessageHandler with UUID " + ID.toString());
+				//logger.logln(LogL.INFO, this.toString() + " received RTS and creates RMYSMessageHandler with UUID " + ID.toString());
+				this.setColor(Color.GRAY);
 				messageHandlerMap.put(ID, new RMYSMessageHandler(ID, this, msg.getTransmitter()));
 				break;
 			default:

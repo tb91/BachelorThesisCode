@@ -187,7 +187,13 @@ public class RMYS extends BeaconlessTopologyControl {
 		// find maximal sequences of empty cones
 		ArrayList<int[]> empty_cones_set = findMaximalSequences(cones);
 
-
+		System.out.println("Empty cones: ");
+		for(int[] values:empty_cones_set){
+			System.out.print("[" + values[0] + ", " + values[1] + "], ");
+		}
+		System.out.println();
+		
+		/*
 		// for each empty sequence do
 		for (int[] interval : empty_cones_set) {
 			if(pdtNeighbors.size()==calculatedNeighbors.size()){
@@ -352,7 +358,7 @@ public class RMYS extends BeaconlessTopologyControl {
 				}
 				System.out.println("clockwise");
 			}
-		}
+		}*/
 
 		return calculatedNeighbors;
 
