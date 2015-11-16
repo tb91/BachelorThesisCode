@@ -60,6 +60,7 @@ public class RMYS extends BeaconlessTopologyControl {
 		try {
 			k = Configuration.getIntegerParameter("RMYS/k_value");
 			unit_radius = Configuration.getIntegerParameter("UDG/rMax");
+			cone_size = 2 * Math.PI / k;
 		} catch (CorruptConfigurationEntryException e) {
 			e.getMessage();
 			e.printStackTrace();
@@ -71,8 +72,6 @@ public class RMYS extends BeaconlessTopologyControl {
 
 	public RMYS(NewPhysicalGraphNode sourceNode) {
 		super(EStrategy.RMYS, sourceNode);
-
-		cone_size = 2 * Math.PI / k;
 
 		_init();
 	}
@@ -186,28 +185,8 @@ public class RMYS extends BeaconlessTopologyControl {
 		}
 
 		// find maximal sequences of empty cones
-		ArrayList<int[]> empty_cones_set = new ArrayList<>();
+		ArrayList<int[]> empty_cones_set = findMaximalSequences(cones);
 
-		for (int i = 0; i < RMYS.k; i++) {
-			if (cones.get(i).size() == 0) {// start of a empty sequence found
-				int j;
-				for (j = i + 1; j < RMYS.k; j++) {
-					if (cones.get(j).size() != 0) { // determines end of an
-													// empty sequence
-						j -= 1;
-						break;
-					}
-				}
-				if (j == RMYS.k) {// if last cone is empty, too
-					j -= 1;
-				}
-				int[] empty_interval = { i, j }; // [0] indicates start, [1]
-													// indicates end of empty
-													// sequence of cones
-				empty_cones_set.add(empty_interval);
-				i = j; // prohibit duplicates
-			}
-		}
 
 		// for each empty sequence do
 		for (int[] interval : empty_cones_set) {
@@ -242,6 +221,9 @@ public class RMYS extends BeaconlessTopologyControl {
 						smallestAngle = currentangle;
 						clockwise = p;
 					}
+				}
+				if(clockwise==null){
+					System.out.println("NULL");
 				}
 				System.out.println("for empty cone " + interval[0] + " " + clockwise.toString() + " is the next node clockwise" );
 				// same for the nearest node counterclockwise
@@ -315,7 +297,7 @@ public class RMYS extends BeaconlessTopologyControl {
 				});
 
 				// calculate sequence length
-				int sequence_l = interval[1] - interval[0] + 1; // eg. 8-7=1,
+				int sequence_l = Math.abs(interval[1] - interval[0] + 1); // eg. 8-7=1,
 																// but means 8
 																// and 7 are
 																// empty-> so
@@ -374,6 +356,48 @@ public class RMYS extends BeaconlessTopologyControl {
 
 		return calculatedNeighbors;
 
+	}
+
+	private static ArrayList<int[]> findMaximalSequences(HashMap<Integer, ArrayList<NewPhysicalGraphNode>> cones) {
+		ArrayList<int[]> empty_cones_set=new ArrayList<>();
+		int endcone=RMYS.k;
+		for (int i = 0; i < endcone; i++) {
+			if (cones.get(i).size() == 0) {// start of a empty sequence found
+				int truestart=i;
+				if(i==0){ //check if there is another empty cone before 0 (e.g. 13, 12, 11,...)
+					truestart=RMYS.k;
+					while(truestart>0){
+						truestart--;
+						if(cones.get(truestart).size()!=0){
+							break;
+						}
+					}
+					if (truestart==0){
+						//there is no node around! Cannot happen in connected graphs...
+						break;
+					}else{
+						endcone=truestart;
+					}
+				}
+				int j;
+				for (j = i + 1; j < RMYS.k; j++) {
+					if (cones.get(j).size() != 0) { // determines end of an
+													// empty sequence
+						j -= 1;
+						break;
+					}
+				}
+				if (j == RMYS.k) {// if last cone is empty, too
+					j -= 1;
+				}
+				int[] empty_interval = { truestart, j }; // [0] indicates start, [1]
+													// indicates end of empty
+													// sequence of cones
+				empty_cones_set.add(empty_interval);
+				i = j; // prohibit duplicates
+			}
+		}
+		return empty_cones_set;
 	}
 
 	public static void checkIfEdgeIsBidirectional(RMYSForwarderMessageHandler rmys) {

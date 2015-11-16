@@ -290,7 +290,11 @@ public class CustomGlobal extends AbstractCustomGlobal {
 	@AbstractCustomGlobal.CustomButton(
 			buttonText = "RMYSSpan", toolTipText = "prints spanning ratio of RMYS")
 	public void RMYSSpan() {
-		System.out.println("Spanning Ratio:" + Algorithms_ext.rmysSpan());		
+		try{
+		System.out.println("Spanning Ratio:" + Algorithms_ext.rmysSpan());
+		}catch (Exception e){
+			e.printStackTrace();
+		}
 	}
 
 	@AbstractCustomGlobal.CustomButton(buttonText = "IDS", toolTipText = "draws ids in red next to each node")

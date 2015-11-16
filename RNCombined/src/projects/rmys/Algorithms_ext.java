@@ -42,6 +42,7 @@ public class Algorithms_ext {
 				de = new DirectedEdge(n.ID-1, v.ID-1, n.getPosition().distanceTo(v.getPosition()));
 				UDGMatrix.addEdge(de);
 			}
+			try{
 			for(Node v: RMYSNodes){
 				DirectedEdge de = null;
 				//add edge GG
@@ -49,6 +50,9 @@ public class Algorithms_ext {
 				de = new DirectedEdge(n.ID-1, v.ID-1, n.getPosition().distanceTo(v.getPosition()));
 				RMYSMatrix.addEdge(de);
 
+			}
+			}catch (Exception e){
+				e.printStackTrace();
 			}
 		}
 		

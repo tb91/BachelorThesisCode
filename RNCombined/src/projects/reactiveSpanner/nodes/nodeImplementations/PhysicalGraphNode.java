@@ -170,9 +170,9 @@ public class PhysicalGraphNode extends SimpleNode implements TopologyControlObse
 			lastSubgraphStrategy = this.subgraphStrategyFactory.request(EStrategy.PDT);
 			for(PhysicalGraphNode n: lastSubgraphStrategy.getSubgraphNodes())
 			{
-				n.setColor(Color.MAGENTA);
+				//n.setColor(Color.MAGENTA);
 			}
-			this.setColor(Color.RED);
+			//this.setColor(Color.RED);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -370,7 +370,7 @@ public class PhysicalGraphNode extends SimpleNode implements TopologyControlObse
 	 * @param msg that was received by this node
 	 */
 	private void processRoutingMessage(final RoutingMessage msg) {
-		this.setColor(Color.RED);	//TODO No. Don't do it this way.
+		//this.setColor(Color.RED);	//TODO No. Don't do it this way.
 		//TODO unify/simplify the registration of the message in the message buffer, the arriving of a new holding node and registration of this node as observer of the routing event
 		routingMessageBuffer.put(msg.getID(), msg);
 		msg.arrivedNextHop(this);
@@ -390,8 +390,7 @@ public class PhysicalGraphNode extends SimpleNode implements TopologyControlObse
 		UUID ID = msg.getID();
 		if (!messageHandlerMap.containsKey(ID)) {
 			if (!(msg instanceof Request)) {
-				System.out.println("Message from: " + msg.getTransmitter() +" "+ msg.getClass().getName() + " id:" +ID);
-				logger.logln(LogL.INFO, this.toString() + " received message of unknown ID, but was no RTS");
+				//logger.logln(LogL.INFO, this.toString() + " received message of unknown ID, but was no RTS");
 				return;
 			}
 
@@ -558,7 +557,7 @@ public class PhysicalGraphNode extends SimpleNode implements TopologyControlObse
 			sendRoutingMsgTimer.startRelative(1, this); // Synchronized mode does not allow direct broadcast
 			this.routingMessageBuffer.remove(routingID);
 			rMsg.removeObserver(this);
-			this.setColor(Color.DARK_GRAY);	//TODO No. Don't do it this way.
+			//this.setColor(Color.DARK_GRAY);	//TODO No. Don't do it this way.
 			break;
 		case STUCKED:
 			Tools.getTextOutputPrintStream().append("Routing Message stucked at node " + this.toString() + "\n");

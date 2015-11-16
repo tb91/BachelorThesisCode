@@ -113,7 +113,7 @@ public abstract class RoutingProtocol<T extends PhysicalGraphNode> implements To
 		this.currentState = ERoutingState.INITIALIZED;
 		logger.logln(LogL.INFO, "Routing message from " + sourceNode + " to " + destinationNode + " by using subgraph strategy " + subgraphStrategy);
 		init();
-		debugDraw();
+		//debugDraw();
 	}
 
 	/**

@@ -16,6 +16,7 @@ public class RMYSForwarderMessageHandler extends RMYSMessageHandler {
 	protected RMYSForwarderMessageHandler(UUID tcID, PhysicalGraphNode sourceNode, SubgraphStrategy neighborhood) {
 		super(tcID, sourceNode, sourceNode);
 		this.pdt = neighborhood;
+		this.node.setColor(Color.red);
 	}
 
 
@@ -29,7 +30,6 @@ public class RMYSForwarderMessageHandler extends RMYSMessageHandler {
 			double ypos = RMYS.unit_radius * Math.sin(angle);
 			Position helppos = new Position(sourceNode.getPosition().xCoord + xpos,
 					sourceNode.getPosition().yCoord + ypos, 0);
-			g.setColor(Color.black);
 			pt.drawLine(g, sourceNode.getPosition(), helppos);
 		}
 

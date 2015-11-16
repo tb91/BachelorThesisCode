@@ -56,10 +56,10 @@ public class Circle extends DistributionModel {
 		String parameter = this.getParamString();
 		if(parameter.equals("")){
 			if(Configuration.dimX < Configuration.dimY){
-				radius = Configuration.dimX / 3.0;
+				radius = Configuration.dimX / 5.0;
 			}
 			else{
-				radius = Configuration.dimY / 3.0;
+				radius = Configuration.dimY / 5.0;
 			}
 		}
 		else{

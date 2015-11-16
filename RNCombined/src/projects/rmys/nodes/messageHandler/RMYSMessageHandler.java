@@ -32,6 +32,7 @@ public class RMYSMessageHandler extends BeaconlessMessageHandler {
 	public RMYSMessageHandler(UUID tcID, PhysicalGraphNode ownerNode, PhysicalGraphNode sourceNode) {
 		super(tcID, ownerNode, sourceNode, EStrategy.RMYS);
 		is_selected = new HashMap<>();
+		
     }
 
 
@@ -39,7 +40,6 @@ public class RMYSMessageHandler extends BeaconlessMessageHandler {
 	@Override
 	public void timerTriggerEvent() {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -50,20 +50,19 @@ public class RMYSMessageHandler extends BeaconlessMessageHandler {
 
 	@Override
 	protected void receivedRTS(RTS msg) {
-		System.out.println("RTS NO MESSAGE");
-
+		// TODO Auto-generated method stub
 	}
 
 	@Override
 	protected void receivedCTS(CTS msg) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void receivedMessage(AbstractMessage msg) {
 		if (msg instanceof RequestMessage) {
 			if (((RequestMessage) msg).candidates.contains(this.node)) {
+				this.node.setColor(Color.CYAN);
 				final ReactivePDT pdt = new ReactivePDT(this.node);
 
 				pdt.addObserver(new TopologyControlObserver() {

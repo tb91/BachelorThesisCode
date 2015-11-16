@@ -21,7 +21,7 @@ public class RequestMessage extends BeaconlessMessage implements Request {
 
 	@Override
 	public Message clone() {
-		return new RequestMessage(ID, getTransmitter());
+		return this;
 	}
 
 }

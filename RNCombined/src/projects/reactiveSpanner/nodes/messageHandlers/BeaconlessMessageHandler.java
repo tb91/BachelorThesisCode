@@ -48,7 +48,7 @@ public abstract class BeaconlessMessageHandler extends AbstractMessageHandler<Ph
 		MessageTimer broadcastCTSTimer = new MessageTimer(new CTS(this.tcID, node, this.planarSubgraphCreationStrategy));
 		broadcastCTSTimer.startRelative(1, node); // Synchronized mode does not allow direct broadcast
 		
-		this.node.setColor(Color.DARK_GRAY);
+		//this.node.setColor(Color.DARK_GRAY);
 		hasSentCTSMessage = true;
 	}
 	
