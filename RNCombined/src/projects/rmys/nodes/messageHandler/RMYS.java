@@ -96,6 +96,7 @@ public class RMYS extends BeaconlessTopologyControl {
 
 				}
 			});
+			
 
 			// adds a RMYSMessageHandler for compatibility reasons to the
 			// ReactiveSpanner Framework
@@ -193,7 +194,7 @@ public class RMYS extends BeaconlessTopologyControl {
 		}
 		System.out.println();
 		
-		/*
+		
 		// for each empty sequence do
 		for (int[] interval : empty_cones_set) {
 			if(pdtNeighbors.size()==calculatedNeighbors.size()){
@@ -216,7 +217,7 @@ public class RMYS extends BeaconlessTopologyControl {
 				// the nearest nodes must reside in the cone before interval[0]
 				// and after interval[1]
 				NewPhysicalGraphNode clockwise = null;
-				double smallestAngle = 0;
+				double smallestAngle = Double.NEGATIVE_INFINITY;
 				Integer before = interval[0] - 1;
 				if (before == -1) {// ensure loop
 					before = RMYS.k - 1;
@@ -228,9 +229,7 @@ public class RMYS extends BeaconlessTopologyControl {
 						clockwise = p;
 					}
 				}
-				if(clockwise==null){
-					System.out.println("NULL");
-				}
+				assert clockwise!=null : "clockwise is null but it shouldn't!";
 				System.out.println("for empty cone " + interval[0] + " " + clockwise.toString() + " is the next node clockwise" );
 				// same for the nearest node counterclockwise
 				NewPhysicalGraphNode counterclockwise = null;
@@ -246,6 +245,7 @@ public class RMYS extends BeaconlessTopologyControl {
 						counterclockwise = p;
 					}
 				}
+				assert counterclockwise!=null : "counterclockwise is null but it shouldn't!";
 				System.out.println("for empty cone " + interval[0] + " " + counterclockwise.toString() + " is the next node counterclockwise" );
 				if (counterclockwise != null && clockwise != null) {
 					if (calculatedNeighbors.contains(counterclockwise)) {
@@ -358,7 +358,7 @@ public class RMYS extends BeaconlessTopologyControl {
 				}
 				System.out.println("clockwise");
 			}
-		}*/
+		}
 
 		return calculatedNeighbors;
 
@@ -375,6 +375,10 @@ public class RMYS extends BeaconlessTopologyControl {
 					while(truestart>0){
 						truestart--;
 						if(cones.get(truestart).size()!=0){
+							truestart++;
+							if(truestart==RMYS.k){
+								truestart=0;
+							}
 							break;
 						}
 					}

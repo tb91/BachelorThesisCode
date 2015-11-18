@@ -1,8 +1,11 @@
 package projects.rmys;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.management.RuntimeErrorException;
 
 import projects.reactiveSpanner.Algorithms;
 import projects.reactiveSpanner.FloydWarshall.AdjMatrixEdgeWeightedDigraph;
@@ -22,6 +25,10 @@ public class Algorithms_ext {
 		AdjMatrixEdgeWeightedDigraph UDGMatrix = new AdjMatrixEdgeWeightedDigraph(Tools.getNodeList().size());
 		AdjMatrixEdgeWeightedDigraph RMYSMatrix = new AdjMatrixEdgeWeightedDigraph(Tools.getNodeList().size());
 		
+		//needed to guarantee bidirectional edges
+		HashMap<Node, Set<NewPhysicalGraphNode>> completeRMYSGraph=new HashMap<>();
+		
+		
 		for(Node n : Tools.getNodeList()){
 			Collection<Node> neighborhood = Algorithms.getNeighborNodes(n, Tools.getNodeList());
 			Set<Node> PDTNodes = Algorithms.buildPartialDelaunayTriangulation(neighborhood,n);
@@ -34,6 +41,7 @@ public class Algorithms_ext {
 			}
 			
 			Set<NewPhysicalGraphNode> RMYSNodes = buildRMYS(castedPDTNodes, (NewPhysicalGraphNode)n);
+			completeRMYSGraph.put(n, RMYSNodes);
 			for(Node v: neighborhood)
 			{
 				DirectedEdge de = null;
@@ -42,7 +50,7 @@ public class Algorithms_ext {
 				de = new DirectedEdge(n.ID-1, v.ID-1, n.getPosition().distanceTo(v.getPosition()));
 				UDGMatrix.addEdge(de);
 			}
-			try{
+			
 			for(Node v: RMYSNodes){
 				DirectedEdge de = null;
 				//add edge GG
@@ -51,10 +59,19 @@ public class Algorithms_ext {
 				RMYSMatrix.addEdge(de);
 
 			}
-			}catch (Exception e){
-				e.printStackTrace();
+			
+		}
+		
+		//ensure bidrectional edges
+		for(Node n: completeRMYSGraph.keySet()){
+			for(Node p:completeRMYSGraph.get(n)){
+				if(!completeRMYSGraph.get(p).contains(n)){
+					throw new RuntimeException(n.toString() + " has a unidirectional edge to " + p.toString() + '\n'
+							+ n.toString() + ": "+ completeRMYSGraph.get(n) + " " + p.toString() + ": " + completeRMYSGraph.get(p));
+				}
 			}
 		}
+		
 		
 		int V = UDGMatrix.V();
 		

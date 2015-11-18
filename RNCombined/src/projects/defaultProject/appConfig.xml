@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sinalgo>
-	<ProjectSelector windowWidth="892" windowHeight="400" lastChosenProject="rmys" windowPosX="50" windowPosY="50" isMaximized="false" selectedTab="2" />
-	<GUI windowWidth="798" windowHeight="600" windowPosX="1016" windowPosY="122" isMaximized="false" ControlPanelExpandSimulation="true" ControlPanelShowFullViewPanel="true" ControlPanelShowTextPanel="true" ControlPanelShowProjectControl="true" RunOperationIsLimited="true" helpWindowWidth="500" helpWindowHeight="500" helpWindowPosX="200" helpWindowPosY="200" helpWindowIsMaximized="false" />
-	<RandomSeed seedFromPreviousRun="1155639134767197445" />
-	<App lastSelectedFileDirectory="" checkForUpdatesAtStartup="true" updateCheckTimeStamp="1447608868570" runCmdLineArgs="" />
-	<GenNodesDlg numNodes="100" />
+	<ProjectSelector windowWidth="892" windowHeight="400" lastChosenProject="rmys" windowPosX="50" windowPosY="50" isMaximized="false" selectedTab="3" />
+	<GUI windowWidth="798" windowHeight="600" windowPosX="1008" windowPosY="137" isMaximized="false" ControlPanelExpandSimulation="true" ControlPanelShowFullViewPanel="true" ControlPanelShowTextPanel="true" ControlPanelShowProjectControl="true" RunOperationIsLimited="true" helpWindowWidth="500" helpWindowHeight="500" helpWindowPosX="200" helpWindowPosY="200" helpWindowIsMaximized="false" />
+	<RandomSeed seedFromPreviousRun="4434633179967067621" />
+	<App lastSelectedFileDirectory="" checkForUpdatesAtStartup="true" updateCheckTimeStamp="1447859614333" runCmdLineArgs="" />
+	<GenNodesDlg numNodes="350" />
 </sinalgo>
 

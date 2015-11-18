@@ -47,6 +47,7 @@ public class Circle extends DistributionModel {
 	private double radius = 0.0;
 	private double oneStep = 0.0;
 	private int number = 0;
+	private boolean first=true;
 	
 	/* (non-Javadoc)
 	 * @see sinalgo.models.DistributionModel#initialize()
@@ -66,11 +67,15 @@ public class Circle extends DistributionModel {
 			radius = Double.parseDouble(parameter);
 		}
 		
-		oneStep = 360.0 / numberOfNodes;
+		oneStep = 360.0 / (numberOfNodes-1);
 	}
 	
 	@Override
 	public Position getNextPosition() {
+		if(first){
+			first=false;
+			return new Position(Configuration.dimX / 2.0, Configuration.dimY / 2.0,0);
+		}
 		Position pos = new Position();
 		pos.xCoord = (Configuration.dimX / 2.0) + (radius * Math.cos(Math.toRadians((number * oneStep))));
 		pos.yCoord = (Configuration.dimY / 2.0) + (radius * Math.sin(Math.toRadians((number * oneStep))));
