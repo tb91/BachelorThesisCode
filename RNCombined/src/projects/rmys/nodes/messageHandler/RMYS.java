@@ -47,8 +47,8 @@ public class RMYS extends BeaconlessTopologyControl {
 	 * 
 	 *----------------------------
 	 *verbesserung dass letzte broadcast nicht gebraucht wird:
-	 * Wenn kante einmal gefunden -> automatisch hinzufügen -> planarity bleibt erhalten
-	 * weil pdt planaren graphen erzeugt und RMYS nur kanten wegnimmt (selbst wenn es alle hinzufügt)
+	 * Wenn kante einmal gefunden -> automatisch hinzufï¿½gen -> planarity bleibt erhalten
+	 * weil pdt planaren graphen erzeugt und RMYS nur kanten wegnimmt (selbst wenn es alle hinzufï¿½gt)
 	 * Spanning ratio kann nur besser werden
 	 * einzige was man untersuchen muss ist contant node degree...
 	 *	 */
@@ -382,12 +382,7 @@ public class RMYS extends BeaconlessTopologyControl {
 							break;
 						}
 					}
-					if (truestart==0){
-						//there is no node around! Cannot happen in connected graphs...
-						break;
-					}else{
-						endcone=truestart;
-					}
+					
 				}
 				int j;
 				for (j = i + 1; j < RMYS.k; j++) {

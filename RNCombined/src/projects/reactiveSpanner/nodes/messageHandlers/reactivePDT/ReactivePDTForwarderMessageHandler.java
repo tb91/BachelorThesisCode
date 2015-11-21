@@ -19,7 +19,7 @@ public class ReactivePDTForwarderMessageHandler extends	ReactivePDTMessageHandle
 	public ReactivePDTForwarderMessageHandler(final BeaconlessTopologyControl subgraphControl, final PhysicalGraphNode sourceNode) {
 		super(subgraphControl.getTopologyControlID(), sourceNode, sourceNode);
 		this.hasTerminated = false;
-		//this.sourceNode.setColor(Color.RED);
+		this.sourceNode.setColor(Color.RED);
 		this.subgraphControl = subgraphControl;
 		if(Tools.isSimulationInGuiMode())
 		{
@@ -58,7 +58,7 @@ public class ReactivePDTForwarderMessageHandler extends	ReactivePDTMessageHandle
 	@Override
 	public void timerTriggerEvent() {
 		// logger.logln(LogL.INFO, this.sourceNode.toString() + " has terminated it's reactive calculation of it's PDT neighborhood");
-		//sourceNode.connect(knownNeighbors, Color.PINK);
+		sourceNode.connect(knownNeighbors, Color.PINK);
 		hasTerminated = true;
 		subgraphControl.notifyTermination();
 	}
@@ -71,12 +71,12 @@ public class ReactivePDTForwarderMessageHandler extends	ReactivePDTMessageHandle
 	
 	@Override
 	public void drawNode(Graphics g, PositionTransformation pt) {
-		/*this.sourceNode.setColor(Color.RED);	//source nodes are always red	//TODO
+		this.sourceNode.setColor(Color.RED);	//source nodes are always red	//TODO
 		//drawing circle for UDG radius
 		g.setColor(Color.YELLOW);
 		pt.translateToGUIPosition(this.sourceNode.getPosition());
 		int r = (int) (CustomGlobal.R * pt.getZoomFactor());
 		g.drawOval(pt.guiX - r, pt.guiY - r, r*2, r*2);
-		*/
+		
 	}
 }

@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.xml.transform.Source;
+
 import projects.reactiveSpanner.FloydWarshall.AdjMatrixEdgeWeightedDigraph;
 import projects.reactiveSpanner.FloydWarshall.DirectedEdge;
 import projects.reactiveSpanner.FloydWarshall.FloydWarshall;
@@ -508,6 +510,7 @@ public class Algorithms {
 					}
 				}
 			}
+			System.out.println(srcNode.toString() + " has following pdtNeighbors: " + PDTNodes.toString());
 		return PDTNodes;
 	}
 		

@@ -93,7 +93,7 @@ public class PhysicalGraphNode extends SimpleNode implements TopologyControlObse
 		return lastSubgraphStrategy;
 	}
 
-	// @NodePopupMethod(menuText = "Reactive PDT")
+	@NodePopupMethod(menuText = "Reactive PDT")
 	public SubgraphStrategy startReactivePDT() {
 		SubgraphStrategy lastSubgraphStrategy = null;
 		try {
@@ -162,7 +162,7 @@ public class PhysicalGraphNode extends SimpleNode implements TopologyControlObse
 	/**
 	 * Partial Delaunay Triangulation within the one-hop neighborhood of the current node
 	 */
-	// @NodePopupMethod(menuText="Local PDT")
+	@NodePopupMethod(menuText="Local PDT")
 	public SubgraphStrategy localPDT() 
 	{
 		SubgraphStrategy lastSubgraphStrategy = null;

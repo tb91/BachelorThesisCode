@@ -52,7 +52,7 @@ public class ReactivePDTMessageHandler extends BeaconlessMessageHandler
 		this.t_max = ReactivePDT.getMaximumTimeout();
 		double timeout = delay();
 		// logger.logln(LogL.INFO, this.node.toString() + " sets its contentionTimer to " + timeout + " ms");
-		//this.node.setColor(Color.CYAN);
+		this.node.setColor(Color.CYAN);
 		currentMaxAngle = Math.PI * 0.5;
 		contentionTimer = new BeaconlessTimer(this.tcID, timeout, this.node);
 		absoluteStartTime = Tools.getGlobalTime();
@@ -110,7 +110,7 @@ public class ReactivePDTMessageHandler extends BeaconlessMessageHandler
 	
 	@Override
 	public void drawNode(Graphics g, PositionTransformation pt) {				
-		/*if(hasSentCTSMessage)
+		if(hasSentCTSMessage)
 		{
 			this.node.setColor(Color.DARK_GRAY);
 			return;
