@@ -134,7 +134,7 @@ public class CustomGlobalBatch {
 			
 			//===========
 			
-			double ratio=Algorithms_ext.rmysSpan();
+			double ratio=Algorithms_ext.rmysSpan(false);
 			System.out.println(ratio);
 		}
 			

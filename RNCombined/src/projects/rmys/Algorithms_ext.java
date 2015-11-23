@@ -21,7 +21,7 @@ import sinalgo.tools.Tools;
 public class Algorithms_ext {
 
 	
-	public static double rmysSpan(){
+	public static double rmysSpan(boolean topologieSpan){
 		AdjMatrixEdgeWeightedDigraph UDGMatrix = new AdjMatrixEdgeWeightedDigraph(Tools.getNodeList().size());
 		AdjMatrixEdgeWeightedDigraph RMYSMatrix = new AdjMatrixEdgeWeightedDigraph(Tools.getNodeList().size());
 		
@@ -47,7 +47,12 @@ public class Algorithms_ext {
 				DirectedEdge de = null;
 				//add edge UDG
 				// ID starts with 1, matrix with index 0
-				de = new DirectedEdge(n.ID-1, v.ID-1, n.getPosition().distanceTo(v.getPosition()));
+				if(topologieSpan){
+					de = new DirectedEdge(n.ID-1, v.ID-1, 1);
+				}else{
+					de = new DirectedEdge(n.ID-1, v.ID-1, n.getPosition().distanceTo(v.getPosition()));	
+				}
+				
 				UDGMatrix.addEdge(de);
 			}
 			
@@ -55,7 +60,11 @@ public class Algorithms_ext {
 				DirectedEdge de = null;
 				//add edge GG
 				// ID starts with 1, matrix with index 0
-				de = new DirectedEdge(n.ID-1, v.ID-1, n.getPosition().distanceTo(v.getPosition()));
+				if(topologieSpan){
+					de = new DirectedEdge(n.ID-1, v.ID-1, 1);
+				}else{
+					de = new DirectedEdge(n.ID-1, v.ID-1, n.getPosition().distanceTo(v.getPosition()));	
+				}
 				RMYSMatrix.addEdge(de);
 
 			}
@@ -81,6 +90,7 @@ public class Algorithms_ext {
 		double ratio= Algorithms.spanningRatio(UDGfw, RMYSfw, V);
 		return ratio;
 	}
+	
 
 	private static Set<NewPhysicalGraphNode> buildRMYS(Set<NewPhysicalGraphNode> neighborhood, NewPhysicalGraphNode n) {
 		return RMYS.calculateMYS((NewPhysicalGraphNode) n, neighborhood);

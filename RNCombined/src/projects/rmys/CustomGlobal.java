@@ -291,7 +291,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
 			buttonText = "RMYSSpan", toolTipText = "prints spanning ratio of RMYS")
 	public void RMYSSpan() {
 		try{
-		System.out.println("Spanning Ratio:" + Algorithms_ext.rmysSpan());
+		System.out.println("Spanning Ratio:" + Algorithms_ext.rmysSpan(false));
 		}catch (Exception e){
 			e.printStackTrace();
 		}

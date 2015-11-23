@@ -31,6 +31,7 @@ public interface SubgraphStrategy
 		,REACTIVE_PDT	//reactive calculation of the Partial Delaunay Triangulation
 		,BUILD_BACKBONE	//magic	//TODO
 		, RMYS // ADDED: Reactive Modified Yao Step construction
+		, BEACONING_MYS // ADDED: non-local "RMYS". 
 		,BARRIERE	//more magic	//TODO
 		,BARRIERE_EXT	//extended more magic	//TODO
 		,CREATE_VIRTUALS //this strategy planarizes a graph due to adding virtual nodes on each edge-edge intersection
