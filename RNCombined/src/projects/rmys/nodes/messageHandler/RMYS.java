@@ -364,44 +364,46 @@ public class RMYS extends BeaconlessTopologyControl {
 
 	}
 
-	private static ArrayList<int[]> findMaximalSequences(HashMap<Integer, ArrayList<NewPhysicalGraphNode>> cones) {
+	public static ArrayList<int[]> findMaximalSequences(HashMap<Integer, ArrayList<NewPhysicalGraphNode>> cones) {
 		ArrayList<int[]> empty_cones_set=new ArrayList<>();
-		int endcone=RMYS.k;
-		for (int i = 0; i < endcone; i++) {
-			if (cones.get(i).size() == 0) {// start of a empty sequence found
-				int truestart=i;
-				if(i==0){ //check if there is another empty cone before 0 (e.g. 13, 12, 11,...)
-					truestart=RMYS.k;
-					while(truestart>0){
-						truestart--;
-						if(cones.get(truestart).size()!=0){
-							truestart++;
-							if(truestart==RMYS.k){
-								truestart=0;
-							}
-							break;
-						}
+		int endcone=RMYS.k-1;
+		
+		int first=0;;
+		int counter=0;
+		
+		for (int i = 0; i <= endcone; i++) {
+			if(cones.get(i).size()==0){
+				if(counter>0){
+					counter++;
+					if(i==endcone){
+						int[] pair={first, first+counter-1};
+						empty_cones_set.add(pair);
 					}
-					
-				}
-				int j;
-				for (j = i + 1; j < RMYS.k; j++) {
-					if (cones.get(j).size() != 0) { // determines end of an
-													// empty sequence
-						j -= 1;
-						break;
+				}else{
+					first=i;
+					counter++;
+					if(i==endcone){
+						int[] pair={first, first+counter-1};
+						empty_cones_set.add(pair);
 					}
 				}
-				if (j == RMYS.k) {// if last cone is empty, too
-					j -= 1;
+			}else{
+				if(counter > 0 ){
+					int[] pair={first, first+counter-1};
+					empty_cones_set.add(pair);
+					counter=0;
 				}
-				int[] empty_interval = { truestart, j }; // [0] indicates start, [1]
-													// indicates end of empty
-													// sequence of cones
-				empty_cones_set.add(empty_interval);
-				i = j; // prohibit duplicates
+				
 			}
 		}
+		
+		if(cones.get(0).size()==0 && cones.get(endcone).size()==0){ //merge cyclic empty cone sequence over borders e.g. (14,3)
+			int newlast=empty_cones_set.get(0)[1];
+			empty_cones_set.remove(0);
+			empty_cones_set.get(empty_cones_set.size()-1)[1]=newlast;
+		}
+		
+		
 		return empty_cones_set;
 	}
 
@@ -431,7 +433,7 @@ public class RMYS extends BeaconlessTopologyControl {
 	 * @param pos
 	 * @return id of the cone in which node lies with respect to sourceNode
 	 */
-	private static int calculateCone(NewPhysicalGraphNode node, NewPhysicalGraphNode sourceNode) {
+	public static int calculateCone(NewPhysicalGraphNode node, NewPhysicalGraphNode sourceNode) {
 
 		double angle = calculateAngle(node, sourceNode);
 

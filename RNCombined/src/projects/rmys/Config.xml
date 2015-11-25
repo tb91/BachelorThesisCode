@@ -8,10 +8,10 @@
 		<dimensions value="2" />
 
 		<!--Length of the deployment field along the x-axis.-->
-		<dimX value="1000" />
+		<dimX value="100" />
 
 		<!--Length of the deployment field along the y-axis.-->
-		<dimY value="1000" />
+		<dimY value="100" />
 
 		<!--Length of the deployment field along the z-axis.-->
 		<dimZ value="500" />
@@ -281,6 +281,6 @@ observation-->
 <!--Specify the active algorithms in batch mode. Each algorithm is separated by a comma. For more information see the CustomGlobalBatch-->
 	<ActiveAlgorithms value="BFP,rPDT" />
 </BatchMode>
-																				</Custom>
+																					</Custom>
 </Document>
 
