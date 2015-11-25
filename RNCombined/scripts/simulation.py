@@ -46,11 +46,11 @@ def simulate(settings):
             "-batch " +
             "-overwrite " +
             "AutoStart=true " +
-            "algorithm/name=MEASUREMENT " +
+            "algorithm/name=EXPERIMENT1 " +
             "positionFile/src='" + posFile + "' " + 
             "resultsLog='" + logfile + 
             "' useFixedSeed=false " +
-            "exitAfterRounds=2006"
+            "exitAfterRounds=1"
         )
         print(command)
     args = shlex.split(command)

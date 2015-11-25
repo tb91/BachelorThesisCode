@@ -19,6 +19,7 @@ import javax.tools.Tool;
 
 import com.sun.xml.internal.ws.dump.LoggingDumpTube.Position;
 
+import projects.reactiveSpanner.Algorithms;
 import projects.reactiveSpanner.GraphConnectivity;
 import projects.reactiveSpanner.Utilities;
 import sinalgo.configuration.Configuration;
@@ -89,57 +90,22 @@ public class CustomGlobalBatch {
 		}
 		if (algorithm.toUpperCase().equals("GENERATEGRAPHS")) {
 			System.out.println("Generating nodes!");
-			generateGraphs();
+			generateNewGraph();
 			Tools.exit();
-		}else if(algorithm.toUpperCase().equals("MEASUREMENT")){
-			System.out.println("STARTING ALGORITHM MEASURING!");
-			try {
-				src = Configuration.getStringParameter("positionFile/src");
-				System.out.println("Found position File: " + src);
-				
-				numNodes = 0;
-				try {
-					BufferedReader br = null;
-					br = new BufferedReader(new FileReader(new File(src)));
-					String line = br.readLine();
-					br.close();
-					numNodes = Integer.parseInt(line.split(":")[1].trim());
-				} catch (IOException e) {
-					e.printStackTrace();
-					System.exit(1);
-				}
-				
-				
-				Tools.generateNodes(numNodes, "rmys:NewPhysicalGraphNode", "PositionFile", "("+ src +")");
-				Tools.reevaluateConnections();
-				
-				System.out.println("Loaded nodes from positionfile: " + src);
-				
-			} catch (CorruptConfigurationEntryException e) {
-				Tools.fatalError("Option 'positionFile/src' is missing or in wrong format.");
-			}
-			try{
-				exitAfterRounds= Configuration.getDoubleParameter("exitAfterRounds");
-				System.out.println("Exiting after " + exitAfterRounds + " rounds");
-			}catch (CorruptConfigurationEntryException e){
-				Tools.fatalError("Could not find or read: exitAfterRounds in Configurationfile");
-			}
+		}else if(algorithm.toUpperCase().equals("EXPERIMENT1")){
+			System.out.println("STARTING EXPERIMENT_1");
 			
-			try{
-				resultsLog= Configuration.getStringParameter("resultsLog");
-				System.out.println("path to log: " + resultsLog);
-			}catch (CorruptConfigurationEntryException e){
-				Tools.fatalError("Could not find or read: resultsLog in Configurationfile");
-			}
+			initGlobalParameters();
+			loadNodes(numNodes); //load Nodes from given sourcefile
 			
 			//===========
+			experimentRun1();
 			
-			double ratio=Algorithms_ext.rmysSpan(false);
-			System.out.println(ratio);
+			
+			
 		}
 			
 	}
-
 	public void postRound() {
 		if(Global.currentTime >= exitAfterRounds){
 			System.out.println("round " +  exitAfterRounds + " was reached.");
@@ -148,7 +114,65 @@ public class CustomGlobalBatch {
 
 	}
 	
-	public void generateGraphs(){
+	public void experimentRun1(){
+		//calculate all needed values and save them to a file
+		double euklidRatioRMYS=Algorithms_ext.rmysSpan(false);
+		int hopRatioRMYS=(int) Algorithms_ext.rmysSpan(true);
+		
+		double euklidRatioPDT=Algorithms.PDTSpan();
+		
+		ArrayList<String> values= new ArrayList<>();
+		values.add(numNodes + "");
+		values.add(nodeDensity + "");
+		
+		write_data(values);
+	}
+	
+	public void initGlobalParameters(){
+		try {
+			src = Configuration.getStringParameter("positionFile/src");
+			System.out.println("Found position Fileentry in configuration: " + src);
+			
+			
+			try {
+				BufferedReader br = null;
+				br = new BufferedReader(new FileReader(new File(src)));
+				String line = br.readLine();
+				br.close();
+				numNodes = Integer.parseInt(line.split(":")[1].trim());
+			} catch (IOException e) {
+				e.printStackTrace();
+				System.exit(1);
+			}		
+		} catch (CorruptConfigurationEntryException e) {
+			Tools.fatalError("Option 'positionFile/src' is missing or in wrong format.");
+		}
+		
+		try{
+			exitAfterRounds= Configuration.getDoubleParameter("exitAfterRounds");
+			System.out.println("Exiting after " + exitAfterRounds + " rounds");
+		}catch (CorruptConfigurationEntryException e){
+			Tools.fatalError("Could not find or read: exitAfterRounds in Configurationfile");
+		}
+		
+		try{
+			resultsLog= Configuration.getStringParameter("resultsLog");
+			System.out.println("path to log: " + resultsLog);
+		}catch (CorruptConfigurationEntryException e){
+			Tools.fatalError("Could not find or read: resultsLog in Configurationfile");
+		}
+		
+		nodeDensity = (int) Math.round((Math.PI * R * R / (Configuration.dimX * Configuration.dimY)) * numNodes);
+	}
+	
+	public void loadNodes(int nodeCount){
+		Tools.generateNodes(nodeCount, "rmys:NewPhysicalGraphNode", "PositionFile", "("+ src +")");
+		Tools.reevaluateConnections();
+		System.out.println("Loaded nodes from positionfile: " + src);
+	}
+
+	
+	public void generateNewGraph(){
 		int numNodes = Tools.getNodeList().size();
 		nodeDensity = (int) Math.round((Math.PI * R * R / (Configuration.dimX * Configuration.dimY)) * numNodes);
 		if (GraphConnectivity.isGraphConnected(Tools.getNodeList())) {

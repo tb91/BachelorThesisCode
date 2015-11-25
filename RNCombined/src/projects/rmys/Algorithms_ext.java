@@ -17,9 +17,12 @@ import projects.rmys.nodes.nodeImplementations.NewPhysicalGraphNode;
 import sinalgo.nodes.Node;
 import sinalgo.runtime.nodeCollection.NodeCollectionInterface;
 import sinalgo.tools.Tools;
+import sinalgo.tools.logging.LogL;
+import sinalgo.tools.logging.Logging;
 
 public class Algorithms_ext {
 
+	private static Logging logger = Logging.getLogger();
 	
 	public static double rmysSpan(boolean topologieSpan){
 		AdjMatrixEdgeWeightedDigraph UDGMatrix = new AdjMatrixEdgeWeightedDigraph(Tools.getNodeList().size());
@@ -71,12 +74,14 @@ public class Algorithms_ext {
 			
 		}
 		
-		//ensure bidrectional edges
-		for(Node n: completeRMYSGraph.keySet()){
-			for(Node p:completeRMYSGraph.get(n)){
-				if(!completeRMYSGraph.get(p).contains(n)){
-					throw new RuntimeException(n.toString() + " has a unidirectional edge to " + p.toString() + '\n'
-							+ n.toString() + ": "+ completeRMYSGraph.get(n) + " " + p.toString() + ": " + completeRMYSGraph.get(p));
+		// ensure bidrectional edges
+		for (Node n : completeRMYSGraph.keySet()) {
+			for (Node p : completeRMYSGraph.get(n)) {
+				if (!completeRMYSGraph.get(p).contains(n)) {
+					logger.log(LogL.ERROR_DETAIL,
+							n.toString() + " has a unidirectional edge to " + p.toString() + " " + n.toString() + ": "
+									+ completeRMYSGraph.get(n) + " " + p.toString() + ": " + completeRMYSGraph.get(p) 
+									+ '\n'+ "Values may be inaccurate!");
 				}
 			}
 		}
