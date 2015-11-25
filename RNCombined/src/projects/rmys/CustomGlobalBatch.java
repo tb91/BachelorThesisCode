@@ -38,13 +38,13 @@ import sinalgo.tools.logging.Logging;
 /**
  * CustomGlobal class for batch mode. This is a singleton class.
  * 
- * @author Mavs
+ * @author Tim
  */
 public class CustomGlobalBatch {
-	private static Logging logger = Logging.getLogger();
+	private static Logging logger = null;
 
-	private static final String PATHPREFIX = "C:\\Users\\timmy\\bachelorarbeit_code\\RNCombined\\scripts\\graphs\\";
 	private static double R = -1;
+	private static String runLogFile = "";
 
 	static {
 		try {
@@ -54,6 +54,17 @@ public class CustomGlobalBatch {
 			e.getMessage();
 			e.printStackTrace();
 		}
+
+		try {
+			runLogFile = Configuration.getStringParameter("runLogFile");
+			
+		} catch (CorruptConfigurationEntryException e) {
+			e.getMessage();
+			e.printStackTrace();
+		}
+		
+		logger=Logging.getLogger(runLogFile, true);
+		logger.log(LogL.ALWAYS, "Logger is running!");
 	}
 
 	private static CustomGlobalBatch instance = null;
@@ -80,6 +91,7 @@ public class CustomGlobalBatch {
 	private String src = "";
 	private int numNodes;
 	private String resultsLog;
+	
 
 	public boolean hasTerminated() {
 		return finished;
@@ -134,8 +146,6 @@ public class CustomGlobalBatch {
 		double averageRMYSNeighbors = calculateAverageNeighborsPerNode(rmysNeighbors);
 		double averagePDTNeighbors = calculateAverageNeighborsPerNode(pdtNeighbors);
 		double averageUDGNeighbors = calculateAverageNeighborsPerNode(udgNeighbors); // should be similar to density
-		
-		assert (Math.abs(nodeDensity-averageUDGNeighbors)<0.5): "nodeDensity and averageUDGNeighbors differ!";
 		
 		int maximalRMYSNeighbors = calculateMaximalNeighborsPerNode(rmysNeighbors);
 		int maximalPDTNeighbors = calculateMaximalNeighborsPerNode(pdtNeighbors);
@@ -243,7 +253,7 @@ public class CustomGlobalBatch {
 		nodeDensity = (int) Math.round((Math.PI * R * R / (Configuration.dimX * Configuration.dimY)) * numNodes);
 		if (GraphConnectivity.isGraphConnected(Tools.getNodeList())) {
 			logger.logln(LogL.INFO, "connected graph found! Saving..");
-			String path = PATHPREFIX + "\\Dens" + nodeDensity + "\\";
+			String path = resultsLog;
 			File dest = new File(path);
 			if (!dest.exists()) {
 				dest.mkdir();
@@ -283,7 +293,7 @@ public class CustomGlobalBatch {
 			line.append(valSep);
 		}
 
-		String filePathString = dateFormat.format(date) + "-record" + '.' + fileExtension;
+		String filePathString = resultsLog;
 		OpenOption[] openOptions = new OpenOption[] { StandardOpenOption.CREATE, StandardOpenOption.APPEND };
 		List<String> lines = new ArrayList<String>();
 		lines.add(line.toString());

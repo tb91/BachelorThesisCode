@@ -24,7 +24,6 @@ def main():
             args.append([density, start, end + start, procs])
             # collect arguments for the processes to be started
         
-    print (args)
     # execute the simulations via a process pool
     pool = Pool(PROCESSES)
     pool.map(simulate, args)
@@ -37,10 +36,22 @@ def simulate(settings):
     endid = settings[2]
     processid=settings[3]
     # simulate one algorithm for one density
-    logfile=PATH+ "results\\" + str(density)+"-"+str(startid)+"-"+str(endid)+"-"+str(processid) + ".log"
+    logfile=PATH+ "results\\" + str(density)+"-"+str(startid)+"-"+str(endid)+"-"+str(processid) + ".dat"
     
+
     for i in range(startid, endid+1):
         posFile=PATH + "graphs_1000\\density" + str(density) + "\\" + str(i) + ".pos"
+        fp = open(posFile)
+        for i, line in enumerate(fp):
+            if i == 13:
+                dimx=line[11:]
+            elif i == 14:
+                dimy=line[11:]
+        fp.close()
+        
+        runLogFile = PATH + "results\\log\\dens" + str(density) + "-" + str(processid) + ".log"
+        open(runLogFile, 'a').close()
+
         command = (
             "java -cp 'binaries/bin;binaries/jdom.jar ' sinalgo.Run "
             "-project rmys " +
@@ -51,9 +62,12 @@ def simulate(settings):
             "positionFile/src='" + posFile + "' " + 
             "resultsLog='" + logfile + 
             "' useFixedSeed=false " +
-            "exitAfterRounds=1"
+            "exitAfterRounds=1 " + 
+            "dimX=" +dimx + " " +
+            "dimY=" +dimy + " " +
+            "runLogFile='" + runLogFile + "' " + 
+            "outputToConsole=false"
         )
-        print(command)
     args = shlex.split(command)
     subprocess.call(args)
 

@@ -302,12 +302,16 @@ public class RMYS extends BeaconlessTopologyControl {
 					}
 				});
 
+				
 				// calculate sequence length
-				int sequence_l = Math.abs(interval[1] - interval[0] + 1); // eg. 8-7=1,
-																// but means 8
-																// and 7 are
-																// empty-> so
-																// plus 1
+				int sequence_l;
+				if(interval[1] >= interval[0]){
+					sequence_l = Math.abs(interval[1] - interval[0] + 1); // eg. 8-7=1, but means 8 and 7 are empty-> so plus 1
+				}else{
+					int help=interval[1] + RMYS.k;
+					sequence_l = Math.abs(help - interval[0] + 1); // eg. 8-7=1, but means 8 and 7 are empty-> so plus 1
+				}
+				System.out.println("Sequence: " + sequence_l);
 				assert (sequence_l > 1): "sequence_length must be greater than 1 here!";
 
 				int clockwiseNeighbors = (int) (sequence_l / 2.0);
