@@ -13,7 +13,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import javax.tools.Tool;
 
@@ -22,10 +24,12 @@ import com.sun.xml.internal.ws.dump.LoggingDumpTube.Position;
 import projects.reactiveSpanner.Algorithms;
 import projects.reactiveSpanner.GraphConnectivity;
 import projects.reactiveSpanner.Utilities;
+import projects.rmys.nodes.nodeImplementations.NewPhysicalGraphNode;
 import sinalgo.configuration.Configuration;
 import sinalgo.configuration.CorruptConfigurationEntryException;
 import sinalgo.io.graphFileIO.GraphFileWriter;
 import sinalgo.io.positionFile.PositionFileIO;
+import sinalgo.nodes.Node;
 import sinalgo.runtime.Global;
 import sinalgo.tools.Tools;
 import sinalgo.tools.logging.LogL;
@@ -116,10 +120,13 @@ public class CustomGlobalBatch {
 	
 	public void experimentRun1(){
 		//calculate all needed values and save them to a file
-		double euklidRatioRMYS=Algorithms_ext.rmysSpan(false);
-		int hopRatioRMYS=(int) Algorithms_ext.rmysSpan(true);
+		HashMap<Node, Set<NewPhysicalGraphNode>> rmysNeighbors = Algorithms_ext.createMYSNeighborhood();
+		double euklidRatioRMYS=Algorithms_ext.rmysSpan(rmysNeighbors, false);
+		int hopRatioRMYS=(int) Algorithms_ext.rmysSpan(rmysNeighbors, true);
 		
-		double euklidRatioPDT=Algorithms.PDTSpan();
+		HashMap<Node, Set<Node>> pdtNeighbors = Algorithms_ext.createPDTNeighborhood();
+		double euklidRatioPDT=Algorithms_ext.PDTSpan(pdtNeighbors , false);
+		int hopRatioPDT=(int) Algorithms_ext.PDTSpan(pdtNeighbors, true);
 		
 		ArrayList<String> values= new ArrayList<>();
 		values.add(numNodes + "");

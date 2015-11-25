@@ -500,7 +500,7 @@ public class CustomGlobalBatch
 		nodeDensity = (int) Math.round((Math.PI * R * R / (Configuration.dimX * Configuration.dimY)) * numNodes);
 		
 		GGSpan = Algorithms.GGSpan();
-		PDTSpan = Algorithms.PDTSpan();
+		PDTSpan = Algorithms.PDTSpan(false);
 	}
 	
 	private void PDTGGSpanPostRound(){

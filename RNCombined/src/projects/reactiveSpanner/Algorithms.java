@@ -17,6 +17,7 @@ import projects.reactiveSpanner.nodes.messageHandlers.SubgraphStrategy.EStrategy
 import projects.reactiveSpanner.nodes.messageHandlers.Barriere.BarriereMessageHandler;
 import projects.reactiveSpanner.nodes.nodeImplementations.PhysicalGraphNode;
 import projects.reactiveSpanner.nodes.nodeImplementations.SimpleNode;
+import projects.rmys.Algorithms_ext;
 import sinalgo.configuration.Configuration;
 import sinalgo.configuration.CorruptConfigurationEntryException;
 import sinalgo.nodes.Node;
@@ -864,32 +865,9 @@ public class Algorithms {
 	 * 
 	 * @return spanning ratio between the normal UDG Graph and its PDT Subgraph
 	 */
-	public static double PDTSpan(){
-		AdjMatrixEdgeWeightedDigraph UDGMatrix = new AdjMatrixEdgeWeightedDigraph(Tools.getNodeList().size()+1);
-		AdjMatrixEdgeWeightedDigraph PDTMatrix = new AdjMatrixEdgeWeightedDigraph(Tools.getNodeList().size()+1);
-		
-		for(Node n : Tools.getNodeList()){
-			Collection<Node> neighborhood = Algorithms.getNeighborNodes(n, Tools.getNodeList());
-			Set<Node> gabrielNodes = Algorithms.buildPartialDelaunayTriangulation(neighborhood, n);
-			for(Node v: neighborhood)
-			{
-				//add edge UDG
-				DirectedEdge de = new DirectedEdge(n.ID, v.ID, n.getPosition().distanceTo(v.getPosition()));
-				UDGMatrix.addEdge(de);
-			}
-			for(Node v: gabrielNodes){
-				//add edge GG
-				DirectedEdge de = new DirectedEdge(n.ID, v.ID, n.getPosition().distanceTo(v.getPosition()));
-				PDTMatrix.addEdge(de);
-			}
-		}
-		
-		int V = UDGMatrix.V();
-		
-		FloydWarshall UDGfw = new FloydWarshall(UDGMatrix);
-		FloydWarshall PDTfw = new FloydWarshall(PDTMatrix);
-		
-		return Algorithms.spanningRatio(UDGfw, PDTfw, V);
+	public static double PDTSpan(boolean hopdistance){
+		//moved implementation to Algorithms_ext
+		return Algorithms_ext.PDTSpan(Algorithms_ext.createPDTNeighborhood(), false);
 	}
 	
 	/**

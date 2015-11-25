@@ -434,7 +434,7 @@ public class CustomGlobal extends AbstractCustomGlobal {
 			buttonText = "PDT span", toolTipText = "Spanning ratio of PDT in UDG")
 	public void PDTSpan(){
 		
-		Tools.appendToOutput("Spanningratio UDG/PDT: "+Algorithms.PDTSpan()+"\n");
+		Tools.appendToOutput("Spanningratio UDG/PDT: "+Algorithms.PDTSpan(false)+"\n");
 	}
 	
 /*
