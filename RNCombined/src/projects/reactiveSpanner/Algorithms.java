@@ -190,7 +190,8 @@ public class Algorithms {
 			    final double det =  (u.getPosition().xCoord - v.getPosition().xCoord) * (v.getPosition().yCoord - w.getPosition().yCoord) 
 			    		- (v.getPosition().xCoord - w.getPosition().xCoord) * (u.getPosition().yCoord - v.getPosition().yCoord); 
 				
-			    if(Math.abs(det) < TOL){ throw new IllegalArgumentException("The 3 given nodes are collinear (on the same line). There is no circle."); }
+			    if(Math.abs(det) < TOL){ throw new IllegalArgumentException("The 3 given nodes are collinear (on the same line). There is no circle."
+			    		+ "\n" + u.toString() + ", " + v.toString() + ", " + w.toString()); }
 			    
 			    final double idet = 1/det;
 

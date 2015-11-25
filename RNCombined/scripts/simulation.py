@@ -7,8 +7,8 @@ import sys
 PROCESSES  = 1
 DENSITIES_START  = int(sys.argv[1])
 DENSITIES_END    = int(sys.argv[2])
-FROM_ID          = 0
-TO_ID            = 0
+FROM_ID          = 1
+TO_ID            = 1
 PATH = os.path.dirname(os.path.abspath(__file__)) + '\\'
 
 
@@ -20,7 +20,8 @@ def main():
             end = round((procs+1)*(passes)/PROCESSES)-1
             if procs==PROCESSES-1:
                 end+=1
-            args.append([density, round(procs*passes/PROCESSES), end, procs])
+            start = round(procs*passes/PROCESSES) + FROM_ID
+            args.append([density, start, end + start, procs])
             # collect arguments for the processes to be started
         
     print (args)
@@ -39,7 +40,7 @@ def simulate(settings):
     logfile=PATH+ "results\\" + str(density)+"-"+str(startid)+"-"+str(endid)+"-"+str(processid) + ".log"
     
     for i in range(startid, endid+1):
-        posFile=PATH + "graphs\\Dens" + str(density) + "\\" + str(i) + ".graph"
+        posFile=PATH + "graphs_1000\\density" + str(density) + "\\" + str(i) + ".pos"
         command = (
             "java -cp 'binaries/bin;binaries/jdom.jar ' sinalgo.Run "
             "-project rmys " +
