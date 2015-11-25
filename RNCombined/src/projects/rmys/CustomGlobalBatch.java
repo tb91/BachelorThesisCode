@@ -120,6 +120,9 @@ public class CustomGlobalBatch {
 	
 	public void experimentRun1(){
 		//calculate all needed values and save them to a file
+		
+		HashMap<Node, Set<Node>> udgNeighbors = Algorithms_ext.createUDGNeighborhood();
+		
 		HashMap<Node, Set<NewPhysicalGraphNode>> rmysNeighbors = Algorithms_ext.createMYSNeighborhood();
 		double euklidRatioRMYS=Algorithms_ext.rmysSpan(rmysNeighbors, false);
 		int hopRatioRMYS=(int) Algorithms_ext.rmysSpan(rmysNeighbors, true);
@@ -128,11 +131,67 @@ public class CustomGlobalBatch {
 		double euklidRatioPDT=Algorithms_ext.PDTSpan(pdtNeighbors , false);
 		int hopRatioPDT=(int) Algorithms_ext.PDTSpan(pdtNeighbors, true);
 		
+		double averageRMYSNeighbors = calculateAverageNeighborsPerNode(rmysNeighbors);
+		double averagePDTNeighbors = calculateAverageNeighborsPerNode(pdtNeighbors);
+		double averageUDGNeighbors = calculateAverageNeighborsPerNode(udgNeighbors); // should be similar to density
+		
+		assert (Math.abs(nodeDensity-averageUDGNeighbors)<0.5): "nodeDensity and averageUDGNeighbors differ!";
+		
+		int maximalRMYSNeighbors = calculateMaximalNeighborsPerNode(rmysNeighbors);
+		int maximalPDTNeighbors = calculateMaximalNeighborsPerNode(pdtNeighbors);
+		
+		double neighborsCountRMYSUDGRatio = calculateNeighborsCountGraphUDGRatio(rmysNeighbors, udgNeighbors);
+		double neighborsCountPDTUDGRatio = calculateNeighborsCountGraphUDGRatio(pdtNeighbors, udgNeighbors);
+		
 		ArrayList<String> values= new ArrayList<>();
 		values.add(numNodes + "");
 		values.add(nodeDensity + "");
+		values.add(averageUDGNeighbors + "");
+		values.add(euklidRatioRMYS + "");
+		values.add(hopRatioRMYS + "");
+		values.add(euklidRatioPDT + "");
+		values.add(hopRatioPDT + "");
+		
+		values.add(averageRMYSNeighbors + "");
+		values.add(averagePDTNeighbors + "");
+		
+		values.add(maximalRMYSNeighbors + "");
+		values.add(maximalPDTNeighbors + "");
+		
+		values.add(neighborsCountRMYSUDGRatio + "");
+		values.add(neighborsCountPDTUDGRatio + "");
 		
 		write_data(values);
+	}
+	
+	public static <T extends Node, E extends Node> double calculateNeighborsCountGraphUDGRatio(HashMap<Node, Set<T>> graphNeighborhood,
+				HashMap<Node, Set<E>> UDGNeighborhood){
+		
+		double sum = 0;
+		for(Node v: UDGNeighborhood.keySet()){
+			sum+=graphNeighborhood.get(v).size()/(1.0*UDGNeighborhood.get(v).size());
+		}
+		return sum / (1.0 * UDGNeighborhood.keySet().size());
+		
+	}
+	
+	public static <T extends Node> double calculateAverageNeighborsPerNode(HashMap<Node, Set<T>> neighborhood){
+		double sumNeighbors=0;
+		for(Node v: neighborhood.keySet()){
+			sumNeighbors+=neighborhood.get(v).size();
+		}
+		return sumNeighbors / Tools.getNodeList().size();
+	}
+	
+	public static <T extends Node> int calculateMaximalNeighborsPerNode(HashMap<Node, Set<T>> neighborhood){
+		int maximum=0;
+		for(Node v: neighborhood.keySet()){
+			int current=neighborhood.get(v).size();
+			if(current > maximum){
+				maximum=current;
+			}
+		}
+		return maximum;
 	}
 	
 	public void initGlobalParameters(){

@@ -114,6 +114,16 @@ public class Algorithms_ext {
 		return completeRMYSGraph;
 	}
 	
+	//====================UDT CREATION===========
+	public static HashMap<Node, Set<Node>> createUDGNeighborhood(){
+		HashMap<Node, Set<Node>> udgNeighbors = new HashMap<>();
+		
+		for(Node n : Tools.getNodeList()){
+			udgNeighbors.put(n, Algorithms.getNeighborNodes(n, Tools.getNodeList()));
+		}
+		return udgNeighbors;
+	}
+	
 	
 	//====================PDT CREATION===========
 	
