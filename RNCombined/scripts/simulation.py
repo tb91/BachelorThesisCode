@@ -65,7 +65,7 @@ def simulate(settings):
             "exitAfterRounds=1 " + 
             "dimX=" +dimx + " " +
             "dimY=" +dimy + " " +
-            "runLogFile='" + runLogFile + "' " + 
+            "RMYS/runLogFile='" + runLogFile + "' " + 
             "outputToConsole=false"
         )
     args = shlex.split(command)

@@ -1,10 +1,15 @@
 package projects.rmys;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 import javax.management.RuntimeErrorException;
 
@@ -16,16 +21,54 @@ import projects.reactiveSpanner.nodes.nodeImplementations.PhysicalGraphNode;
 import projects.reactiveSpanner.nodes.nodeImplementations.SimpleNode;
 import projects.rmys.nodes.messageHandler.RMYS;
 import projects.rmys.nodes.nodeImplementations.NewPhysicalGraphNode;
+import sinalgo.configuration.Configuration;
+import sinalgo.configuration.CorruptConfigurationEntryException;
 import sinalgo.nodes.Node;
 import sinalgo.runtime.nodeCollection.NodeCollectionInterface;
 import sinalgo.tools.Tools;
-import sinalgo.tools.logging.LogL;
-import sinalgo.tools.logging.Logging;
+
 
 public class Algorithms_ext {
 
-	private static Logging logger = Logging.getLogger();
+	private static Logger logger = getLogger();
+	private static String runLogFile;
+	static {
+		try {
+			runLogFile = Configuration.getStringParameter("RMYS/runLogFile");
 
+		} catch (CorruptConfigurationEntryException e) {
+			e.getMessage();
+			e.printStackTrace();
+		}
+	}
+
+	public static Logger getLogger(String filename){
+		Logger logger_local=Logger.getLogger(Algorithms_ext.class.getName());
+		FileHandler logFileOut=null;
+		try {
+			logFileOut = new FileHandler(filename);
+		} catch (SecurityException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		SimpleFormatter formatter = new SimpleFormatter();
+		logFileOut.setFormatter(formatter);
+		logger_local.addHandler(logFileOut);
+		
+		logger_local.log(Level.INFO, "Logger is running.");
+		return logger_local;
+	}
+	
+	public static Logger getLogger(){
+		Logger logger_local=Logger.getLogger(Algorithms_ext.class.getName());
+				
+		SimpleFormatter formatter = new SimpleFormatter();
+		
+		
+		logger_local.log(Level.INFO, "Logger is running.");
+		return logger_local;
+	}
+	
 	public static double rmysSpan(boolean hopdistance) {
 		return rmysSpan(createMYSNeighborhood(), hopdistance);
 	}
@@ -104,7 +147,7 @@ public class Algorithms_ext {
 		for (Node n : completeRMYSGraph.keySet()) {
 			for (Node p : completeRMYSGraph.get(n)) {
 				if (!completeRMYSGraph.get(p).contains(n)) {
-					logger.log(LogL.ERROR_DETAIL,
+					logger.log(Level.SEVERE,
 							n.toString() + " has a unidirectional edge to " + p.toString() + " " + n.toString() + ": "
 									+ completeRMYSGraph.get(n) + " " + p.toString() + ": " + completeRMYSGraph.get(p)
 									+ '\n' + "Values may be inaccurate!");

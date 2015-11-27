@@ -266,6 +266,9 @@
 <RMYS>
 	<!--k_value is the constant degree upper bound of each node  -->
 	<k_value value="14"/>
+	
+	<!--The path to the current logging file bypassing the Sinalgo logging mechanism.-->
+	<runLogFile value="" />
 </RMYS>
 <Graph>
 <!--DrawOnlyEdgesWithMessages: Any edge of the graph will be drawed only if a message is sent over it-->

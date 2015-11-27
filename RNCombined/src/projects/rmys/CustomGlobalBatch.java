@@ -34,7 +34,7 @@ import java.util.logging.SimpleFormatter;
  * @author Tim
  */
 public class CustomGlobalBatch {
-	private static Logger logger = Logger.getLogger(CustomGlobalBatch.class.getName());
+	private static Logger logger;
 
 	private static double R = -1;
 	private static String runLogFile = "";
@@ -49,25 +49,18 @@ public class CustomGlobalBatch {
 		}
 
 		try {
-			runLogFile = Configuration.getStringParameter("runLogFile");
+			runLogFile = Configuration.getStringParameter("RMYS/runLogFile");
+			if(!runLogFile.isEmpty()){
+				logger=Algorithms_ext.getLogger(runLogFile);	
+			}else{
+				logger=Algorithms_ext.getLogger();
+			}
 			
 		} catch (CorruptConfigurationEntryException e) {
-			e.getMessage();
-			e.printStackTrace();
+			logger=Algorithms_ext.getLogger();
 		}
+			
 		
-		FileHandler logFileOut=null;
-		try {
-			logFileOut = new FileHandler(runLogFile);
-		} catch (SecurityException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		SimpleFormatter formatter = new SimpleFormatter();
-		logFileOut.setFormatter(formatter);
-		logger.addHandler(logFileOut);
-		
-		logger.log(Level.INFO, "Logger is running.");
 		
 	}
 
@@ -86,6 +79,7 @@ public class CustomGlobalBatch {
 	 */
 	private CustomGlobalBatch() {
 	}
+	
 
 	// for recording:
 	private static int nodeDensity;
