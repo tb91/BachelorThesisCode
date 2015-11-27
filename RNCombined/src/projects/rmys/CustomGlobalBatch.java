@@ -33,7 +33,9 @@ import sinalgo.nodes.Node;
 import sinalgo.runtime.Global;
 import sinalgo.tools.Tools;
 import sinalgo.tools.logging.LogL;
-import sinalgo.tools.logging.Logging;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * CustomGlobal class for batch mode. This is a singleton class.
@@ -41,7 +43,7 @@ import sinalgo.tools.logging.Logging;
  * @author Tim
  */
 public class CustomGlobalBatch {
-	private static Logging logger = null;
+	private static Logger logger = Logger.getLogger(CustomGlobalBatch.class.getName());
 
 	private static double R = -1;
 	private static String runLogFile = "";
@@ -63,15 +65,15 @@ public class CustomGlobalBatch {
 			e.printStackTrace();
 		}
 		
-		logger=Logging.getLogger(runLogFile, true);
-		logger.log(LogL.ALWAYS, "Logger is running!");
+		logger.log(Level.INFO, "Logger is running.");
+		
 	}
 
 	private static CustomGlobalBatch instance = null;
 
 	public static CustomGlobalBatch getInstance() {
 		if (instance == null) {
-			logger.logln(LogL.INFO, "Create CustomGlobalBatch");
+			logger.log(Level.INFO, "Create CustomGlobalBatch");
 			instance = new CustomGlobalBatch();
 		}
 		return instance;
@@ -252,7 +254,7 @@ public class CustomGlobalBatch {
 		int numNodes = Tools.getNodeList().size();
 		nodeDensity = (int) Math.round((Math.PI * R * R / (Configuration.dimX * Configuration.dimY)) * numNodes);
 		if (GraphConnectivity.isGraphConnected(Tools.getNodeList())) {
-			logger.logln(LogL.INFO, "connected graph found! Saving..");
+			logger.log(Level.INFO, "connected graph found! Saving..");
 			String path = resultsLog;
 			File dest = new File(path);
 			if (!dest.exists()) {
@@ -268,12 +270,12 @@ public class CustomGlobalBatch {
 			finished = true;
 
 		} else {
-			logger.logln(LogL.INFO, "Graph is not connected!");
+			logger.log(Level.INFO, "Graph is not connected!");
 		}
 	}
 
 	public void write_data(ArrayList<String> values) {
-		logger.logln(LogL.INFO, "Writing message record to file...");
+		logger.log(Level.INFO, "Writing message record to file...");
 	
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		Date date = new Date();
@@ -282,12 +284,7 @@ public class CustomGlobalBatch {
 		final String fileExtension = "dat";
 				
 		StringBuffer line = new StringBuffer();
-		/*line.append(nodeDensity);
-		line.append(valSep);
-		line.append(numNodes);
-		line.append(valSep);
-		line.append(ratio);
-		line.append(valSep);*/
+		
 		for(String value:values){
 			line.append(value);
 			line.append(valSep);
@@ -303,7 +300,7 @@ public class CustomGlobalBatch {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		logger.logln(LogL.INFO, "Saved message successfully to file " + filePathString);
+		logger.log(Level.INFO, "Saved message successfully to file " + filePathString);
 	}
 
 	public void onExit() {

@@ -2,7 +2,7 @@
 <sinalgo>
 	<ProjectSelector windowWidth="892" windowHeight="392" lastChosenProject="rmys" windowPosX="50" windowPosY="58" isMaximized="false" selectedTab="2" />
 	<GUI windowWidth="798" windowHeight="600" windowPosX="950" windowPosY="125" isMaximized="false" ControlPanelExpandSimulation="true" ControlPanelShowFullViewPanel="true" ControlPanelShowTextPanel="true" ControlPanelShowProjectControl="true" RunOperationIsLimited="true" helpWindowWidth="500" helpWindowHeight="500" helpWindowPosX="200" helpWindowPosY="200" helpWindowIsMaximized="false" />
-	<RandomSeed seedFromPreviousRun="4461436795678770383" />
+	<RandomSeed seedFromPreviousRun="-4691194548883039798" />
 	<App lastSelectedFileDirectory="" checkForUpdatesAtStartup="true" updateCheckTimeStamp="1448449813725" runCmdLineArgs="-project rmys -batch -overwrite AutoStart=true algorithm/name=EXPERIMENT1 positionFile/src=C:\Users\timmy\bachelorarbeit_code\RNCombined\scripts\graphs_1000\density5\1.pos resultsLog=C:\Users\timmy\bachelorarbeit_code\RNCombined\scripts\results\5-1-1-0.dat useFixedSeed=false exitAfterRounds=1 dimX=1000 dimY=1000 runLogFile=C:\Users\timmy\bachelorarbeit_code\RNCombined\scripts\results\log\dens5-0.log outputToConsole=false " />
 	<GenNodesDlg numNodes="350" />
 </sinalgo>
