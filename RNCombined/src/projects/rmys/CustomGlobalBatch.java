@@ -2,11 +2,8 @@ package projects.rmys;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.nio.file.OpenOption;
 import java.nio.file.StandardOpenOption;
 import java.text.DateFormat;
@@ -17,25 +14,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-import javax.tools.Tool;
-
-import com.sun.xml.internal.ws.dump.LoggingDumpTube.Position;
-
-import projects.reactiveSpanner.Algorithms;
 import projects.reactiveSpanner.GraphConnectivity;
 import projects.reactiveSpanner.Utilities;
 import projects.rmys.nodes.nodeImplementations.NewPhysicalGraphNode;
 import sinalgo.configuration.Configuration;
 import sinalgo.configuration.CorruptConfigurationEntryException;
-import sinalgo.io.graphFileIO.GraphFileWriter;
 import sinalgo.io.positionFile.PositionFileIO;
 import sinalgo.nodes.Node;
 import sinalgo.runtime.Global;
 import sinalgo.tools.Tools;
-import sinalgo.tools.logging.LogL;
-
+import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 /**
  * CustomGlobal class for batch mode. This is a singleton class.
@@ -64,6 +55,17 @@ public class CustomGlobalBatch {
 			e.getMessage();
 			e.printStackTrace();
 		}
+		
+		FileHandler logFileOut=null;
+		try {
+			logFileOut = new FileHandler(runLogFile);
+		} catch (SecurityException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		SimpleFormatter formatter = new SimpleFormatter();
+		logFileOut.setFormatter(formatter);
+		logger.addHandler(logFileOut);
 		
 		logger.log(Level.INFO, "Logger is running.");
 		
