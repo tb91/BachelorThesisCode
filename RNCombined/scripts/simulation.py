@@ -4,11 +4,11 @@ from multiprocessing import Pool
 import sys
 
 # Simulation parameters
-PROCESSES  = 1
+PROCESSES  = 4
 DENSITIES_START  = int(sys.argv[1])
 DENSITIES_END    = int(sys.argv[2])
 FROM_ID          = 0
-TO_ID            = 1
+TO_ID            = 3
 PATH = os.path.dirname(os.path.abspath(__file__)) + '\\'
 
 def main():
@@ -27,7 +27,7 @@ def main():
             # collect arguments for the processes to be started
         
     # execute the simulations via a process pool
-    
+    print (args)
     pool = Pool(PROCESSES)
     pool.map(simulate, args)
     pool.close()
@@ -71,7 +71,7 @@ def simulate(settings):
     # simulate one algorithm for one density
     logfile=PATH+ "results\\" + str(density)+"-"+str(startid)+"-"+str(endid)+"-"+str(processid) + ".dat"
    
-    for i in range(startid, endid+1):
+    for i in range(startid, endid):
         posFile=PATH + "graphs_1000\\density" + str(density) + "\\" + str(i) + ".pos"
         fp = open(posFile)
         for i, line in enumerate(fp):
