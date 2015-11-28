@@ -512,7 +512,7 @@ public class Algorithms {
 					}
 				}
 			}
-			System.out.println(srcNode.toString() + " has following pdtNeighbors: " + PDTNodes.toString());
+//			System.out.println(srcNode.toString() + " has following pdtNeighbors: " + PDTNodes.toString());
 		return PDTNodes;
 	}
 		

@@ -43,30 +43,36 @@ public class Algorithms_ext {
 	}
 
 	public static Logger getLogger(String filename){
-		Logger logger_local=Logger.getLogger(Algorithms_ext.class.getName());
-		FileHandler logFileOut=null;
-		try {
-			logFileOut = new FileHandler(filename);
-		} catch (SecurityException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if(logger==null){
+			logger=Logger.getLogger(Algorithms_ext.class.getName());
+			FileHandler logFileOut=null;
+			try {
+				logFileOut = new FileHandler(filename);
+			} catch (SecurityException | IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			SimpleFormatter formatter = new SimpleFormatter();
+			logFileOut.setFormatter(formatter);
+			logger.addHandler(logFileOut);
+			
+			logger.log(Level.INFO, "Logger is running.");	
 		}
-		SimpleFormatter formatter = new SimpleFormatter();
-		logFileOut.setFormatter(formatter);
-		logger_local.addHandler(logFileOut);
 		
-		logger_local.log(Level.INFO, "Logger is running.");
-		return logger_local;
+		return logger;
 	}
 	
 	public static Logger getLogger(){
-		Logger logger_local=Logger.getLogger(Algorithms_ext.class.getName());
-				
-		SimpleFormatter formatter = new SimpleFormatter();
+		if(logger==null){
+			logger=Logger.getLogger(Algorithms_ext.class.getName());
+			
+			SimpleFormatter formatter = new SimpleFormatter();
+			
+			
+			logger.log(Level.INFO, "Logger is running.");	
+		}
 		
-		
-		logger_local.log(Level.INFO, "Logger is running.");
-		return logger_local;
+		return logger;
 	}
 	
 	public static double rmysSpan(boolean hopdistance) {

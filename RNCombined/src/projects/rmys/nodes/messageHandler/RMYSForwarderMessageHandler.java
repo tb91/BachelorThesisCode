@@ -3,16 +3,23 @@ package projects.rmys.nodes.messageHandler;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import projects.reactiveSpanner.nodes.messageHandlers.SubgraphStrategy;
 import projects.reactiveSpanner.nodes.messages.AbstractMessage;
 import projects.reactiveSpanner.nodes.nodeImplementations.PhysicalGraphNode;
+import projects.rmys.Algorithms_ext;
 import projects.rmys.nodes.messages.AcknowlegdementMessage;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.nodes.Position;
 
 public class RMYSForwarderMessageHandler extends RMYSMessageHandler {
+	
+	private static Logger logger = Algorithms_ext.getLogger();
+	
 	SubgraphStrategy pdt;
+	
 	protected RMYSForwarderMessageHandler(UUID tcID, PhysicalGraphNode sourceNode, SubgraphStrategy neighborhood) {
 		super(tcID, sourceNode, sourceNode);
 		this.pdt = neighborhood;
@@ -43,10 +50,10 @@ public class RMYSForwarderMessageHandler extends RMYSMessageHandler {
 			} else {
 				// remove this node from the set, since the other node did not accept this edge
 				if (!this.knownNeighbors.remove(msg.getTransmitter())) {
-					System.err.println(this.sourceNode
+					logger.log(Level.SEVERE, this.sourceNode
 							+ " tried to remove a node which was not in it's knownNeighbors-set.\nThis should not occur!");
 				}
-				System.err.println(
+				logger.log(Level.INFO,
 						this.sourceNode + " removed " + msg.getTransmitter() + " from it's list of knownNeighbors");
 			}
 		}

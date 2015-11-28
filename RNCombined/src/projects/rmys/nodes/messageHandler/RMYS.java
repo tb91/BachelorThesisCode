@@ -7,6 +7,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import projects.reactiveSpanner.TopologyControlObserver;
 import projects.reactiveSpanner.nodes.messageHandlers.AbstractMessageHandler;
@@ -15,6 +17,7 @@ import projects.reactiveSpanner.nodes.messageHandlers.SubgraphStrategy;
 import projects.reactiveSpanner.nodes.messageHandlers.reactivePDT.ReactivePDT;
 import projects.reactiveSpanner.nodes.nodeImplementations.PhysicalGraphNode;
 import projects.reactiveSpanner.nodes.nodeImplementations.SimpleNode;
+import projects.rmys.Algorithms_ext;
 import projects.rmys.nodes.messages.RequestMessage;
 import projects.rmys.nodes.nodeImplementations.NewPhysicalGraphNode;
 import sinalgo.configuration.Configuration;
@@ -47,14 +50,16 @@ public class RMYS extends BeaconlessTopologyControl {
 	 * 
 	 *----------------------------
 	 *verbesserung dass letzte broadcast nicht gebraucht wird:
-	 * Wenn kante einmal gefunden -> automatisch hinzuf�gen -> planarity bleibt erhalten
-	 * weil pdt planaren graphen erzeugt und RMYS nur kanten wegnimmt (selbst wenn es alle hinzuf�gt)
+	 * Wenn kante einmal gefunden -> automatisch hinzufügen -> planarity bleibt erhalten
+	 * weil pdt planaren graphen erzeugt und RMYS nur kanten wegnimmt (selbst wenn es alle hinzufügt)
 	 * Spanning ratio kann nur besser werden
 	 * einzige was man untersuchen muss ist contant node degree...
 	 *	 */
 	public static int k = -1;
 	public static double cone_size = -1;
 	public static double unit_radius = -1;
+	
+	private static Logger logger = Algorithms_ext.getLogger();
 
 	static {
 		try {
@@ -121,7 +126,7 @@ public class RMYS extends BeaconlessTopologyControl {
 		// {
 		// nodeIds.put(n.ID, calculateCone(n.getPosition()));
 		// }
-		System.out.println("Constructing neighborhood of node: " + sourceNode.toString());
+		logger.log(Level.INFO, "Constructing neighborhood of node: " + sourceNode.toString());
 		// coneId -> NewPhysicalGraphNode
 		HashMap<Integer, ArrayList<NewPhysicalGraphNode>> cones = new HashMap<>();
 		for (int l = 0; l < RMYS.k; l++) {// for easier calculations initialize
@@ -171,7 +176,7 @@ public class RMYS extends BeaconlessTopologyControl {
 			}
 			if (shortestNode != null) {
 				shortest.put(t, shortestNode);
-				System.out.println("cone:"+ t +" shortest distance to node: " + shortestNode);
+				logger.log(Level.INFO, "cone:"+ t +" shortest distance to node: " + shortestNode);
 			}
 		}
 
@@ -188,17 +193,18 @@ public class RMYS extends BeaconlessTopologyControl {
 		// find maximal sequences of empty cones
 		ArrayList<int[]> empty_cones_set = findMaximalSequences(cones);
 
-		System.out.println("Empty cones: ");
+		logger.log(Level.INFO, "Empty cones: ");
+		String maximalSequences="";
 		for(int[] values:empty_cones_set){
-			System.out.print("[" + values[0] + ", " + values[1] + "], ");
+			maximalSequences += "[" + values[0] + ", " + values[1] + "], ";
 		}
-		System.out.println();
+		logger.log(Level.INFO, maximalSequences);
 		
 		
 		// for each empty sequence do
 		for (int[] interval : empty_cones_set) {
 			if(pdtNeighbors.size()==calculatedNeighbors.size()){
-				System.out.println("breaking loop since calculatedNeighbors contains all nodes out of pdtNeighbors");
+				logger.log(Level.INFO, "breaking loop since calculatedNeighbors contains all nodes out of pdtNeighbors");
 				break;
 			}
 			// find orientation point
@@ -230,7 +236,7 @@ public class RMYS extends BeaconlessTopologyControl {
 					}
 				}
 				assert clockwise!=null : "clockwise is null but it shouldn't!";
-				System.out.println("for empty cone " + interval[0] + " " + clockwise.toString() + " is the next node clockwise" );
+				logger.log(Level.INFO, "for empty cone " + interval[0] + " " + clockwise.toString() + " is the next node clockwise" );
 				// same for the nearest node counterclockwise
 				NewPhysicalGraphNode counterclockwise = null;
 				double greatestAngle = Double.MAX_VALUE;
@@ -246,25 +252,25 @@ public class RMYS extends BeaconlessTopologyControl {
 					}
 				}
 				assert counterclockwise!=null : "counterclockwise is null but it shouldn't!";
-				System.out.println("for empty cone " + interval[0] + " " + counterclockwise.toString() + " is the next node counterclockwise" );
+				logger.log(Level.INFO, "for empty cone " + interval[0] + " " + counterclockwise.toString() + " is the next node counterclockwise" );
 				if (counterclockwise != null && clockwise != null) {
 					if (calculatedNeighbors.contains(counterclockwise)) {
 						calculatedNeighbors.add(clockwise);
-						System.out.println("adding clockwise: " + clockwise.toString());
+						logger.log(Level.INFO, "adding clockwise: " + clockwise.toString());
 					} else if (calculatedNeighbors.contains(clockwise)) {
 						calculatedNeighbors.add(counterclockwise);
-						System.out.println("adding counterclockwise: " + counterclockwise.toString());
+						logger.log(Level.INFO, "adding counterclockwise: " + counterclockwise.toString());
 					} else {
 						double disclock = counterclockwise.getPosition().distanceTo(sourceNode.getPosition());
 						double discounter = clockwise.getPosition().distanceTo(sourceNode.getPosition());
 						if (disclock < discounter) {
 							calculatedNeighbors.add(counterclockwise);
-							System.out.println("adding counterclockwise " + counterclockwise.toString() +" with distance: " + disclock);
+							logger.log(Level.INFO, "adding counterclockwise " + counterclockwise.toString() +" with distance: " + disclock);
 						} else if (discounter < disclock) {
 							calculatedNeighbors.add(clockwise);
-							System.out.println("adding clockwise " + clockwise.toString() +" with distance: " + discounter);
+							logger.log(Level.INFO, "adding clockwise " + clockwise.toString() +" with distance: " + discounter);
 						} else {
-							throw new RuntimeException("unspecified behavior: distance from " + sourceNode.toString()
+							logger.log(Level.SEVERE, "unspecified behavior: distance from " + sourceNode.toString()
 									+ " to " + counterclockwise.toString() + " and " + clockwise.toString()
 									+ " is equal.");
 							// is not specified in Modified Yao Step
@@ -311,26 +317,19 @@ public class RMYS extends BeaconlessTopologyControl {
 					int help=interval[1] + RMYS.k;
 					sequence_l = Math.abs(help - interval[0] + 1); // eg. 8-7=1, but means 8 and 7 are empty-> so plus 1
 				}
-				System.out.println("Sequence: " + sequence_l);
+				
 				assert (sequence_l > 1): "sequence_length must be greater than 1 here!";
 
 				int clockwiseNeighbors = (int) (sequence_l / 2.0);
 				int counterclockwiseNeighbors = (int) ((sequence_l + 1) / 2.0);
 				assert clockwiseNeighbors+ counterclockwiseNeighbors == sequence_l: "one neighbor too less!";
-				// System.out.println();
-				// System.out.println("clockwise count: " + clockwiseNeighbors);
-				// System.out.println("counterclockwise count: " +
-				// counterclockwiseNeighbors);
-				// System.out.println("List of Node: " + sourceNode.toString());
-				// for (PhysicalGraphNode p : sortedNeighbors) {
-				// System.out.println("Node " + p.toString() + " with angle: " +
-				// anglemap.get(p));
-				// }
-
+				
 				// choose the first counterclockwiseNeighbors which are not
 				// already selected
 				int index = 0;
-				System.out.println("sequence in the interval [" + interval[0] + ", " + interval[1]  + "] chooses: ");
+				logger.log(Level.INFO, "sequence in the interval [" + interval[0] + ", " + interval[1]  + "] chooses: ");
+				
+				String neighbors="";
 				while (counterclockwiseNeighbors > 0 && index < sortedNeighbors.size()) {
 
 					NewPhysicalGraphNode p = sortedNeighbors.get(index);
@@ -339,15 +338,15 @@ public class RMYS extends BeaconlessTopologyControl {
 						continue;// take next node
 					}
 					calculatedNeighbors.add(p);
-					System.out.print(p.toString() + " ");
+					neighbors += p.toString() + " ";
 					index++;
 					counterclockwiseNeighbors -= 1;
 				}
-				
-				System.out.println("counterclockwise");
-				System.out.print("and: ");
+				neighbors += "counterclockwise";
+				logger.log(Level.INFO, neighbors + "and:");
 				// choose the first clockwiseNeighbors which are not already
 				// selected
+				neighbors="";
 				index = sortedNeighbors.size() - 1;
 				while (clockwiseNeighbors > 0 && index >= 0) {
 					NewPhysicalGraphNode p = sortedNeighbors.get(index);
@@ -356,11 +355,12 @@ public class RMYS extends BeaconlessTopologyControl {
 						continue;// take next node
 					}
 					calculatedNeighbors.add(p);
-					System.out.print(p.toString() + " ");
+					neighbors += p.toString() + " ";
 					index--;
 					clockwiseNeighbors -= 1;
 				}
-				System.out.println("clockwise");
+				neighbors += "clockwise";
+				logger.log(Level.INFO, neighbors);
 			}
 		}
 
@@ -425,11 +425,8 @@ public class RMYS extends BeaconlessTopologyControl {
 			request.candidates.add((NewPhysicalGraphNode) pn);// save typecast
 
 		}
-		System.out.println("Neighbors for node: " + rmys.node.toString());
-		System.out.print("(");
-		System.out.println(rmys.getKnownNeighbors());
-		System.out.println(")");
-
+		logger.log(Level.INFO, "Neighbors for node: " + rmys.node.toString() + ": " + rmys.getKnownNeighbors());
+		
 		rmys.node.broadcast(request);
 	}
 
