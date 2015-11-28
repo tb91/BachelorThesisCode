@@ -1,79 +1,61 @@
 package projects.rmys;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
+import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
-
-import javax.management.RuntimeErrorException;
 
 import projects.reactiveSpanner.Algorithms;
 import projects.reactiveSpanner.FloydWarshall.AdjMatrixEdgeWeightedDigraph;
 import projects.reactiveSpanner.FloydWarshall.DirectedEdge;
 import projects.reactiveSpanner.FloydWarshall.FloydWarshall;
-import projects.reactiveSpanner.nodes.nodeImplementations.PhysicalGraphNode;
-import projects.reactiveSpanner.nodes.nodeImplementations.SimpleNode;
 import projects.rmys.nodes.messageHandler.RMYS;
 import projects.rmys.nodes.nodeImplementations.NewPhysicalGraphNode;
 import sinalgo.configuration.Configuration;
 import sinalgo.configuration.CorruptConfigurationEntryException;
 import sinalgo.nodes.Node;
-import sinalgo.runtime.nodeCollection.NodeCollectionInterface;
 import sinalgo.tools.Tools;
 
 
 public class Algorithms_ext {
 
-	private static Logger logger = getLogger();
+	private static Logger logger = null;
 	private static String runLogFile;
+	
+	private static boolean inbatchmode;
+	
 	static {
+		
+		try {
+				inbatchmode = Configuration.getBooleanParameter("RMYS/batchmode");
+			} catch (CorruptConfigurationEntryException e) {
+				Tools.fatalError("Option 'RMYS/batchmode' is missing or in wrong format.");
+			}
+		
 		try {
 			runLogFile = Configuration.getStringParameter("RMYS/runLogFile");
-
-		} catch (CorruptConfigurationEntryException e) {
-			e.getMessage();
-			e.printStackTrace();
-		}
-	}
-
-	public static Logger getLogger(String filename){
-		if(logger==null){
-			logger=Logger.getLogger(Algorithms_ext.class.getName());
-			FileHandler logFileOut=null;
-			try {
-				logFileOut = new FileHandler(filename);
-			} catch (SecurityException | IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			if(!runLogFile.isEmpty()){
+				logger=Algorithms_ext.getLogger(runLogFile);
+				
+			}else{
+				logger=Algorithms_ext.getLogger();
 			}
-			SimpleFormatter formatter = new SimpleFormatter();
-			logFileOut.setFormatter(formatter);
-			logger.addHandler(logFileOut);
 			
-			logger.log(Level.INFO, "Logger is running.");	
+		} catch (CorruptConfigurationEntryException e) {
+			logger=Algorithms_ext.getLogger();
 		}
 		
-		return logger;
-	}
-	
-	public static Logger getLogger(){
-		if(logger==null){
-			logger=Logger.getLogger(Algorithms_ext.class.getName());
-			
-			SimpleFormatter formatter = new SimpleFormatter();
-			
-			
-			logger.log(Level.INFO, "Logger is running.");	
-		}
 		
-		return logger;
 	}
+
 	
 	public static double rmysSpan(boolean hopdistance) {
 		return rmysSpan(createMYSNeighborhood(), hopdistance);
@@ -163,7 +145,7 @@ public class Algorithms_ext {
 		return completeRMYSGraph;
 	}
 	
-	//====================UDT CREATION===========
+	//====================UDG CREATION===========
 	public static HashMap<Node, Set<Node>> createUDGNeighborhood(){
 		HashMap<Node, Set<Node>> udgNeighbors = new HashMap<>();
 		
@@ -227,6 +209,76 @@ public class Algorithms_ext {
 			pdtneighbors.put(n, pdtNodes);
 		}
 		return pdtneighbors;
+	}
+	
+	public static Logger getLogger(String filename){
+		if(logger==null){
+			logger=Logger.getLogger(Algorithms_ext.class.getName());
+			FileHandler logFileOut=null;
+			try {
+				logFileOut = new FileHandler(filename);
+			} catch (SecurityException | IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			if(inbatchmode){
+				logger.setUseParentHandlers(false);
+				logger.setLevel(Level.WARNING);
+			}
+			
+			java.util.logging.Formatter simpleformatter = new java.util.logging.Formatter (){
+				//the following formatter is copied from: 
+				//http://stackoverflow.com/questions/2950704/java-util-logging-how-to-suppress-date-line
+				@Override
+			    public String format(final LogRecord r) {
+			        StringBuilder sb = new StringBuilder();
+			        sb.append(formatMessage(r)).append(System.getProperty("line.separator"));
+			        if (null != r.getThrown()) {
+			            sb.append("Throwable occurred: "); //$NON-NLS-1$
+			            Throwable t = r.getThrown();
+			            PrintWriter pw = null;
+			            try {
+			                StringWriter sw = new StringWriter();
+			                pw = new PrintWriter(sw);
+			                t.printStackTrace(pw);
+			                sb.append(sw.toString());
+			            } finally {
+			                if (pw != null) {
+			                    try {
+			                        pw.close();
+			                    } catch (Exception e) {
+			                        // ignore
+			                    }
+			                }
+			            }
+			        }
+			        return sb.toString();
+			    }
+			};
+			
+			logFileOut.setFormatter(simpleformatter);
+			
+				
+			logger.addHandler(logFileOut);
+			
+			logger.log(Level.INFO, "Logger has started and prints into file:\n" + filename);	
+		}
+		
+		return logger;
+	}
+	
+	public static Logger getLogger(){
+		if(logger==null){
+			logger=Logger.getLogger(Algorithms_ext.class.getName());
+			
+			SimpleFormatter formatter = new SimpleFormatter();
+			
+			
+			logger.log(Level.INFO, "Logger is running.");	
+		}
+		
+		return logger;
 	}
 	
 }

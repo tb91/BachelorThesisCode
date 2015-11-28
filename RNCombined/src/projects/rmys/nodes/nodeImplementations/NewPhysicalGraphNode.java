@@ -22,7 +22,7 @@ public class NewPhysicalGraphNode extends PhysicalGraphNode {
 	public NewPhysicalGraphNode() {
 		super();
 
-
+		
 	}
 
 	@Override

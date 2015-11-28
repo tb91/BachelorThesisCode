@@ -4,11 +4,11 @@ from multiprocessing import Pool
 import sys
 
 # Simulation parameters
-PROCESSES  = 1
+PROCESSES  = 8
 DENSITIES_START  = int(sys.argv[1])
 DENSITIES_END    = int(sys.argv[2])
-FROM_ID          = 1
-TO_ID            = 1
+FROM_ID          = 0
+TO_ID            = 19
 PATH = os.path.dirname(os.path.abspath(__file__)) + '\\'
 
 
@@ -50,7 +50,7 @@ def simulate(settings):
         fp.close()
         
         runLogFile = PATH + "results\\log\\dens" + str(density) + "-" + str(processid) + ".log"
-        open(runLogFile, 'a').close()
+        
 
         command = (
             "java -cp 'binaries/bin;binaries/jdom.jar ' sinalgo.Run "
@@ -66,7 +66,8 @@ def simulate(settings):
             "dimX=" +dimx + " " +
             "dimY=" +dimy + " " +
             "RMYS/runLogFile='" + runLogFile + "' " + 
-            "outputToConsole=false"
+            "outputToConsole=false " +
+            "RMYS/batchmode=true"
         )
     args = shlex.split(command)
     subprocess.call(args)

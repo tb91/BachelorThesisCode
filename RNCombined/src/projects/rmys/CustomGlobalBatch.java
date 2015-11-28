@@ -51,7 +51,8 @@ public class CustomGlobalBatch {
 		try {
 			runLogFile = Configuration.getStringParameter("RMYS/runLogFile");
 			if(!runLogFile.isEmpty()){
-				logger=Algorithms_ext.getLogger(runLogFile);	
+				logger=Algorithms_ext.getLogger(runLogFile);
+				
 			}else{
 				logger=Algorithms_ext.getLogger();
 			}
@@ -90,6 +91,9 @@ public class CustomGlobalBatch {
 	private int numNodes;
 	private String resultsLog;
 	
+	public static boolean inbatchmode;
+	
+	
 
 	public boolean hasTerminated() {
 		return finished;
@@ -113,7 +117,7 @@ public class CustomGlobalBatch {
 			loadNodes(numNodes); //load Nodes from given sourcefile
 			
 			//===========
-			experimentRun1();
+//			experimentRun1();
 			
 			
 			

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sinalgo>
-	<ProjectSelector windowWidth="892" windowHeight="392" lastChosenProject="rmys" windowPosX="50" windowPosY="58" isMaximized="false" selectedTab="2" />
-	<GUI windowWidth="798" windowHeight="600" windowPosX="950" windowPosY="125" isMaximized="false" ControlPanelExpandSimulation="true" ControlPanelShowFullViewPanel="true" ControlPanelShowTextPanel="true" ControlPanelShowProjectControl="true" RunOperationIsLimited="true" helpWindowWidth="500" helpWindowHeight="500" helpWindowPosX="200" helpWindowPosY="200" helpWindowIsMaximized="false" />
-	<RandomSeed seedFromPreviousRun="4434633179967067621" />
-	<App lastSelectedFileDirectory="" checkForUpdatesAtStartup="true" updateCheckTimeStamp="1448650343519" runCmdLineArgs="-project rmys -batch -overwrite AutoStart=true algorithm/name=EXPERIMENT1 positionFile/src=C:\Users\timmy\bachelorarbeit_code\RNCombined\scripts\graphs_1000\density5\1.pos resultsLog=C:\Users\timmy\bachelorarbeit_code\RNCombined\scripts\results\5-1-1-0.dat useFixedSeed=false exitAfterRounds=1 dimX=1000 dimY=1000 runLogFile=C:\Users\timmy\bachelorarbeit_code\RNCombined\scripts\results\log\dens5-0.log outputToConsole=false " />
-	<GenNodesDlg numNodes="150" />
+	<ProjectSelector windowWidth="600" windowHeight="400" lastChosenProject="" windowPosX="50" windowPosY="50" isMaximized="false" selectedTab="1" />
+	<GUI windowWidth="800" windowHeight="600" windowPosX="50" windowPosY="50" isMaximized="false" ControlPanelExpandSimulation="true" ControlPanelShowFullViewPanel="true" ControlPanelShowTextPanel="true" ControlPanelShowProjectControl="true" RunOperationIsLimited="true" helpWindowWidth="500" helpWindowHeight="500" helpWindowPosX="200" helpWindowPosY="200" helpWindowIsMaximized="false" />
+	<RandomSeed seedFromPreviousRun="577456439365269170" />
+	<App lastSelectedFileDirectory="" checkForUpdatesAtStartup="true" updateCheckTimeStamp="1448723622625" runCmdLineArgs="-project rmys -batch -overwrite AutoStart=true algorithm/name=EXPERIMENT1 positionFile/src=C:\Users\timmy\bachelorarbeit_code\RNCombined\scripts\graphs_1000\density16\36.pos resultsLog=C:\Users\timmy\bachelorarbeit_code\RNCombined\scripts\results\16-17-36-7.dat useFixedSeed=false exitAfterRounds=1 dimX=1000 dimY=1000 RMYS/runLogFile=C:\Users\timmy\bachelorarbeit_code\RNCombined\scripts\results\log\dens16-7.log outputToConsole=false RMYS/batchmode=true " />
+	<GenNodesDlg numNodes="100" />
 </sinalgo>
 
