@@ -40,8 +40,28 @@ public class CustomGlobalBatch {
 
 	private static double R = -1;
 	private static String runLogFile = "";
+	
+	// for recording:
+	private static int nodeDensity;
+	private static boolean finished = false;
 
+	private double exitAfterRounds = 0;
+	private String src = "";
+	private int numNodes;
+	private String resultsLog;
+
+	public static boolean inbatchmode;
+		
 	static {
+		try {
+			inbatchmode=Configuration.getBooleanParameter("RMYS/batchmode");
+			
+		} catch (CorruptConfigurationEntryException e) {
+			e.getMessage();
+			e.printStackTrace();
+		}
+		
+		
 		try {
 			R = Configuration.getDoubleParameter("UDG/rMax");
 
@@ -61,10 +81,7 @@ public class CustomGlobalBatch {
 			
 		} catch (CorruptConfigurationEntryException e) {
 			logger=Algorithms_ext.getLogger();
-		}
-			
-		
-		
+		}	
 	}
 
 	private static CustomGlobalBatch instance = null;
@@ -84,19 +101,7 @@ public class CustomGlobalBatch {
 	}
 	
 
-	// for recording:
-	private static int nodeDensity;
-	private static boolean finished = false;
 	
-	private double exitAfterRounds=0;
-	private String src = "";
-	private int numNodes;
-	private String resultsLog;
-	
-	public static boolean inbatchmode;
-	
-	
-
 	public boolean hasTerminated() {
 		return finished;
 	}
@@ -119,7 +124,7 @@ public class CustomGlobalBatch {
 			loadNodes(numNodes); //load Nodes from given sourcefile
 			
 			//===========
-			
+			System.out.println("Running simulation with File: " + src);
 			experimentRun1();
 			
 			

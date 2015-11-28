@@ -59,7 +59,7 @@
 		<javaCmd value="java -agentlib:jdwp=transport=dt_socket,address=localhost:8000,suspend=n,server=y -ea" />
 
 		<!--Maximum memory the Java VM is allowed to use (in MB)-->
-		<javaVMmaxMem value="2000" />
+		<javaVMmaxMem value="1000" />
 
 		<!--***********************************************************************-->
 		<!--  Random number generators                                             -->

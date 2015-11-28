@@ -23,6 +23,7 @@ import sinalgo.configuration.Configuration;
 import sinalgo.configuration.CorruptConfigurationEntryException;
 import sinalgo.nodes.Node;
 import sinalgo.tools.Tools;
+import sinalgo.tools.statistics.Distribution;
 
 
 public class Algorithms_ext {
@@ -135,10 +136,20 @@ public class Algorithms_ext {
 		for (Node n : completeRMYSGraph.keySet()) {
 			for (Node p : completeRMYSGraph.get(n)) {
 				if (!completeRMYSGraph.get(p).contains(n)) {
-					logger.log(Level.SEVERE,
-							n.toString() + " has a unidirectional edge to " + p.toString() + " " + n.toString() + ": "
-									+ completeRMYSGraph.get(n) + " " + p.toString() + ": " + completeRMYSGraph.get(p)
-									+ '\n' + "Values may be inaccurate!");
+					String s=n.toString() + " has a unidirectional edge to " + p.toString() + " " + n.toString() + ": "
+							+ completeRMYSGraph.get(n) + " " + p.toString() + ": " + completeRMYSGraph.get(p)
+							+ '\n' + "Values may be inaccurate! \nSeed is: " + Distribution.getSeed();
+					if(CustomGlobalBatch.inbatchmode){
+						String src="";
+						try {
+							src = Configuration.getStringParameter("positionFile/src");
+						} catch (CorruptConfigurationEntryException e) {
+							logger.log(Level.SEVERE, e.getMessage());
+						}
+						s+="\nFile is: " + src; 
+					}
+					
+					logger.log(Level.SEVERE,s);
 				}
 			}
 		}
