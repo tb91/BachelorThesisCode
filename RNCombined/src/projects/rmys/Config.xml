@@ -225,6 +225,17 @@
 
 	</Framework>
 	<Custom>
+
+<AutoStart value="false" />
+<resultsLog value="" />
+<exitAfterRounds value="" />
+
+<algorithm>
+<name value="" />
+</algorithm>
+<positionFile>
+<src value="" />
+</positionFile>
 <MessageTransmission ConstantTime="1"/>
 	
 <Node defaultSize="30" />

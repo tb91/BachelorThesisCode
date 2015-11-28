@@ -65,7 +65,7 @@ public class Algorithms_ext {
 		AdjMatrixEdgeWeightedDigraph UDGMatrix = new AdjMatrixEdgeWeightedDigraph(Tools.getNodeList().size());
 		AdjMatrixEdgeWeightedDigraph RMYSMatrix = new AdjMatrixEdgeWeightedDigraph(Tools.getNodeList().size());
 
-		// needed to guarantee bidirectional edges
+	
 		HashMap<Node, Set<NewPhysicalGraphNode>> completeRMYSGraph = createMYSNeighborhood();
 
 		for (Node n : Tools.getNodeList()) {
@@ -216,7 +216,7 @@ public class Algorithms_ext {
 			logger=Logger.getLogger(Algorithms_ext.class.getName());
 			FileHandler logFileOut=null;
 			try {
-				logFileOut = new FileHandler(filename);
+				logFileOut = new FileHandler(filename, true);
 			} catch (SecurityException | IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -259,7 +259,7 @@ public class Algorithms_ext {
 			
 			logFileOut.setFormatter(simpleformatter);
 			
-				
+			
 			logger.addHandler(logFileOut);
 			
 			logger.log(Level.INFO, "Logger has started and prints into file:\n" + filename);	

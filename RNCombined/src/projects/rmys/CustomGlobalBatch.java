@@ -28,6 +28,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
+import jdk.nashorn.internal.runtime.regexp.joni.Config;
+
 /**
  * CustomGlobal class for batch mode. This is a singleton class.
  * 
@@ -104,20 +106,21 @@ public class CustomGlobalBatch {
 		try {
 			algorithm = Configuration.getStringParameter("algorithm/name");
 		} catch (CorruptConfigurationEntryException e) {
-			Tools.fatalError("Option 'algorithm/name' is missing or in wrong format.");
+			logger.log(Level.SEVERE, "Option 'algorithm/name' is missing or in wrong format.");
 		}
 		if (algorithm.toUpperCase().equals("GENERATEGRAPHS")) {
-			System.out.println("Generating nodes!");
+			logger.log(Level.INFO, "Generating nodes!");
 			generateNewGraph();
 			Tools.exit();
 		}else if(algorithm.toUpperCase().equals("EXPERIMENT1")){
-			System.out.println("STARTING EXPERIMENT_1");
+			logger.log(Level.INFO, "STARTING EXPERIMENT_1");
 			
 			initGlobalParameters();
 			loadNodes(numNodes); //load Nodes from given sourcefile
 			
 			//===========
-//			experimentRun1();
+			
+			experimentRun1();
 			
 			
 			
@@ -126,7 +129,7 @@ public class CustomGlobalBatch {
 	}
 	public void postRound() {
 		if(Global.currentTime >= exitAfterRounds){
-			System.out.println("round " +  exitAfterRounds + " was reached.");
+			logger.log(Level.INFO, "round " +  exitAfterRounds + " was reached.");
 			Tools.exit();
 		}
 
@@ -209,7 +212,7 @@ public class CustomGlobalBatch {
 	public void initGlobalParameters(){
 		try {
 			src = Configuration.getStringParameter("positionFile/src");
-			System.out.println("Found position Fileentry in configuration: " + src);
+			logger.log(Level.INFO, "Found position Fileentry in configuration: " + src);
 			
 			
 			try {
@@ -223,21 +226,21 @@ public class CustomGlobalBatch {
 				System.exit(1);
 			}		
 		} catch (CorruptConfigurationEntryException e) {
-			Tools.fatalError("Option 'positionFile/src' is missing or in wrong format.");
+			logger.log(Level.SEVERE, "Option 'positionFile/src' is missing or in wrong format.");
 		}
 		
 		try{
 			exitAfterRounds= Configuration.getDoubleParameter("exitAfterRounds");
-			System.out.println("Exiting after " + exitAfterRounds + " rounds");
+			logger.log(Level.INFO, "Exiting after " + exitAfterRounds + " rounds");
 		}catch (CorruptConfigurationEntryException e){
-			Tools.fatalError("Could not find or read: exitAfterRounds in Configurationfile");
+			logger.log(Level.SEVERE, "Could not find or read: exitAfterRounds in Configurationfile");
 		}
 		
 		try{
 			resultsLog= Configuration.getStringParameter("resultsLog");
-			System.out.println("path to log: " + resultsLog);
+			logger.log(Level.INFO, "path to results: " + resultsLog);
 		}catch (CorruptConfigurationEntryException e){
-			Tools.fatalError("Could not find or read: resultsLog in Configurationfile");
+			logger.log(Level.SEVERE, "Could not find or read: resultsLog in Configurationfile");  
 		}
 		
 		nodeDensity = (int) Math.round((Math.PI * R * R / (Configuration.dimX * Configuration.dimY)) * numNodes);
@@ -246,7 +249,7 @@ public class CustomGlobalBatch {
 	public void loadNodes(int nodeCount){
 		Tools.generateNodes(nodeCount, "rmys:NewPhysicalGraphNode", "PositionFile", "("+ src +")");
 		Tools.reevaluateConnections();
-		System.out.println("Loaded nodes from positionfile: " + src);
+		logger.log(Level.INFO, "Loaded nodes from positionfile: " + src);
 	}
 
 	
@@ -304,7 +307,7 @@ public class CustomGlobalBatch {
 	}
 
 	public void onExit() {
-		System.out.println("exiting!");
+		logger.log(Level.INFO, "exiting!");
 	}
 
 }

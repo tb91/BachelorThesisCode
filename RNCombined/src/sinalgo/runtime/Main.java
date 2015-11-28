@@ -236,8 +236,6 @@ public class Main{
 			
 			runtime.preRun();
 
-			System.out.println("numberofrounds: " + runtime.getNumberOfRounds());
-
 			runtime.run(runtime.getNumberOfRounds(), false); // possibly call it with 0 (in batch mode, we run until the stopping criteria is met in this case.
 		}
 		catch(CorruptConfigurationEntryException e){
