@@ -31,8 +31,8 @@ use warnings;
 use Carp;
 
 my $MARGIN_ERROR = 1.96;
-my $DEBUG_OUTPATH = "../../Evaluations/Testing/debug_confiIntervals-Routing.csv";
-my $GNU_OUTPATH = "../../Evaluations/data_faceR_GFG.dat";
+my $DEBUG_OUTPATH = "./tmp/debug_confiIntervals-Routing.csv";
+my $GNU_OUTPATH = "./tmp/data_faceR_GFG.dat";
 
 my $IN_SPLIT_CHAR = ",";
 my $OUT_SPLIT_CHAR = " ";
@@ -67,7 +67,7 @@ foreach (@ARGV)
 	#system("perl validateData-FaceR_GFG.pl $_"); #validate the data before calculating confidence intervals
 	readFileAndSaveValsInHashMaps($_);
 }
-saveToDebugFile();
+#saveToDebugFile();
 saveToGNUPlotConformFile();
 exit;
 ##############
