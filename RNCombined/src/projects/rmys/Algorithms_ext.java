@@ -133,6 +133,7 @@ public class Algorithms_ext {
 		}
 
 		// ensure bidrectional edges
+		HashMap<Node, Node> removallist=new HashMap<>();
 		for (Node n : completeRMYSGraph.keySet()) {
 			for (Node p : completeRMYSGraph.get(n)) {
 				if (!completeRMYSGraph.get(p).contains(n)) {
@@ -148,10 +149,17 @@ public class Algorithms_ext {
 						}
 						s+="\nFile is: " + src; 
 					}
+					removallist.put(n, p); // mark unidirectional edge for removal
+					s+="\n edge will be removed!";
 					
-					logger.log(Level.SEVERE,s);
+					logger.log(Level.INFO,s);
+					
 				}
 			}
+		}
+		
+		for(Node n: removallist.keySet()){
+			completeRMYSGraph.get(n).remove(removallist.get(n));
 		}
 		return completeRMYSGraph;
 	}

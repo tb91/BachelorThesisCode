@@ -1,5 +1,6 @@
 package projects.rmys.nodes.messageHandler;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -93,6 +94,10 @@ public class RMYS extends BeaconlessTopologyControl {
 												// thats rPDT has terminated it
 												// starts Modified Yao Step
 
+						for(Node n: pdt.getSubgraphNodes()){
+							n.setColor(Color.GRAY);
+						}
+						
 						forwarderMh.getKnownNeighbors().addAll(calculateMYS(
 								(NewPhysicalGraphNode) sourceNode, 
 								sourceNode.getMessageHandler(pdt.getTopologyControlID()).getKnownNeighbors()));
