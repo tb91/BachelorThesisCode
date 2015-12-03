@@ -63,7 +63,7 @@ foreach (@ARGV)
 	#system("perl validateData-FaceR_GFG.pl $_"); #validate the data before calculating confidence intervals
 	readFileAndSaveValsInHashMaps($_);
 }
-#saveToDebugFile();
+saveToDebugFile();
 saveToGNUPlotConformFile();
 exit;
 ##############
@@ -196,39 +196,31 @@ my $error_write_msg = "Something went wrong during writing to $DEBUG_OUTPATH. Ab
 #calculation of the confidence intervals of all value pairs per value type
 foreach my $density ( sort {$a <=> $b} keys %mapNumNodes ) #presumption: all maps have the same keys
 {
-	# print OUT "Density $density with $mapNumDataSamples{$density} data samples:\n" or die "$error_write_msg";
-	# estimateConfidenceIntervals("Number_of_Nodes", $density, @{$mapNumNodes{$density}});
-	# print OUT "\n" or die "$error_write_msg";  
-	# estimateConfidenceIntervals("min_Eucl_Distance", $density, @{$mapEuclDistance{$density}});
-	# print OUT "\n" or die "$error_write_msg";
-	# estimateConfidenceIntervals("min_eucl_Distance_UDG", $density, @{$mapEuclDistance_UDG_min{$density}});
-	# print OUT "\n" or die "$error_write_msg";  
-	# estimateConfidenceIntervals("min_hop_Distance_UDG", $density, @{$mapHopDistance_UDG_min{$density}});
-	# print OUT "\n" or die "$error_write_msg";
-	# estimateConfidenceIntervals("min_eucl_Distance_GG", $density, @{$mapEuclDistance_GG_min{$density}});
-	# print OUT "\n" or die "$error_write_msg";  
-	# estimateConfidenceIntervals("min_hop_Distance_GG", $density, @{$mapHopDistance_GG_min{$density}});
-	# print OUT "\n" or die "$error_write_msg";
-	# estimateConfidenceIntervals("min_eucl_Distance_PDT", $density, @{$mapEuclDistance_PDT_min{$density}});
-	# print OUT "\n" or die "$error_write_msg";  
-	# estimateConfidenceIntervals("min_hop_Distance_PDT", $density, @{$mapHopDistance_PDT_min{$density}});
-	# print OUT "\n" or die "$error_write_msg";
-	# estimateConfidenceIntervals("eucl_Distance_FaceR_GG", $density, @{$mapEuclDistance_FaceR_GG{$density}});
-	# print OUT "\n" or die "$error_write_msg";
-	# estimateConfidenceIntervals("hop_Distance_FaceR_GG", $density, @{$mapHopDistance_FaceR_GG{$density}});
-	# print OUT "\n" or die "$error_write_msg";
-	# estimateConfidenceIntervals("eucl_Distance_FaceR_PDT", $density, @{$mapEuclDistance_FaceR_PDT{$density}});
-	# print OUT "\n" or die "$error_write_msg";
-	# estimateConfidenceIntervals("hop_Distance_FaceR_PDT", $density, @{$mapHopDistance_FaceR_PDT{$density}});
-	# print OUT "\n" or die "$error_write_msg";
-	# estimateConfidenceIntervals("eucl_Distance_GFG_GG", $density, @{$mapEuclDistance_GFG_GG{$density}});
-	# print OUT "\n" or die "$error_write_msg";
-	# estimateConfidenceIntervals("hop_Distance_GFG_GG", $density, @{$mapHopDistance_GFG_GG{$density}});
-	# print OUT "\n" or die "$error_write_msg";
-	# estimateConfidenceIntervals("eucl_Distance_GFG_PDT", $density, @{$mapEuclDistance_GFG_PDT{$density}});
-	# print OUT "\n" or die "$error_write_msg";
-	# estimateConfidenceIntervals("hop_Distance_GFG_PDT", $density, @{$mapHopDistance_GFG_PDT{$density}});
-	# print OUT "\n\n" or die "$error_write_msg";
+	print OUT "Density $density with $mapNumDataSamples{$density} data samples:\n" or die "$error_write_msg";
+	estimateConfidenceIntervals("Number_of_Nodes", $density, @{$mapNumNodes{$density}});
+	print OUT "\n" or die "$error_write_msg";  
+	estimateConfidenceIntervals("averageUDGNeighbors", $density, @{$mapAverageUDGNeighbors{$density}});
+	print OUT "\n" or die "$error_write_msg";
+	estimateConfidenceIntervals("euklidRatioRMYS", $density, @{$mapEuklidRatioRMYS{$density}});
+	print OUT "\n" or die "$error_write_msg";  
+	estimateConfidenceIntervals("hopRatioRMYS", $density, @{$mapHopRatioRMYS{$density}});
+	print OUT "\n" or die "$error_write_msg";
+	estimateConfidenceIntervals("euklidRatioPDT", $density, @{$mapEuklidRatioPDT{$density}});
+	print OUT "\n" or die "$error_write_msg";  
+	estimateConfidenceIntervals("hopRatioPDT", $density, @{$mapHopRatioPDT{$density}});
+	print OUT "\n" or die "$error_write_msg";
+	estimateConfidenceIntervals("averageRMYSNeighbors", $density, @{$mapAverageRMYSNeighbors{$density}});
+	print OUT "\n" or die "$error_write_msg";  
+	estimateConfidenceIntervals("averagePDTNeighbors", $density, @{$mapAveragePDTNeighbors{$density}});
+	print OUT "\n" or die "$error_write_msg";
+	estimateConfidenceIntervals("maximalRMYSNeighbors", $density, @{$mapMaximalRMYSNeighbors{$density}});
+	print OUT "\n" or die "$error_write_msg";
+	estimateConfidenceIntervals("maximalPDTNeighbors", $density, @{$mapMaximalPDTNeighbors{$density}});
+	print OUT "\n" or die "$error_write_msg";
+	estimateConfidenceIntervals("neighborsCountRMYSUDGRatio", $density, @{$mapNeighborsCountRMYSUDGRatio{$density}});
+	print OUT "\n" or die "$error_write_msg";
+	estimateConfidenceIntervals("neighborsCountPDTUDGRatio", $density, @{$mapNeighborsCountPDTUDGRatio{$density}});
+	print OUT "\n" or die "$error_write_msg";
 }
 close(OUT);
 print "Finished writing to Debug file \"$DEBUG_OUTPATH\" successfully!\n\n";
@@ -286,53 +278,33 @@ foreach my $density ( sort {$a <=> $b} keys %mapNumNodes ) #presumption: all map
 	estimateConfidenceIntervals("avrUDGNeighbors", $density, @{$mapAverageUDGNeighbors{$density}});
 	print OUT "$OUT_SPLIT_CHAR" or die "$error_write_msg";
 	
-	my $euklidRatioRMYS = calculateMean(@{$mapEuklidRatioRMYS{$density}});
-	print OUT "$density$OUT_SPLIT_CHAR$euklidRatioRMYS$OUT_SPLIT_CHAR" or die "$error_write_msg";
 	estimateConfidenceIntervals("euklidRatioRMYS", $density, @{$mapEuklidRatioRMYS{$density}});
 	print OUT "$OUT_SPLIT_CHAR" or die "$error_write_msg";
 	
-	my $hopRatioRMYS = calculateMean(@{$mapHopRatioRMYS{$density}});
-	print OUT "$density$OUT_SPLIT_CHAR$hopRatioRMYS$OUT_SPLIT_CHAR" or die "$error_write_msg";
 	estimateConfidenceIntervals("hopRatioRMYS", $density, @{$mapHopRatioRMYS{$density}});
 	print OUT "$OUT_SPLIT_CHAR" or die "$error_write_msg";
 
-	my $euklidRatioPDT = calculateMean(@{$mapEuklidRatioPDT{$density}});
-	print OUT "$density$OUT_SPLIT_CHAR$euklidRatioPDT$OUT_SPLIT_CHAR" or die "$error_write_msg";
 	estimateConfidenceIntervals("euklidRatioPDT", $density, @{$mapEuklidRatioPDT{$density}});
 	print OUT "$OUT_SPLIT_CHAR" or die "$error_write_msg";
 
-	my $hopRatioPDT = calculateMean(@{$mapHopRatioPDT{$density}});
-	print OUT "$density$OUT_SPLIT_CHAR$hopRatioPDT$OUT_SPLIT_CHAR" or die "$error_write_msg";
 	estimateConfidenceIntervals("hopRatioPDT", $density, @{$mapHopRatioPDT{$density}});
 	print OUT "$OUT_SPLIT_CHAR" or die "$error_write_msg";
 
-	my $averageRMYSNeighbors = calculateMean(@{$mapAverageRMYSNeighbors{$density}});
-	print OUT "$density$OUT_SPLIT_CHAR$averageRMYSNeighbors$OUT_SPLIT_CHAR" or die "$error_write_msg";
 	estimateConfidenceIntervals("averageRMYSNeighbors", $density, @{$mapAverageRMYSNeighbors{$density}});
 	print OUT "$OUT_SPLIT_CHAR" or die "$error_write_msg";
 
-	my $averagePDTNeighbors = calculateMean(@{$mapAveragePDTNeighbors{$density}});
-	print OUT "$density$OUT_SPLIT_CHAR$averagePDTNeighbors$OUT_SPLIT_CHAR" or die "$error_write_msg";
 	estimateConfidenceIntervals("averagePDTNeighbors", $density, @{$mapAveragePDTNeighbors{$density}});
 	print OUT "$OUT_SPLIT_CHAR" or die "$error_write_msg";
 
-	my $maximalRMYSNeighbors = calculateMean(@{$mapMaximalRMYSNeighbors{$density}});
-	print OUT "$density$OUT_SPLIT_CHAR$maximalRMYSNeighbors$OUT_SPLIT_CHAR" or die "$error_write_msg";
 	estimateConfidenceIntervals("maximalRMYSNeighbors", $density, @{$mapMaximalRMYSNeighbors{$density}});
 	print OUT "$OUT_SPLIT_CHAR" or die "$error_write_msg";
 
-	my $maximalPDTNeighbors = calculateMean(@{$mapMaximalPDTNeighbors{$density}});
-	print OUT "$density$OUT_SPLIT_CHAR$maximalPDTNeighbors$OUT_SPLIT_CHAR" or die "$error_write_msg";
 	estimateConfidenceIntervals("maximalPDTNeighbors", $density, @{$mapMaximalPDTNeighbors{$density}});
 	print OUT "$OUT_SPLIT_CHAR" or die "$error_write_msg";
 
-	my $neighborsCountRMYSUDGRatio = calculateMean(@{$mapNeighborsCountRMYSUDGRatio{$density}});
-	print OUT "$density$OUT_SPLIT_CHAR$neighborsCountRMYSUDGRatio$OUT_SPLIT_CHAR" or die "$error_write_msg";
 	estimateConfidenceIntervals("neighborsCountRMYSUDGRatio", $density, @{$mapNeighborsCountRMYSUDGRatio{$density}});
 	print OUT "$OUT_SPLIT_CHAR" or die "$error_write_msg";
 
-	my $neighborsCountPDTUDGRatio = calculateMean(@{$mapNeighborsCountPDTUDGRatio{$density}});
-	print OUT "$density$OUT_SPLIT_CHAR$neighborsCountPDTUDGRatio$OUT_SPLIT_CHAR" or die "$error_write_msg";
 	estimateConfidenceIntervals("neighborsCountPDTUDGRatio", $density, @{$mapNeighborsCountPDTUDGRatio{$density}});
 	print OUT "$OUT_SPLIT_CHAR" or die "$error_write_msg";
 
