@@ -8,7 +8,7 @@ PROCESSES  = 8
 DENSITIES_START  = int(sys.argv[1])
 DENSITIES_END    = int(sys.argv[2])
 FROM_ID          = 0
-TO_ID            = 15
+TO_ID            = 999
 PATH = os.path.dirname(os.path.abspath(__file__)) + '\\'
 
 def main():

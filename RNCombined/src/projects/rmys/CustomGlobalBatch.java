@@ -159,6 +159,7 @@ public class CustomGlobalBatch {
 		
 		int maximalRMYSNeighbors = calculateMaximalNeighborsPerNode(rmysNeighbors);
 		int maximalPDTNeighbors = calculateMaximalNeighborsPerNode(pdtNeighbors);
+		int maximalUDGNeighbors = calculateMaximalNeighborsPerNode(udgNeighbors);
 		
 		double neighborsCountRMYSUDGRatio = calculateNeighborsCountGraphUDGRatio(rmysNeighbors, udgNeighbors);
 		double neighborsCountPDTUDGRatio = calculateNeighborsCountGraphUDGRatio(pdtNeighbors, udgNeighbors);
@@ -180,6 +181,7 @@ public class CustomGlobalBatch {
 		
 		values.add(neighborsCountRMYSUDGRatio + "");
 		values.add(neighborsCountPDTUDGRatio + "");
+		values.add(maximalUDGNeighbors + "");
 		
 		write_data(values);
 	}
