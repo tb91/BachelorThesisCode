@@ -15,6 +15,24 @@
 # See the Software libre para Uso Civil License (in spanish language) for more details.
 #
 
-set datafile separator " "
-#set output "./plots/RMYS_PDT_SpanningRatio.png"
-plot "./tmp/data_RMYS_rPDT.dat" using 1 4
+#set autoscale                          # scale axes automatically
+set datafile separator ","
+set output "./plots/RMYS_PDT_SpanningRatio.png"
+set xrange [5:20]
+#set grid  #show grid
+unset log                              # remove any log-scaling
+unset label                            # remove any previous labels
+set xtic 1    
+set term png size 1100,600 font 'Verdana,14' 
+
+set title "Euclidean spanning ratio of Reactive Modified Yao Step (RMYS) and Partial Delaunay Triangulation (PDT) \n with respect to the Unit Disk Graph in context to the node density. 16 Simulations per density."
+set xlabel "Node density"
+set ylabel "Spanning ratio"
+set key right top
+set ytic 0.5
+set yrange[0.0:2]
+
+plot "./data_RMYS_rPDT.dat" using 1:8 notitle lc rgb "red" with lines,\
+    ""using 1:8:9:10 smooth unique title 'Reactive Modified Yao Step' lc rgb "red" with yerrorbars,\
+    ""using 1:16 notitle lc rgb "blue" with lines,\
+    ""using 1:16:17:18 smooth unique title 'Partial Delaunay Triangulation' lc rgb "blue" with yerrorbars,\

@@ -31,11 +31,11 @@ use warnings;
 use Carp;
 
 my $MARGIN_ERROR = 1.96;
-my $DEBUG_OUTPATH = "./tmp/debug_confiIntervals-Routing.csv";
-my $GNU_OUTPATH = "./tmp/data_RMYS_rPDT.dat";
+my $DEBUG_OUTPATH = "./debug_confiIntervals-Routing.csv";
+my $GNU_OUTPATH = "./data_RMYS_rPDT.dat";
 
 my $IN_SPLIT_CHAR = " ";
-my $OUT_SPLIT_CHAR = " ";
+my $OUT_SPLIT_CHAR = ",";
 
 ################
 #STARTING POINT#
@@ -306,9 +306,8 @@ foreach my $density ( sort {$a <=> $b} keys %mapNumNodes ) #presumption: all map
 	print OUT "$OUT_SPLIT_CHAR" or die "$error_write_msg";
 
 	estimateConfidenceIntervals("neighborsCountPDTUDGRatio", $density, @{$mapNeighborsCountPDTUDGRatio{$density}});
-	print OUT "$OUT_SPLIT_CHAR" or die "$error_write_msg";
-
 	print OUT "\n" or die "$error_write_msg";
+
 }
 close(OUT);
 print "Finished writing to GNUPlot conform file \"$GNU_OUTPATH\" successfully!";
