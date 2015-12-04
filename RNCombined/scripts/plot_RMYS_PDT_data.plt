@@ -71,13 +71,13 @@ plot "./data_RMYS_rPDT.dat" using 1:12 notitle lc rgb "red" with lines,\
 set datafile separator ","
 set output "./plots/RMYS_PDT_avrNeighbors.png"
 set xrange [5:20]
-set yrange[0:20]
+set yrange[0:15]
 unset log                              # remove any log-scaling
 unset label                            # remove any previous labels
 set xtic 1    
 set term png size 1100,600 font 'Verdana,14' 
 
-set title "Average and maximal Neighbors of Reactive Modified Yao Step (RMYS) and Partial Delaunay Triangulation (PDT). 16 Simulations per density."
+set title "Average and maximal Neighbors of Reactive Modified Yao Step (RMYS) and \nPartial Delaunay Triangulation (PDT) with respect to node density. 16 Simulations per density."
 set xlabel "Node density"
 set ylabel "average Neighbors"
 set key right top
@@ -107,7 +107,7 @@ unset label                            # remove any previous labels
 set xtic 1    
 set term png size 1100,600 font 'Verdana,14' 
 
-set title "The average neighbors for Reactive Modified Yao Step (RMYS) and Partial Delaunay Triangulation (PDT) are shown per neighbors in the Unit Disk Model. 16 Simulations per density."
+set title "The average neighbors for Reactive Modified Yao Step (RMYS) and Partial Delaunay Triangulation (PDT)\nare shown per neighbors in the Unit Disk Model. 16 Simulations per density."
 set xlabel "Node density"
 set ylabel "Neighbors in the subgraph /\n Neighbors in the Unit Disk Model"
 set key right top
