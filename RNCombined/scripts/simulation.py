@@ -4,10 +4,10 @@ from multiprocessing import Pool
 import sys
 
 # Simulation parameters
-PROCESSES  = 1
+PROCESSES  = 8
 DENSITIES_START  = int(sys.argv[1])
 DENSITIES_END    = int(sys.argv[2])
-FROM_ID          = 999
+FROM_ID          = 800
 TO_ID            = 1000
 PATH = os.path.dirname(os.path.abspath(__file__)) + '\\'
 
