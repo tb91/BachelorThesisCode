@@ -7,8 +7,8 @@ import sys
 PROCESSES  = 8
 DENSITIES_START  = int(sys.argv[1])
 DENSITIES_END    = int(sys.argv[2])
-FROM_ID          = 300
-TO_ID            = 500
+FROM_ID          = 0
+TO_ID            = 1000
 PATH = os.path.dirname(os.path.abspath(__file__)) + '\\'
 
 def main():
@@ -28,10 +28,10 @@ def main():
         
     # execute the simulations via a process pool
     print (args)
-    pool = Pool(PROCESSES)
-    pool.map(simulate, args)
-    pool.close()
-    pool.join()
+    #pool = Pool(PROCESSES)
+   # pool.map(simulate, args)
+    #pool.close()
+   # pool.join()
 
     #merge results!
     print ("Merging Results:")
