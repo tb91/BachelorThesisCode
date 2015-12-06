@@ -7,8 +7,8 @@ import sys
 PROCESSES  = 8
 DENSITIES_START  = int(sys.argv[1])
 DENSITIES_END    = int(sys.argv[2])
-FROM_ID          = 800
-TO_ID            = 1000
+FROM_ID          = 300
+TO_ID            = 500
 PATH = os.path.dirname(os.path.abspath(__file__)) + '\\'
 
 def main():
