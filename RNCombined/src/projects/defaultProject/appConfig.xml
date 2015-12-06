@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sinalgo>
-	<ProjectSelector windowWidth="600" windowHeight="400" lastChosenProject="rmys" windowPosX="50" windowPosY="50" isMaximized="false" selectedTab="2" />
-	<GUI windowWidth="800" windowHeight="600" windowPosX="1004" windowPosY="170" isMaximized="false" ControlPanelExpandSimulation="true" ControlPanelShowFullViewPanel="true" ControlPanelShowTextPanel="true" ControlPanelShowProjectControl="true" RunOperationIsLimited="true" helpWindowWidth="500" helpWindowHeight="500" helpWindowPosX="200" helpWindowPosY="200" helpWindowIsMaximized="false" />
-	<RandomSeed seedFromPreviousRun="5231529158086145535" />
-	<App lastSelectedFileDirectory="C:\Users\timmy\bachelorarbeit_code\RNCombined\scripts\graphs_1000\density6\" checkForUpdatesAtStartup="true" updateCheckTimeStamp="1449048630176" runCmdLineArgs="-project rmys -batch -overwrite AutoStart=true algorithm/name=EXPERIMENT1 positionFile/src=C:\Users\timmy\bachelorarbeit_code\RNCombined\scripts\graphs_1000\density20\13.pos resultsLog=C:\Users\timmy\bachelorarbeit_code\RNCombined\scripts\results\20-12-14-6.dat useFixedSeed=false exitAfterRounds=1 dimX=1000 dimY=1000 RMYS/runLogFile=C:\Users\timmy\bachelorarbeit_code\RNCombined\scripts\results\log\dens20-6.log outputToConsole=false RMYS/batchmode=true javaCmd=java " />
-	<GenNodesDlg numNodes="191" />
+	<ProjectSelector windowWidth="600" windowHeight="400" lastChosenProject="" windowPosX="50" windowPosY="50" isMaximized="false" selectedTab="1" />
+	<GUI windowWidth="800" windowHeight="600" windowPosX="50" windowPosY="50" isMaximized="false" ControlPanelExpandSimulation="true" ControlPanelShowFullViewPanel="true" ControlPanelShowTextPanel="true" ControlPanelShowProjectControl="true" RunOperationIsLimited="true" helpWindowWidth="500" helpWindowHeight="500" helpWindowPosX="200" helpWindowPosY="200" helpWindowIsMaximized="false" />
+	<RandomSeed seedFromPreviousRun="6540860859762982124" />
+	<App lastSelectedFileDirectory="" checkForUpdatesAtStartup="true" updateCheckTimeStamp="1449430689188" runCmdLineArgs="-project rmys -batch -overwrite AutoStart=true algorithm/name=EXPERIMENT1 positionFile/src=C:\Users\timmy\bachelorarbeit_code\RNCombined\scripts\graphs_1000\density20\999.pos resultsLog=C:\Users\timmy\bachelorarbeit_code\RNCombined\scripts\results\20-999-1000-0.dat useFixedSeed=false exitAfterRounds=1 dimX=1000 dimY=1000 RMYS/runLogFile=C:\Users\timmy\bachelorarbeit_code\RNCombined\scripts\results\log\dens20-0.log outputToConsole=false RMYS/batchmode=true javaCmd=java " />
+	<GenNodesDlg numNodes="100" />
 </sinalgo>
 
