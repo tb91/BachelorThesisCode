@@ -8,7 +8,7 @@ PROCESSES  = 8
 DENSITIES_START  = int(sys.argv[1])
 DENSITIES_END    = int(sys.argv[2])
 FROM_ID          = 0
-TO_ID            = 1000
+TO_ID            = 1000  #(last value is exclusive)
 PATH = os.path.dirname(os.path.abspath(__file__)) + '\\'
 
 def main():
@@ -28,10 +28,10 @@ def main():
         
     # execute the simulations via a process pool
     print (args)
-    #pool = Pool(PROCESSES)
-   # pool.map(simulate, args)
-    #pool.close()
-   # pool.join()
+    pool = Pool(PROCESSES)
+    pool.map(simulate, args)
+    pool.close()
+    pool.join()
 
     #merge results!
     print ("Merging Results:")
@@ -50,15 +50,15 @@ def main():
     #merge LOGS!
     print ("Merging Logfiles:")
     
-   # for parts in range(0, PROCESSES):
-   #     output = open(PATH + "results\\log\\process-" + str(parts) + ".log", 'w')    
-   #     for density in range(DENSITIES_START, DENSITIES_END+1):
-   #         path=PATH + "results\\log\\dens" + str(density) + "-" + str(parts) + ".log"
-   #         print ("merging file: \n" + path)
-   #         part = open(path)
-   #         output.write(part.read())
-   #         part.close()
-   #         os.remove(path)
+    for parts in range(0, PROCESSES):
+        output = open(PATH + "results\\log\\process-" + str(parts) + ".log", 'w')    
+        for density in range(DENSITIES_START, DENSITIES_END+1):
+            path=PATH + "results\\log\\dens" + str(density) + "-" + str(parts) + ".log"
+            print ("merging file: \n" + path)
+            part = open(path)
+            output.write(part.read())
+            part.close()
+            os.remove(path)
         
 
 
