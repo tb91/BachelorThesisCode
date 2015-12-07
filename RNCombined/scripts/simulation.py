@@ -50,15 +50,15 @@ def main():
     #merge LOGS!
     print ("Merging Logfiles:")
     
-    for parts in range(0, PROCESSES):
-        output = open(PATH + "results\\log\\process-" + str(parts) + ".log", 'w')    
-        for density in range(DENSITIES_START, DENSITIES_END+1):
-            path=PATH + "results\\log\\dens" + str(density) + "-" + str(parts) + ".log"
-            print ("merging file: \n" + path)
-            part = open(path)
-            output.write(part.read())
-            part.close()
-            os.remove(path)
+   # for parts in range(0, PROCESSES):
+   #     output = open(PATH + "results\\log\\process-" + str(parts) + ".log", 'w')    
+   #     for density in range(DENSITIES_START, DENSITIES_END+1):
+   #         path=PATH + "results\\log\\dens" + str(density) + "-" + str(parts) + ".log"
+   #         print ("merging file: \n" + path)
+   #         part = open(path)
+   #         output.write(part.read())
+   #         part.close()
+   #         os.remove(path)
         
 
 
