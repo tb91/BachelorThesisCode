@@ -27,7 +27,7 @@ unset label                            # remove any previous labels
 set xtic 1    
 set term png size 1100,600 font 'Verdana,14' 
 
-set title "Euclidean spanning ratio of Reactive Modified Yao Step (RMYS) and Partial Delaunay Triangulation (PDT) \n with respect to the Unit Disk Graph in context to the node density. 16 Simulations per density."
+set title "Euclidean spanning ratio of Reactive Modified Yao Step (RMYS) and Partial Delaunay Triangulation (PDT) \n with respect to the Unit Disk Graph in context to the node density. 1000 Simulations per density."
 set xlabel "Node density"
 set ylabel "Spanning ratio"
 set key right top
@@ -52,7 +52,7 @@ unset label                            # remove any previous labels
 set xtic 1    
 set term png size 1100,600 font 'Verdana,14' 
 
-set title "Hop spanning ratio of Reactive Modified Yao Step (RMYS) and Partial Delaunay Triangulation (PDT) \n with respect to the Unit Disk Graph in context to the node density. 16 Simulations per density."
+set title "Hop spanning ratio of Reactive Modified Yao Step (RMYS) and Partial Delaunay Triangulation (PDT) \n with respect to the Unit Disk Graph in context to the node density. 1000 Simulations per density."
 set xlabel "Node density"
 set ylabel "Hop spanning ratio"
 set key right top
@@ -77,7 +77,7 @@ unset label                            # remove any previous labels
 set xtic 1    
 set term png size 1100,600 font 'Verdana,14' 
 
-set title "Average and maximal Neighbors of Reactive Modified Yao Step (RMYS) and \nPartial Delaunay Triangulation (PDT) with respect to node density. 16 Simulations per density."
+set title "Average and maximal Neighbors of Reactive Modified Yao Step (RMYS) and \nPartial Delaunay Triangulation (PDT) with respect to node density. 1000 Simulations per density."
 set xlabel "Node density"
 set ylabel "average Neighbors"
 set key right top
@@ -107,7 +107,7 @@ unset label                            # remove any previous labels
 set xtic 1    
 set term png size 1100,600 font 'Verdana,14' 
 
-set title "The average neighbors for Reactive Modified Yao Step (RMYS) and Partial Delaunay Triangulation (PDT)\nare shown per neighbors in the Unit Disk Model. 16 Simulations per density."
+set title "The average neighbors for Reactive Modified Yao Step (RMYS) and Partial Delaunay Triangulation (PDT)\nare shown per neighbors in the Unit Disk Model. 1000 Simulations per density."
 set xlabel "Node density"
 set ylabel "Neighbors in the subgraph /\n Neighbors in the Unit Disk Model"
 set key right top
