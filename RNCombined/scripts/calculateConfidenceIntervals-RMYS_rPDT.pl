@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-# (C) Matthias von Steimker - 2014 adopted by Tim Budweg - 12/2015
+# (C) Matthias von Steimker - 2014 adapted by Tim Budweg - 12/2015
 #
 # This software is written under the Software libre para Uso Civil (SLUC) license
 #
@@ -53,6 +53,7 @@ my %mapMaximalRMYSNeighbors = ();
 my %mapMaximalPDTNeighbors = ();
 my %mapNeighborsCountRMYSUDGRatio = ();
 my %mapNeighborsCountPDTUDGRatio = ();
+my %mapMaximalUDGNeighbors = ();
 
 my %mapNumDataSamples = ();
 
@@ -96,7 +97,7 @@ sub readFileAndSaveValsInHashMaps {
 		my ($numNodes, $density, $averageUDGNeighbors, $euklidRatioRMYS, $hopRatioRMYS, 
 		$euklidRatioPDT, $hopRatioPDT, $averageRMYSNeighbors, $averagePDTNeighbors,
 		$maximalRMYSNeighbors, $maximalPDTNeighbors, $neighborsCountRMYSUDGRatio,
-		$neighborsCountPDTUDGRatio, $seed) = split($IN_SPLIT_CHAR);
+		$neighborsCountPDTUDGRatio, $maximalUDGNeighbors ,  $seed) = split($IN_SPLIT_CHAR);
 		
 		# print "Pushing number of neighbors UDG = $neighborsUDG to map with density $density \n";
 		push(@{$mapNumNodes{$density}}, $numNodes);
@@ -111,6 +112,7 @@ sub readFileAndSaveValsInHashMaps {
 		push(@{$mapMaximalPDTNeighbors{$density}}, $maximalPDTNeighbors);
 		push(@{$mapNeighborsCountRMYSUDGRatio{$density}}, $neighborsCountRMYSUDGRatio);
 		push(@{$mapNeighborsCountPDTUDGRatio{$density}}, $neighborsCountPDTUDGRatio);
+		push(@{$mapMaximalUDGNeighbors{$density}}, $maximalUDGNeighbors);
 		my $val;
 		if (defined $mapNumDataSamples{$density})
 		{
@@ -221,6 +223,8 @@ foreach my $density ( sort {$a <=> $b} keys %mapNumNodes ) #presumption: all map
 	print OUT "\n" or die "$error_write_msg";
 	estimateConfidenceIntervals("neighborsCountPDTUDGRatio", $density, @{$mapNeighborsCountPDTUDGRatio{$density}});
 	print OUT "\n" or die "$error_write_msg";
+	estimateConfidenceIntervals("maximalUDGNeighbors", $density, @{$mapMaximalUDGNeighbors{$density}});
+	print OUT "\n" or die "$error_write_msg";
 }
 close(OUT);
 print "Finished writing to Debug file \"$DEBUG_OUTPATH\" successfully!\n\n";
@@ -306,6 +310,9 @@ foreach my $density ( sort {$a <=> $b} keys %mapNumNodes ) #presumption: all map
 	print OUT "$OUT_SPLIT_CHAR" or die "$error_write_msg";
 
 	estimateConfidenceIntervals("neighborsCountPDTUDGRatio", $density, @{$mapNeighborsCountPDTUDGRatio{$density}});
+	print OUT "$OUT_SPLIT_CHAR" or die "$error_write_msg";
+
+	estimateConfidenceIntervals("maximalUDGNeighbors", $density, @{$mapMaximalUDGNeighbors{$density}});
 	print OUT "\n" or die "$error_write_msg";
 
 }
