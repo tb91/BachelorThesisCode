@@ -155,6 +155,18 @@ public class CustomGlobalBatch {
 		NewPhysicalGraphNode p=Utilities.getRandomNodeWithinGraphBorders(NewPhysicalGraphNode.class, Tools.getNodeList());
 		
 		
+		HashMap<Node, Set<Node>> udgNeighbors = Algorithms_ext.createUDGNeighborhood();
+		//calculate messages for 2hop beaconing
+		Integer messagesBeaconing=1; //initial RTS
+		
+		for(Node n:udgNeighbors.get(p)){
+			messagesBeaconing+=2; //initial RTS for node n and its answer to p
+			for(Node i:udgNeighbors.get(n)){
+				messagesBeaconing+=1;
+			}
+		}
+		
+		
 		
 	}
 	
