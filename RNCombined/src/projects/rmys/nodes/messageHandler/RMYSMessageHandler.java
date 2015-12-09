@@ -16,6 +16,7 @@ import projects.reactiveSpanner.nodes.messages.CTS;
 import projects.reactiveSpanner.nodes.messages.RTS;
 import projects.reactiveSpanner.nodes.nodeImplementations.PhysicalGraphNode;
 import projects.reactiveSpanner.record.MessageRecord;
+import projects.rmys.Algorithms_ext;
 import projects.rmys.nodes.messages.AcknowlegdementMessage;
 import projects.rmys.nodes.messages.RequestMessage;
 import projects.rmys.nodes.nodeImplementations.NewPhysicalGraphNode;
@@ -98,7 +99,7 @@ public class RMYSMessageHandler extends BeaconlessMessageHandler {
 		}
 		AcknowlegdementMessage ackms = new AcknowlegdementMessage(this.tcID, this.node, accepted);
 		this.node.send(ackms, sourceNode); // send answer to forwarder
-
+		Algorithms_ext.incMessageNumber(EStrategy.RMYS);
 
 	}
 

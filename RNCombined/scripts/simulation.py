@@ -4,11 +4,11 @@ from multiprocessing import Pool
 import sys
 
 # Simulation parameters
-PROCESSES  = 8
+PROCESSES  = 1
 DENSITIES_START  = int(sys.argv[1])
 DENSITIES_END    = int(sys.argv[2])
 FROM_ID          = 0
-TO_ID            = 1000  #(last value is exclusive)
+TO_ID            = 1  #(last value is exclusive)
 PATH = os.path.dirname(os.path.abspath(__file__)) + '\\'
 
 def main():
@@ -29,7 +29,7 @@ def main():
     # execute the simulations via a process pool
     print (args)
     pool = Pool(PROCESSES)
-    pool.map(simulate, args)
+    pool.map(simulate2, args)
     pool.close()
     pool.join()
 
@@ -62,8 +62,52 @@ def main():
         
 
 
+def simulate2(settings):
+    """runs EXPERIMENT2 in sinalgo."""
+    density = settings[0]
+    startid = settings[1]
+    endid = settings[2]
+    processid=settings[3]
+    # simulate one algorithm for one density
+    logfile=PATH+ "results\\" + str(density)+"-"+str(startid)+"-"+str(endid)+"-"+str(processid) + ".dat"
+   
+    for i in range(startid, endid):
+        posFile=PATH + "graphs_1000\\density" + str(density) + "\\" + str(i) + ".pos"
+        fp = open(posFile)
+        for i, line in enumerate(fp):
+            if i == 13:
+                dimx=line[11:]
+            elif i == 14:
+                dimy=line[11:]
+        fp.close()
+        
+        runLogFile = PATH + "results\\log\\dens" + str(density) + "-" + str(processid) + ".log"
+        
 
-def simulate(settings):
+        command = (
+            "java -cp 'binaries/bin;binaries/jdom.jar ' sinalgo.Run "
+            "-project rmys " +
+            "-batch " +
+            "-overwrite " +
+            "AutoStart=true " +
+            "algorithm/name=EXPERIMENT2 " +
+            "positionFile/src='" + posFile + "' " + 
+            "resultsLog='" + logfile + 
+            "' useFixedSeed=false " +
+            "exitAfterRounds=1 " + 
+            "dimX=" +dimx + " " +
+            "dimY=" +dimy + " " +
+            "RMYS/runLogFile='" + runLogFile + "' " + 
+            "outputToConsole=false " +
+            "RMYS/batchmode=true " + 
+            "javaCmd=java" #disable debugging!
+        )
+
+        args = shlex.split(command)
+        subprocess.call(args)
+
+def simulate1(settings):
+    """runs EXPERIMENT1 in sinalgo."""
     density = settings[0]
     startid = settings[1]
     endid = settings[2]

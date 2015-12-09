@@ -433,6 +433,7 @@ public class RMYS extends BeaconlessTopologyControl {
 		logger.log(Level.INFO, "Neighbors for node: " + rmys.node.toString() + ": " + rmys.getKnownNeighbors());
 		
 		rmys.node.broadcast(request);
+		Algorithms_ext.incMessageNumber(EStrategy.RMYS);
 	}
 
 	/**

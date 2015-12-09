@@ -7,6 +7,7 @@ import java.util.UUID;
 import projects.reactiveSpanner.Algorithms;
 import projects.reactiveSpanner.nodes.messageHandlers.BeaconlessMessageHandler;
 import projects.reactiveSpanner.nodes.messageHandlers.BeaconlessTopologyControl;
+import projects.reactiveSpanner.nodes.messageHandlers.SubgraphStrategy.EStrategy;
 import projects.reactiveSpanner.nodes.messages.AbstractMessage;
 import projects.reactiveSpanner.nodes.messages.CTS;
 import projects.reactiveSpanner.nodes.messages.RTS;
@@ -14,6 +15,7 @@ import projects.reactiveSpanner.nodes.nodeImplementations.PhysicalGraphNode;
 import projects.reactiveSpanner.nodes.timers.BeaconlessTimer;
 import projects.reactiveSpanner.record.MessageRecord;
 import projects.reactiveSpanner.record.ReactivePDTMessageRecord;
+import projects.rmys.Algorithms_ext;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.nodes.Node;
 import sinalgo.tools.Tools;
@@ -106,6 +108,7 @@ public class ReactivePDTMessageHandler extends BeaconlessMessageHandler
 	@Override
 	public void timerTriggerEvent() {
 		this.broadcastCTS();
+		Algorithms_ext.incMessageNumber(EStrategy.REACTIVE_PDT);
 	}
 	
 	@Override

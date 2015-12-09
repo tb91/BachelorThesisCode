@@ -130,6 +130,8 @@ public class Utilities {
 	 * @param workingSet Collection of Nodes we are working on
 	 * @return randomly selected node of type T
 	 * @throws RuntimeException if every node in the working set violates the condition of beeing farther away from border than UDG-radius
+	 * (Tim) This method contained an error! It could return values which are too close to the border if x and/or y are almost
+	 * Configuration.dimX and Configuration.dimY! It is fixed now.
 	 */
 	public static <T extends U, U extends Node> T getRandomNodeWithinGraphBorders(final Class<T> requestedNodeClass, final Iterable<U> workingSet) {
 		T out = null;
@@ -146,7 +148,7 @@ public class Utilities {
 			x = out.getPosition().xCoord;
 			y = out.getPosition().yCoord;
 
-			if (x > R && x < Configuration.dimX && y > R && y < Configuration.dimY) {
+			if (x > R && x+R < Configuration.dimX && y > R && y+R < Configuration.dimY) {
 				matched = true;
 			}
 		}

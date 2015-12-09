@@ -3,8 +3,10 @@ package projects.reactiveSpanner.nodes.messageHandlers.reactivePDT;
 import java.awt.Graphics;
 
 import projects.reactiveSpanner.nodes.messageHandlers.BeaconlessTopologyControl;
+import projects.reactiveSpanner.nodes.messageHandlers.SubgraphStrategy.EStrategy;
 import projects.reactiveSpanner.nodes.nodeImplementations.PhysicalGraphNode;
 import projects.reactiveSpanner.nodes.timers.BeaconlessTimer;
+import projects.rmys.Algorithms_ext;
 import sinalgo.configuration.Configuration;
 import sinalgo.configuration.CorruptConfigurationEntryException;
 import sinalgo.gui.transformation.PositionTransformation;
@@ -71,6 +73,7 @@ public class ReactivePDT extends BeaconlessTopologyControl
 		final int epsilon = 5;
 		final double timeout = getMaximumTimeout() + epsilon;
 		forwarderMsgHandler.broadcastRTS(new BeaconlessTimer(forwarderMsgHandler.tcID, timeout, forwarderMsgHandler.node));
+		Algorithms_ext.incMessageNumber(EStrategy.REACTIVE_PDT);
 	}
 	
 	@Override

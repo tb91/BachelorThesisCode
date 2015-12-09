@@ -21,12 +21,15 @@ import sinalgo.configuration.Configuration;
 import sinalgo.configuration.CorruptConfigurationEntryException;
 import sinalgo.io.positionFile.PositionFileIO;
 import sinalgo.nodes.Node;
+import sinalgo.nodes.Position;
 import sinalgo.runtime.Global;
 import sinalgo.tools.Tools;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
+
+import com.sun.corba.se.impl.javax.rmi.CORBA.Util;
 
 import jdk.nashorn.internal.runtime.regexp.joni.Config;
 
@@ -129,6 +132,15 @@ public class CustomGlobalBatch {
 			
 			
 			
+		}else if(algorithm.toUpperCase().equals("EXPERIMENT2")){
+			logger.log(Level.INFO, "STARTING EXPERIMENT_2");
+			
+			initGlobalParameters();
+			loadNodes(numNodes); //load Nodes from given sourcefile
+			
+			//===========
+			System.out.println("Running simulation with File: " + src);
+			experimentRun2();
 		}
 			
 	}
@@ -138,6 +150,12 @@ public class CustomGlobalBatch {
 			Tools.exit();
 		}
 
+	}
+	public void experimentRun2(){
+		NewPhysicalGraphNode p=Utilities.getRandomNodeWithinGraphBorders(NewPhysicalGraphNode.class, Tools.getNodeList());
+		
+		
+		
 	}
 	
 	public void experimentRun1(){

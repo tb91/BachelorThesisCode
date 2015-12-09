@@ -6,6 +6,7 @@ import java.io.StringWriter;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
@@ -17,6 +18,9 @@ import projects.reactiveSpanner.Algorithms;
 import projects.reactiveSpanner.FloydWarshall.AdjMatrixEdgeWeightedDigraph;
 import projects.reactiveSpanner.FloydWarshall.DirectedEdge;
 import projects.reactiveSpanner.FloydWarshall.FloydWarshall;
+import projects.reactiveSpanner.nodes.messageHandlers.AbstractTopologyControl;
+import projects.reactiveSpanner.nodes.messageHandlers.SubgraphStrategy;
+import projects.reactiveSpanner.nodes.messageHandlers.SubgraphStrategy.EStrategy;
 import projects.rmys.nodes.messageHandler.RMYS;
 import projects.rmys.nodes.nodeImplementations.NewPhysicalGraphNode;
 import sinalgo.configuration.Configuration;
@@ -32,6 +36,8 @@ public class Algorithms_ext {
 	private static String runLogFile;
 	
 	private static boolean inbatchmode;
+	
+	public static HashMap<SubgraphStrategy.EStrategy, Integer> messageNumbers=new HashMap<>();
 	
 	static {
 		
@@ -55,8 +61,20 @@ public class Algorithms_ext {
 		}
 		
 		
+		
 	}
 
+	
+	public static void incMessageNumber(EStrategy strategy){
+		if(messageNumbers.containsKey(strategy)){
+			Integer count = messageNumbers.get(strategy);
+			count++;
+			messageNumbers.put(strategy, count);
+		}else{
+			messageNumbers.put(strategy, 1);
+		}
+		System.out.println("MESSAGES for " + strategy + ": " + Algorithms_ext.messageNumbers.get(strategy));
+	}
 	
 	public static double rmysSpan(boolean hopdistance) {
 		return rmysSpan(createMYSNeighborhood(), hopdistance);
@@ -293,7 +311,7 @@ public class Algorithms_ext {
 			
 			SimpleFormatter formatter = new SimpleFormatter();
 			
-			
+			logger.setLevel(Level.SEVERE); //TODO: remove
 			logger.log(Level.INFO, "Logger is running.");	
 		}
 		
