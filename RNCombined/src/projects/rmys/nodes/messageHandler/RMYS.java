@@ -110,8 +110,11 @@ public class RMYS extends BeaconlessTopologyControl {
 
 			// adds a RMYSMessageHandler for compatibility reasons to the
 			// ReactiveSpanner Framework
-			forwarderMh = new RMYSForwarderMessageHandler(getTopologyControlID(), sourceNode, pdt);
+			forwarderMh = new RMYSForwarderMessageHandler(this, getTopologyControlID(), sourceNode, pdt);
 			forwarderMh.initializeKnownNeighborsSet();
+			
+			forwarderMsgHandler=forwarderMh; //needed for observer use
+			
 			sourceNode.messageHandlerMap.put(super.getTopologyControlID(), forwarderMh);
 
 			pdt.start();

@@ -6,9 +6,11 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import projects.reactiveSpanner.nodes.messageHandlers.BeaconlessTopologyControl;
 import projects.reactiveSpanner.nodes.messageHandlers.SubgraphStrategy;
 import projects.reactiveSpanner.nodes.messages.AbstractMessage;
 import projects.reactiveSpanner.nodes.nodeImplementations.PhysicalGraphNode;
+import projects.reactiveSpanner.nodes.timers.BeaconlessTimer;
 import projects.rmys.Algorithms_ext;
 import projects.rmys.nodes.messages.AcknowlegdementMessage;
 import sinalgo.gui.transformation.PositionTransformation;
@@ -19,14 +21,30 @@ public class RMYSForwarderMessageHandler extends RMYSMessageHandler {
 	private static Logger logger = Algorithms_ext.getLogger();
 	
 	SubgraphStrategy pdt;
+	boolean hasTerminated=false;
+	BeaconlessTopologyControl subgraphControl;
 	
-	protected RMYSForwarderMessageHandler(UUID tcID, PhysicalGraphNode sourceNode, SubgraphStrategy neighborhood) {
+	protected RMYSForwarderMessageHandler(BeaconlessTopologyControl subgraphControl,UUID tcID, PhysicalGraphNode sourceNode, SubgraphStrategy neighborhood) {
 		super(tcID, sourceNode, sourceNode);
 		this.pdt = neighborhood;
 		this.node.setColor(Color.red);
+		this.subgraphControl=subgraphControl;
+		
+		new BeaconlessTimer(this.tcID, 4012, sourceNode);
+				
 	}
 
-
+	@Override
+	public void timerTriggerEvent() {
+		// logger.logln(LogL.INFO, this.sourceNode.toString() + " has terminated it's reactive calculation of it's PDT neighborhood");
+		hasTerminated = true;
+		subgraphControl.notifyTermination();
+	}
+	
+	@Override
+	public boolean hasTerminated(){
+		return hasTerminated;
+	}
 
 	@Override
 	public void drawNode(Graphics g, PositionTransformation pt) {
@@ -41,6 +59,7 @@ public class RMYSForwarderMessageHandler extends RMYSMessageHandler {
 		}
 
 	}
+	
 
 	@Override
 	public void receivedMessage(AbstractMessage msg) {

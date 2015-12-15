@@ -94,9 +94,10 @@ def simulate2(settings):
             "positionFile/src='" + posFile + "' " + 
             "resultsLog='" + logfile + 
             "' useFixedSeed=false " +
-            "exitAfterRounds=4012 " + 
+            "exitAfterRounds=4013 " + 
             "dimX=" +dimx + " " +
             "dimY=" +dimy + " " +
+            "UDG/rMax=100 " +
             "RMYS/runLogFile='" + runLogFile + "' " + 
             "outputToConsole=false " +
             "RMYS/batchmode=true " + 

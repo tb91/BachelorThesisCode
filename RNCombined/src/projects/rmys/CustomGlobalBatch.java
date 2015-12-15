@@ -19,9 +19,14 @@ import java.util.Set;
 import projects.reactiveSpanner.GraphConnectivity;
 import projects.reactiveSpanner.TopologyControlObserver;
 import projects.reactiveSpanner.Utilities;
+import projects.reactiveSpanner.nodes.messageHandlers.AbstractMessageHandler;
+import projects.reactiveSpanner.nodes.messageHandlers.AbstractTopologyControl;
 import projects.reactiveSpanner.nodes.messageHandlers.SubgraphStrategy;
 import projects.reactiveSpanner.nodes.messageHandlers.SubgraphStrategy.EState;
 import projects.reactiveSpanner.nodes.messageHandlers.reactivePDT.ReactivePDT;
+import projects.reactiveSpanner.nodes.messageHandlers.reactivePDT.ReactivePDTForwarderMessageHandler;
+import projects.reactiveSpanner.nodes.nodeImplementations.SimpleNode;
+import projects.reactiveSpanner.nodes.timers.BeaconlessTimer;
 import projects.rmys.nodes.messageHandler.RMYS;
 import projects.rmys.nodes.nodeImplementations.NewPhysicalGraphNode;
 import sinalgo.configuration.Configuration;
@@ -59,6 +64,8 @@ public class CustomGlobalBatch {
 	private String src = "";
 	private int numNodes;
 	private String resultsLog;
+	
+	ArrayList<String> values=new ArrayList<>();
 
 	public static boolean inbatchmode;
 		
@@ -158,13 +165,13 @@ public class CustomGlobalBatch {
 		}
 
 	}
-	public void experimentRun2(){
-		NewPhysicalGraphNode p=Utilities.getRandomNodeWithinGraphBorders(NewPhysicalGraphNode.class, Tools.getNodeList());
+	public void experimentRun2(){		
+		final NewPhysicalGraphNode p=Utilities.getRandomNodeWithinGraphBorders(NewPhysicalGraphNode.class, Tools.getNodeList());
 		
 		
 		HashMap<Node, Set<Node>> udgNeighborsList = Algorithms_ext.createUDGNeighborhood();
 		//calculate messages for 2hop beaconing
-		Integer messagesBeaconing=1; //initial RTS
+		int messagesBeaconing=1; //initial RTS
 		
 		for(Node n:udgNeighborsList.get(p)){
 			messagesBeaconing+=2; //initial RTS for node n and its answer to p
@@ -173,21 +180,43 @@ public class CustomGlobalBatch {
 			}
 		}
 		
+
 		int UDGNeighbors = udgNeighborsList.get(p).size();
 		
 		/*start pdt and rmys  count pdt neighbors and rmys neighbors
 		 * */
 		
-		RMYS rmys = new RMYS(p);
+		final RMYS rmys = new RMYS(p);
 		rmys.addObserver(new TopologyControlObserver() {
 			
 			@Override
 			public void onNotify(SubgraphStrategy topologyControl, EState event) {
-				System.out.println("FERTIG");
 				
+				if(event==EState.TERMINATED){
+					
+					ReactivePDTForwarderMessageHandler pdt=null;
+					for(AbstractMessageHandler<?> atc:p.messageHandlerMap.values()){
+						if(atc instanceof ReactivePDTForwarderMessageHandler){
+							pdt=(ReactivePDTForwarderMessageHandler) atc;
+						}
+					}
+					int RMYSNeighbors=p.getMessageHandler(rmys.getTopologyControlID()).getKnownNeighbors().size();
+					
+					values.add(pdt.getKnownNeighbors().size()+ "");
+					values.add(RMYSNeighbors + "");
+					values.add(Algorithms_ext.messageNumbers.get(SubgraphStrategy.EStrategy.RMYS)+"");
+					values.add(Algorithms_ext.messageNumbers.get(SubgraphStrategy.EStrategy.REACTIVE_PDT)+"");
+					
+					write_data(values);
+				}				
 			}
 		});
 		
+		
+		
+		values.add(p.ID + "");
+		values.add(UDGNeighbors + "");
+		values.add(messagesBeaconing + "");
 		
 		
 		
@@ -270,6 +299,7 @@ public class CustomGlobalBatch {
 	}
 	
 	public void initGlobalParameters(){
+		values.clear();
 		try {
 			src = Configuration.getStringParameter("positionFile/src");
 			logger.log(Level.INFO, "Found position Fileentry in configuration: " + src);
@@ -340,11 +370,7 @@ public class CustomGlobalBatch {
 	public void write_data(ArrayList<String> values) {
 		logger.log(Level.INFO, "Writing message record to file...");
 	
-		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		Date date = new Date();
-
 		final char valSep = ' ';
-		final String fileExtension = "dat";
 				
 		StringBuffer line = new StringBuffer();
 		
@@ -367,7 +393,7 @@ public class CustomGlobalBatch {
 	}
 
 	public void onExit() {
-		logger.log(Level.INFO, "exiting!");
+		logger.log(Level.SEVERE, "exiting!");
 	}
 
 }

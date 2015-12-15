@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
@@ -51,9 +52,10 @@ public class Algorithms_ext {
 			runLogFile = Configuration.getStringParameter("RMYS/runLogFile");
 			if(!runLogFile.isEmpty()){
 				logger=Algorithms_ext.getLogger(runLogFile);
-				
+			
 			}else{
 				logger=Algorithms_ext.getLogger();
+			
 			}
 			
 		} catch (CorruptConfigurationEntryException e) {
@@ -73,7 +75,7 @@ public class Algorithms_ext {
 		}else{
 			messageNumbers.put(strategy, 1);
 		}
-		System.out.println("MESSAGES for " + strategy + ": " + Algorithms_ext.messageNumbers.get(strategy));
+		logger.log(Level.INFO, "MESSAGES for " + strategy + ": " + Algorithms_ext.messageNumbers.get(strategy));
 	}
 	
 	public static double rmysSpan(boolean hopdistance) {
@@ -260,8 +262,9 @@ public class Algorithms_ext {
 			}
 			
 			if(inbatchmode){
-				logger.setUseParentHandlers(false);
-				logger.setLevel(Level.WARNING);
+			//	logger.setUseParentHandlers(false);
+				logger.setLevel(Level.INFO);
+				
 			}
 			
 			java.util.logging.Formatter simpleformatter = new java.util.logging.Formatter (){
@@ -293,6 +296,8 @@ public class Algorithms_ext {
 			        return sb.toString();
 			    }
 			};
+			
+			Logger.getLogger("").getHandlers()[0].setFormatter(simpleformatter); //remove timestamp for logging into console
 			
 			logFileOut.setFormatter(simpleformatter);
 			
