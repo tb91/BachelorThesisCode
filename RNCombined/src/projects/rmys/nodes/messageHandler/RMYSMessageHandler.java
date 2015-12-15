@@ -89,17 +89,15 @@ public class RMYSMessageHandler extends BeaconlessMessageHandler {
 	private void runRMYS(ReactivePDT pdt) {
 		this.getKnownNeighbors().addAll(RMYS.calculateMYS((NewPhysicalGraphNode) this.node, 
 				this.node.getMessageHandler(pdt.getTopologyControlID()).getKnownNeighbors())); // this part can be optimized
-		Boolean accepted = false;
 		if (this.getKnownNeighbors().contains(sourceNode)) {
-			this.node.setColor(Color.green);
-			accepted = true;
+			//no need to send a message
 		} else {
 			this.node.setColor(Color.red);
-			accepted = false;
+			AcknowlegdementMessage ackms = new AcknowlegdementMessage(this.tcID, this.node, false);
+			this.node.send(ackms, sourceNode); // send answer to forwarder
+			Algorithms_ext.incMessageNumber(EStrategy.RMYS);
 		}
-		AcknowlegdementMessage ackms = new AcknowlegdementMessage(this.tcID, this.node, accepted);
-		this.node.send(ackms, sourceNode); // send answer to forwarder
-		Algorithms_ext.incMessageNumber(EStrategy.RMYS);
+		
 
 	}
 
