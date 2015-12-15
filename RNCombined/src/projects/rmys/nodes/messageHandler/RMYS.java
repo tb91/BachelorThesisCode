@@ -73,7 +73,7 @@ public class RMYS extends BeaconlessTopologyControl {
 		}
 	}
 
-	ReactivePDT pdt;
+	public ReactivePDT pdt;
 	RMYSForwarderMessageHandler forwarderMh;
 
 	public RMYS(NewPhysicalGraphNode sourceNode) {

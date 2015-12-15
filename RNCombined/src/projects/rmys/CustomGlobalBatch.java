@@ -12,10 +12,17 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.Set;
 
 import projects.reactiveSpanner.GraphConnectivity;
+import projects.reactiveSpanner.TopologyControlObserver;
 import projects.reactiveSpanner.Utilities;
+import projects.reactiveSpanner.nodes.messageHandlers.SubgraphStrategy;
+import projects.reactiveSpanner.nodes.messageHandlers.SubgraphStrategy.EState;
+import projects.reactiveSpanner.nodes.messageHandlers.reactivePDT.ReactivePDT;
+import projects.rmys.nodes.messageHandler.RMYS;
 import projects.rmys.nodes.nodeImplementations.NewPhysicalGraphNode;
 import sinalgo.configuration.Configuration;
 import sinalgo.configuration.CorruptConfigurationEntryException;
@@ -170,6 +177,17 @@ public class CustomGlobalBatch {
 		
 		/*start pdt and rmys  count pdt neighbors and rmys neighbors
 		 * */
+		
+		RMYS rmys = new RMYS(p);
+		rmys.addObserver(new TopologyControlObserver() {
+			
+			@Override
+			public void onNotify(SubgraphStrategy topologyControl, EState event) {
+				System.out.println("FERTIG");
+				
+			}
+		});
+		
 		
 		
 		
