@@ -213,7 +213,7 @@ public class CustomGlobalBatch {
 		});
 		
 		
-		
+		values.add(nodeDensity + "");
 		values.add(p.ID + "");
 		values.add(UDGNeighbors + "");
 		values.add(messagesBeaconing + "");
