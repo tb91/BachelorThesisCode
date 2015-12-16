@@ -84,7 +84,7 @@ sub readFileAndSaveValsInHashMaps {
     	s/\s+$//; # remove trailing whitespace
     	next unless length; # next rec unless anything left
 
-		my ($density, $UDGNeighbors, $beaconingMessages, $neighbors, 
+		my ($density, $ID, $UDGNeighbors, $beaconingMessages, $neighbors, 
 		$neighbors2, $RMYSMessages, $PDTMessages) = split($IN_SPLIT_CHAR);
 		
 		# print "Pushing number of neighbors UDG = $neighborsUDG to map with density $density \n";

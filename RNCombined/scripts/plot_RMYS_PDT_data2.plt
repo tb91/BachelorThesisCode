@@ -20,22 +20,25 @@
 #####plot spanning ratio#####
 #############################
 set datafile separator ","
-set output "./plots/RMYS_PDT_SpanningRatio.png"
+set output "./plots/RMYS_PDT_Neighbors.png"
 set xrange [5:20]
 unset log                              # remove any log-scaling
 unset label                            # remove any previous labels
 set xtic 1    
 set term png size 1100,600 font 'Verdana,14' 
 
-set title "Euclidean spanning ratio of Reactive Modified Yao Step (RMYS) and Partial Delaunay Triangulation (PDT) \n with respect to the Unit Disk Graph in context to the node density. 1000 Simulations per density."
+set title "... 1000 Simulations per density."
 set xlabel "Node density"
-set ylabel "Spanning ratio"
+set ylabel "Number of Messages"
 set key right top
-set ytic 0.5
-set yrange[0.0:2]
+set ytic 5
+set yrange[0.0:50]
 
 plot "./data_RMYS_rPDT.dat" using 1:3 notitle lc rgb "red" with lines,\
     ""using 1:3:4:5 title 'Beaconing Messages' lc rgb "red" with yerrorbars,\
     ""using 1:7 notitle lc rgb "blue" with lines,\
     ""using 1:7:8:9 title 'RMYSMessages' lc rgb "blue" with yerrorbars,\
+    ""using 1:11 notitle lc rgb "green" with lines,\
+    ""using 1:11:12:13 title 'PDTMessages' lc rgb "green" with yerrorbars,\
+
 
