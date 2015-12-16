@@ -262,8 +262,8 @@ public class Algorithms_ext {
 			}
 			
 			if(inbatchmode){
-			//	logger.setUseParentHandlers(false);
-				logger.setLevel(Level.INFO);
+				logger.setUseParentHandlers(false);
+				logger.setLevel(Level.WARNING);
 				
 			}
 			
