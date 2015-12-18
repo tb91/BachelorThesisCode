@@ -94,13 +94,14 @@ public class RMYS extends BeaconlessTopologyControl {
 												// thats rPDT has terminated it
 												// starts Modified Yao Step
 
+
+						
 						for(Node n: pdt.getSubgraphNodes()){
 							n.setColor(Color.GRAY);
 						}
 						
 						forwarderMh.getKnownNeighbors().addAll(calculateMYS(
-								(NewPhysicalGraphNode) sourceNode, 
-								sourceNode.getMessageHandler(pdt.getTopologyControlID()).getKnownNeighbors()));
+								(NewPhysicalGraphNode) sourceNode, pdt.getSubgraphNodes()));
 						checkIfEdgeIsBidirectional(forwarderMh);
 					}
 

@@ -90,7 +90,7 @@ public class RMYSMessageHandler extends BeaconlessMessageHandler {
 		this.getKnownNeighbors().addAll(RMYS.calculateMYS((NewPhysicalGraphNode) this.node, 
 				this.node.getMessageHandler(pdt.getTopologyControlID()).getKnownNeighbors())); // this part can be optimized
 		if (this.getKnownNeighbors().contains(sourceNode)) {
-			//no need to send a message
+			this.node.setColor(Color.green);
 		} else {
 			this.node.setColor(Color.red);
 			AcknowlegdementMessage ackms = new AcknowlegdementMessage(this.tcID, this.node, false);

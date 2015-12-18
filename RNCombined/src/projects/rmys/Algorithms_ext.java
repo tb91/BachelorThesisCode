@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Collection;
+import java.util.Formatter;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -267,35 +268,7 @@ public class Algorithms_ext {
 				
 			}
 			
-			java.util.logging.Formatter simpleformatter = new java.util.logging.Formatter (){
-				//the following formatter is copied from: 
-				//http://stackoverflow.com/questions/2950704/java-util-logging-how-to-suppress-date-line
-				@Override
-			    public String format(final LogRecord r) {
-			        StringBuilder sb = new StringBuilder();
-			        sb.append(formatMessage(r)).append(System.getProperty("line.separator"));
-			        if (null != r.getThrown()) {
-			            sb.append("Throwable occurred: "); //$NON-NLS-1$
-			            Throwable t = r.getThrown();
-			            PrintWriter pw = null;
-			            try {
-			                StringWriter sw = new StringWriter();
-			                pw = new PrintWriter(sw);
-			                t.printStackTrace(pw);
-			                sb.append(sw.toString());
-			            } finally {
-			                if (pw != null) {
-			                    try {
-			                        pw.close();
-			                    } catch (Exception e) {
-			                        // ignore
-			                    }
-			                }
-			            }
-			        }
-			        return sb.toString();
-			    }
-			};
+			java.util.logging.Formatter simpleformatter = getFormatter();
 			
 			Logger.getLogger("").getHandlers()[0].setFormatter(simpleformatter); //remove timestamp for logging into console
 			
@@ -313,14 +286,25 @@ public class Algorithms_ext {
 	public static Logger getLogger(){
 		if(logger==null){
 			logger=Logger.getLogger(Algorithms_ext.class.getName());
+			Logger.getLogger("").getHandlers()[0].setFormatter(getFormatter()); //remove timestamp for logging into console
 			
-			SimpleFormatter formatter = new SimpleFormatter();
 			
-			logger.setLevel(Level.SEVERE); //TODO: remove
+			logger.setLevel(Level.INFO); //TODO: remove
 			logger.log(Level.INFO, "Logger is running.");	
 		}
 		
 		return logger;
+	}
+	
+	public static java.util.logging.Formatter getFormatter(){
+		return new java.util.logging.Formatter (){
+			@Override
+		    public String format(final LogRecord r) {
+		        StringBuilder sb = new StringBuilder();
+		        sb.append(formatMessage(r)).append(System.getProperty("line.separator"));
+		        return sb.toString();
+		    }
+		};
 	}
 	
 }
