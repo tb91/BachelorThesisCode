@@ -17,7 +17,7 @@ import projects.reactiveSpanner.nodes.messages.RTS;
 import projects.reactiveSpanner.nodes.nodeImplementations.PhysicalGraphNode;
 import projects.reactiveSpanner.record.MessageRecord;
 import projects.rmys.Algorithms_ext;
-import projects.rmys.nodes.messages.AcknowlegdementMessage;
+import projects.rmys.nodes.messages.ProtestMessage;
 import projects.rmys.nodes.messages.RequestMessage;
 import projects.rmys.nodes.nodeImplementations.NewPhysicalGraphNode;
 import sinalgo.gui.transformation.PositionTransformation;
@@ -93,8 +93,8 @@ public class RMYSMessageHandler extends BeaconlessMessageHandler {
 			this.node.setColor(Color.green);
 		} else {
 			this.node.setColor(Color.red);
-			AcknowlegdementMessage ackms = new AcknowlegdementMessage(this.tcID, this.node, false);
-			this.node.send(ackms, sourceNode); // send answer to forwarder
+			ProtestMessage protest = new ProtestMessage(this.tcID, this.node);
+			this.node.send(protest, sourceNode); // send answer to forwarder
 			Algorithms_ext.incMessageNumber(EStrategy.RMYS);
 		}
 		

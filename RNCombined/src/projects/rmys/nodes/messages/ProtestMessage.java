@@ -7,22 +7,16 @@ import projects.reactiveSpanner.nodes.messages.BeaconlessMessage;
 import projects.reactiveSpanner.nodes.nodeImplementations.PhysicalGraphNode;
 import sinalgo.nodes.messages.Message;
 
-public class AcknowlegdementMessage extends BeaconlessMessage {
-	private Boolean accepted;
-
-	public AcknowlegdementMessage(UUID tcID, PhysicalGraphNode transmitter, Boolean accepted) {
+public class ProtestMessage extends BeaconlessMessage {
+	
+	public ProtestMessage(UUID tcID, PhysicalGraphNode transmitter) {
 		super(tcID, transmitter, EStrategy.RMYS);
-		this.accepted = accepted;
 	}
 
 	@Override
 	public Message clone() {
-		return new AcknowlegdementMessage(ID, getTransmitter(), accepted);
-
+		return new ProtestMessage(ID, getTransmitter());
 	}
 
-	public Boolean getAccepted() {
-		return accepted;
-	}
 
 }

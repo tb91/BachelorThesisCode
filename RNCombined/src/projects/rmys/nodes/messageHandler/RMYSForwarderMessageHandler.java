@@ -12,7 +12,7 @@ import projects.reactiveSpanner.nodes.messages.AbstractMessage;
 import projects.reactiveSpanner.nodes.nodeImplementations.PhysicalGraphNode;
 import projects.reactiveSpanner.nodes.timers.BeaconlessTimer;
 import projects.rmys.Algorithms_ext;
-import projects.rmys.nodes.messages.AcknowlegdementMessage;
+import projects.rmys.nodes.messages.ProtestMessage;
 import sinalgo.gui.transformation.PositionTransformation;
 import sinalgo.nodes.Position;
 
@@ -63,18 +63,17 @@ public class RMYSForwarderMessageHandler extends RMYSMessageHandler {
 
 	@Override
 	public void receivedMessage(AbstractMessage msg) {
-		if (msg instanceof AcknowlegdementMessage) {
-			if (((AcknowlegdementMessage) msg).getAccepted()) {
-				// no need to work; everything went fine
-			} else {
-				// remove this node from the set, since the other node did not accept this edge
-				if (!this.knownNeighbors.remove(msg.getTransmitter())) {
-					logger.log(Level.SEVERE, this.sourceNode
-							+ " tried to remove a node which was not in it's knownNeighbors-set.\nThis should not occur!");
-				}
-				logger.log(Level.INFO,
-						this.sourceNode + " removed " + msg.getTransmitter() + " from it's list of knownNeighbors");
+		if (msg instanceof ProtestMessage) {
+
+			// remove this node from the set, since the other node did not
+			// accept this edge
+			if (!this.knownNeighbors.remove(msg.getTransmitter())) {
+				logger.log(Level.SEVERE, this.sourceNode
+						+ " tried to remove a node which was not in it's knownNeighbors-set.\nThis should not occur!");
 			}
+			logger.log(Level.INFO,
+					this.sourceNode + " removed " + msg.getTransmitter() + " from it's list of knownNeighbors");
+
 		}
 	}
 
