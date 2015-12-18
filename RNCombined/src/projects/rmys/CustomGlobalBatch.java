@@ -186,12 +186,13 @@ public class CustomGlobalBatch {
 		/*start pdt and rmys  count pdt neighbors and rmys neighbors
 		 * */
 		
+		final String positionfile = src.substring(src.lastIndexOf('\\')+1,src.lastIndexOf('.'));
+		
 		final RMYS rmys = new RMYS(p);
 		rmys.addObserver(new TopologyControlObserver() {
 			
 			@Override
 			public void onNotify(SubgraphStrategy topologyControl, EState event) {
-				System.out.println("TEST");
 				if(event==EState.TERMINATED){
 					
 					ReactivePDTForwarderMessageHandler pdt=null;
@@ -206,6 +207,7 @@ public class CustomGlobalBatch {
 					values.add(RMYSNeighbors + "");
 					values.add(Algorithms_ext.messageNumbers.get(SubgraphStrategy.EStrategy.RMYS)+"");
 					values.add(Algorithms_ext.messageNumbers.get(SubgraphStrategy.EStrategy.REACTIVE_PDT)+"");
+					values.add(positionfile);
 					write_data(values);
 				}				
 			}
@@ -216,9 +218,6 @@ public class CustomGlobalBatch {
 		values.add(p.ID + "");
 		values.add(UDGNeighbors + "");
 		values.add(messagesBeaconing + "");
-		String positionfile = src.substring(src.lastIndexOf('\\')+1,src.lastIndexOf('.')-1);
-		values.add(positionfile);
-		
 		
 	}
 	

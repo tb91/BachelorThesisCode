@@ -2,8 +2,8 @@
 <sinalgo>
 	<ProjectSelector windowWidth="600" windowHeight="400" lastChosenProject="rmys" windowPosX="50" windowPosY="50" isMaximized="false" selectedTab="2" />
 	<GUI windowWidth="800" windowHeight="600" windowPosX="775" windowPosY="205" isMaximized="false" ControlPanelExpandSimulation="true" ControlPanelShowFullViewPanel="true" ControlPanelShowTextPanel="true" ControlPanelShowProjectControl="true" RunOperationIsLimited="true" helpWindowWidth="500" helpWindowHeight="500" helpWindowPosX="200" helpWindowPosY="200" helpWindowIsMaximized="false" />
-	<RandomSeed seedFromPreviousRun="4434633179967067621" />
-	<App lastSelectedFileDirectory="" checkForUpdatesAtStartup="true" updateCheckTimeStamp="1450366489742" runCmdLineArgs="-project rmys -batch -overwrite AutoStart=true algorithm/name=EXPERIMENT2 positionFile/src=C:\Users\timmy\bachelorarbeit_code\RNCombined\scripts\graphs_1000\density20\7.pos resultsLog=C:\Users\timmy\bachelorarbeit_code\RNCombined\scripts\results\20-6-8-3.dat useFixedSeed=false exitAfterRounds=4013 dimX=1000 dimY=1000 UDG/rMax=100 RMYS/runLogFile=C:\Users\timmy\bachelorarbeit_code\RNCombined\scripts\results\log\dens20-3.log outputToConsole=false RMYS/batchmode=true javaCmd=java " />
+	<RandomSeed seedFromPreviousRun="-1282816331918050707" />
+	<App lastSelectedFileDirectory="" checkForUpdatesAtStartup="true" updateCheckTimeStamp="1450366489742" runCmdLineArgs="-project rmys -batch -overwrite AutoStart=true algorithm/name=EXPERIMENT2 positionFile/src=C:\Users\timmy\bachelorarbeit_code\RNCombined\scripts\graphs_1000\density20\23.pos resultsLog=C:\Users\timmy\bachelorarbeit_code\RNCombined\scripts\results\20-20-24-5.dat useFixedSeed=false exitAfterRounds=4013 dimX=1000 dimY=1000 UDG/rMax=100 RMYS/runLogFile=C:\Users\timmy\bachelorarbeit_code\RNCombined\scripts\results\log\dens20-5.log outputToConsole=false RMYS/batchmode=true javaCmd=java " />
 	<GenNodesDlg numNodes="100" />
 </sinalgo>
 
