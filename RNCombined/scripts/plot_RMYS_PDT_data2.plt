@@ -27,7 +27,7 @@ unset label                            # remove any previous labels
 set xtic 1    
 set term png size 1120,600 font 'Verdana,14' 
 
-set title "This plot shows the needed messages to construct the RMYS-neighborhood on a given node with respect\nto the node density in a 2-hop beaconing approach and in a reactive way. Additionally, the messages rPDT\nuses to construct the PDT-neighborhood of a node and its neighbors are shown. 16 Simulations per density."
+set title "This plot shows the needed messages to construct the RMYS-neighborhood on a given node with respect\nto the node density in a 2-hop beaconing approach and in a reactive way. Additionally, the messages rPDT\nuses to construct the PDT-neighborhood of a node and its neighbors are shown. 1000 Simulations per density."
 set xlabel "Node density"
 set ylabel "Number of Messages"
 set key left top
@@ -53,7 +53,7 @@ unset label                            # remove any previous labels
 set xtic 1    
 set term png size 1100,600 font 'Verdana,14' 
 
-set title "The messages needed to construct the RMYS-neighborhood and the \nPDT-neighborhood of a node and its neighbors are shown. 16 Simulations per density."
+set title "The messages needed to construct the RMYS-neighborhood and the \nPDT-neighborhood of a node and its neighbors are shown. 1000 Simulations per density."
 set xlabel "Node density"
 set ylabel "Number of Messages"
 set key left top
