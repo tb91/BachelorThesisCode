@@ -150,6 +150,8 @@ public class Utilities {
 
 			if (x > R && x+R < Configuration.dimX && y > R && y+R < Configuration.dimY) {
 				matched = true;
+			}else{
+				out=null;
 			}
 		}
 		if (out == null)

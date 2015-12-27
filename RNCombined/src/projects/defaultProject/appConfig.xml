@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sinalgo>
-	<ProjectSelector windowWidth="600" windowHeight="400" lastChosenProject="" windowPosX="50" windowPosY="50" isMaximized="false" selectedTab="1" />
-	<GUI windowWidth="800" windowHeight="600" windowPosX="50" windowPosY="50" isMaximized="false" ControlPanelExpandSimulation="true" ControlPanelShowFullViewPanel="true" ControlPanelShowTextPanel="true" ControlPanelShowProjectControl="true" RunOperationIsLimited="true" helpWindowWidth="500" helpWindowHeight="500" helpWindowPosX="200" helpWindowPosY="200" helpWindowIsMaximized="false" />
-	<RandomSeed seedFromPreviousRun="2228434358436050001" />
-	<App lastSelectedFileDirectory="" checkForUpdatesAtStartup="true" updateCheckTimeStamp="1450487180683" runCmdLineArgs="-project rmys -batch -overwrite AutoStart=true algorithm/name=EXPERIMENT2 positionFile/src=C:\Users\timmy\bachelorarbeit_code\RNCombined\scripts\graphs_1000\density5\115.pos resultsLog=C:\Users\timmy\bachelorarbeit_code\RNCombined\scripts\results\5-115-116-0.dat useFixedSeed=false exitAfterRounds=4013 dimX=1000 dimY=1000 UDG/rMax=100 RMYS/runLogFile=C:\Users\timmy\bachelorarbeit_code\RNCombined\scripts\results\log\dens5-0.log outputToConsole=false RMYS/batchmode=true javaCmd=java " />
+	<ProjectSelector windowWidth="600" windowHeight="400" lastChosenProject="rmys" windowPosX="50" windowPosY="50" isMaximized="false" selectedTab="3" />
+	<GUI windowWidth="800" windowHeight="600" windowPosX="141" windowPosY="91" isMaximized="false" ControlPanelExpandSimulation="true" ControlPanelShowFullViewPanel="true" ControlPanelShowTextPanel="true" ControlPanelShowProjectControl="true" RunOperationIsLimited="true" helpWindowWidth="500" helpWindowHeight="500" helpWindowPosX="200" helpWindowPosY="200" helpWindowIsMaximized="false" />
+	<RandomSeed seedFromPreviousRun="4434633179967067621" />
+	<App lastSelectedFileDirectory="" checkForUpdatesAtStartup="true" updateCheckTimeStamp="1450780279003" runCmdLineArgs="-project rmys -batch -overwrite AutoStart=true algorithm/name=EXPERIMENT2 positionFile/src=C:\Users\timmy\bachelorarbeit_code\RNCombined\scripts\graphs_1000\density5\115.pos resultsLog=C:\Users\timmy\bachelorarbeit_code\RNCombined\scripts\results\5-115-116-0.dat useFixedSeed=false exitAfterRounds=4013 dimX=1000 dimY=1000 UDG/rMax=100 RMYS/runLogFile=C:\Users\timmy\bachelorarbeit_code\RNCombined\scripts\results\log\dens5-0.log outputToConsole=false RMYS/batchmode=true javaCmd=java " />
 	<GenNodesDlg numNodes="100" />
 </sinalgo>
 

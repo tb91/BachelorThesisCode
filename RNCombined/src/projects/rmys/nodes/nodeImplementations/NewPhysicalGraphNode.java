@@ -7,12 +7,13 @@ import projects.reactiveSpanner.nodes.messageHandlers.SubgraphStrategy.EState;
 import projects.reactiveSpanner.nodes.messageHandlers.SubgraphStrategy.EStrategy;
 import projects.reactiveSpanner.nodes.nodeImplementations.PhysicalGraphNode;
 import projects.reactiveSpanner.routing.RoutingProtocol.ERoutingState;
+import sinalgo.nodes.edges.Edge;
 
 //need to use PhysicalGraphNode to be able to use functions from reactiveSpanner
 //Creating a new Node to point out differences to ReactiveSpanner
 public class NewPhysicalGraphNode extends PhysicalGraphNode {
 
-
+	boolean drawEdges=false;
 
 	/**
 	 * 
@@ -43,5 +44,17 @@ public class NewPhysicalGraphNode extends PhysicalGraphNode {
 	@NodePopupMethod(menuText = "RMYS")
 	public void RMYS() {
 		this.subgraphStrategyFactory.request(EStrategy.RMYS).start();
+	}
+	
+	@NodePopupMethod(menuText = "Print and Draw Connections")
+	public void printAndDrawConnections(){
+		System.out.println("connections from " + this.toString());
+		for (Edge e : outgoingConnections) {
+			System.out.print(e.endNode);
+			
+		}
+		this.drawEdges=true;
+		System.out.println();		
+		
 	}
 }
