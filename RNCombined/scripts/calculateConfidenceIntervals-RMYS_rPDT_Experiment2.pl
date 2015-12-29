@@ -44,6 +44,7 @@ my $OUT_SPLIT_CHAR = ",";
 my %mapRMYSMessages = ();
 my %mapPDTMessages = ();
 my %mapBeaconingMessages = ();
+my %mapPDT1Messages = ();
 
 my %mapNumDataSamples = ();
 
@@ -91,6 +92,7 @@ sub readFileAndSaveValsInHashMaps {
 		push(@{$mapBeaconingMessages{$density}}, $beaconingMessages);
 		push(@{$mapRMYSMessages{$density}}, $RMYSMessages+$PDTMessages);
 		push(@{$mapPDTMessages{$density}}, $PDTMessages);
+		push(@{$mapPDT1Messages{$density}}, $neighbors+1);
 
 		my $val;
 		if (defined $mapNumDataSamples{$density})
@@ -246,7 +248,10 @@ foreach my $density ( sort {$a <=> $b} keys %mapBeaconingMessages ) #presumption
 	print OUT "$OUT_SPLIT_CHAR" or die "$error_write_msg";
 	
 	estimateConfidenceIntervals("PDTMessages", $density, @{$mapPDTMessages{$density}});
-		
+	print OUT "$OUT_SPLIT_CHAR" or die "$error_write_msg";
+
+	estimateConfidenceIntervals("PDT1Messages", $density, @{$mapPDT1Messages{$density}});
+
 	print OUT "\n" or die "$error_write_msg";
 
 }
