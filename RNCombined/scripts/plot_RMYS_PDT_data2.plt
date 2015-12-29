@@ -39,7 +39,7 @@ plot "./data_RMYS_rPDT2.dat" using 1:3 notitle lc rgb "red" with lines,\
     ""using 1:7 notitle lc rgb "blue" with lines,\
     ""using 1:7:8:9 title 'RMYSMessages' lc rgb "blue" with yerrorbars,\
     ""using 1:11 notitle lc rgb "green" with lines,\
-    ""using 1:11:12:13 title 'PDTMessages' lc rgb "green" with yerrorbars,\
+    ""using 1:11:12:13 title 'PDTMessages on Neighborhood' lc rgb "green" with yerrorbars,\
     ""using 1:15 notitle lc rgb "olive" with lines,\
     ""using 1:15:16:17 title 'PDTMessages' lc rgb "olive" with yerrorbars
 
@@ -65,6 +65,32 @@ set yrange[0.0:55]
 plot "./data_RMYS_rPDT2.dat" using 1:7 notitle lc rgb "red" with lines,\
     ""using 1:7:8:9 title 'RMYSMessages' lc rgb "red" with yerrorbars,\
     ""using 1:11 notitle lc rgb "blue" with lines,\
-    ""using 1:11:12:13 title 'PDTMessages' lc rgb "blue" with yerrorbars,\
+    ""using 1:11:12:13 title 'PDTMessages on Neighborhood' lc rgb "blue" with yerrorbars,\
     ""using 1:15 notitle lc rgb "olive" with lines,\
     ""using 1:15:16:17 title 'PDTMessages' lc rgb "olive" with yerrorbars
+
+
+###############################################
+#####plot RMYS rPDT messages per neighbors#####
+###############################################
+set datafile separator ","
+set output "./plots/RMYS_PDT_MessagesPerNeighbors.png"
+set xrange [5:20]
+unset log                              # remove any log-scaling
+unset label                            # remove any previous labels
+set xtic 1    
+set term png size 1250,600 font 'Verdana,14' 
+
+#set title "The messages needed to construct the RMYS-neighborhood and the \nPDT-neighborhood of a node and its neighbors are shown. 1000 Simulations per density."
+set xlabel "Node density"
+set ylabel "Number of Messages / Neighbors in the subgraph"
+set key left top
+set ytic 1
+set yrange[0.0:9.5]
+
+plot "./data_RMYS_rPDT2.dat" using 1:19 notitle lc rgb "red" with lines,\
+    ""using 1:19:20:21 title 'RMYSMessages' lc rgb "red" with yerrorbars,\
+    ""using 1:23 notitle lc rgb "blue" with lines,\
+    ""using 1:23:24:25 title 'PDTMessages on Neighborhood' lc rgb "blue" with yerrorbars,\
+    ""using 1:27 notitle lc rgb "green" with lines,\
+    ""using 1:27:28:29 title 'PDTMessages' lc rgb "green" with yerrorbars,\

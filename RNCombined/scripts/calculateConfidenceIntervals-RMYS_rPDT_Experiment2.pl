@@ -32,7 +32,7 @@ use Carp;
 
 my $MARGIN_ERROR = 1.96;
 my $DEBUG_OUTPATH = "./debug_confiIntervals-Routing.csv";
-my $GNU_OUTPATH = "./data_RMYS_rPDT.dat";
+my $GNU_OUTPATH = "./data_RMYS_rPDT2.dat";
 
 my $IN_SPLIT_CHAR = " ";
 my $OUT_SPLIT_CHAR = ",";
@@ -45,6 +45,9 @@ my %mapRMYSMessages = ();
 my %mapPDTMessages = ();
 my %mapBeaconingMessages = ();
 my %mapPDT1Messages = ();
+my %mapRMYSNeighborsRatio = ();
+my %mapPDTNeighborsRatio = ();
+my %mapPDT1NeighborsRatio = ();
 
 my %mapNumDataSamples = ();
 
@@ -93,6 +96,9 @@ sub readFileAndSaveValsInHashMaps {
 		push(@{$mapRMYSMessages{$density}}, $RMYSMessages+$PDTMessages);
 		push(@{$mapPDTMessages{$density}}, $PDTMessages);
 		push(@{$mapPDT1Messages{$density}}, $neighbors+1);
+		push(@{$mapPDTNeighborsRatio{$density}}, $PDTMessages/$neighbors);
+		push(@{$mapRMYSNeighborsRatio{$density}}, ($PDTMessages + $RMYSMessages)/$neighbors2);
+		push(@{$mapPDT1NeighborsRatio{$density}}, ($neighbors+1)/$neighbors);
 
 		my $val;
 		if (defined $mapNumDataSamples{$density})
@@ -251,7 +257,16 @@ foreach my $density ( sort {$a <=> $b} keys %mapBeaconingMessages ) #presumption
 	print OUT "$OUT_SPLIT_CHAR" or die "$error_write_msg";
 
 	estimateConfidenceIntervals("PDT1Messages", $density, @{$mapPDT1Messages{$density}});
+	print OUT "$OUT_SPLIT_CHAR" or die "$error_write_msg";
 
+	estimateConfidenceIntervals("PDTNeighborsRatio", $density, @{$mapPDTNeighborsRatio{$density}});
+	print OUT "$OUT_SPLIT_CHAR" or die "$error_write_msg";
+
+	estimateConfidenceIntervals("RMYSNeighborsRatio", $density, @{$mapRMYSNeighborsRatio{$density}});
+
+	print OUT "$OUT_SPLIT_CHAR" or die "$error_write_msg";
+	estimateConfidenceIntervals("PDT1NeighborsRatio", $density, @{$mapPDT1NeighborsRatio{$density}});
+	
 	print OUT "\n" or die "$error_write_msg";
 
 }
